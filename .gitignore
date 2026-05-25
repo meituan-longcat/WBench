@@ -1,0 +1,35 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+
+# Weights (too large for repo)
+weights/
+
+# Third-party build artifacts
+third_party/**/build/
+third_party/**/__pycache__/
+
+# Data (hosted on HuggingFace)
+data/
+
+# Work directories
+work_dirs/
+logs/
+results/
+results_*.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+CLAUDE.md
+homepage/

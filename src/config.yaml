@@ -1,0 +1,28 @@
+# WBench Configuration
+#
+# Environment variables:
+#   WBENCH_WEIGHTS_DIR — Model weights directory (default: ./weights/)
+#   VLM_API_URL        — VLM API endpoint (default: https://ark.cn-beijing.volces.com/api/v3)
+#   VLM_API_KEY        — VLM API key (required)
+#   VLM_MODEL_NAME     — doubao-seed-2-0-lite-260215 (default) or Doubao-Seed-2.0-lite
+
+# Device
+device: "cuda"
+
+# Frame sampling settings
+metrics_settings:
+  vlm_fps: 3.0
+  navigation_fps: 2.0
+
+  subject_consistency:
+    use_sampling: true
+  background_consistency:
+    use_sampling: true
+  aesthetic_quality:
+    use_sampling: true
+  imaging_quality:
+    use_sampling: true
+  temporal_flickering:
+    use_sampling: false
+  motion_smoothness:
+    use_sampling: true
