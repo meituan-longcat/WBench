@@ -9,7 +9,7 @@
 <div align="center">
 
 [![Homepage](https://img.shields.io/badge/Homepage-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://meituan-longcat.github.io/WBench/)
-[![Paper (Coming)](https://img.shields.io/badge/Paper-red?style=for-the-badge&logo=arxiv&logoColor=white)](WBench_Longcat_early_access.pdf)
+[![Paper](https://img.shields.io/badge/Paper-red?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2605.25874)
 [![Datasets](https://img.shields.io/badge/Datasets-4285F4?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/datasets/meituan-longcat/WBench)
 [![Weights](https://img.shields.io/badge/Weights-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/meituan-longcat/WBench-weights)
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-32CD32?style=for-the-badge&logo=google-chrome&logoColor=white)](https://meituan-longcat.github.io/WBench/#leaderboard)
@@ -32,6 +32,7 @@
 
 ## 📢 News
 
+- **[2026/05]** Our paper is now available on [arXiv](https://arxiv.org/abs/2605.25874)!
 - **[2026/05]** [Homepage](https://meituan-longcat.github.io/WBench/) with interactive leaderboard and dataset gallery is live!
 - **[2026/05]** We release the full [WBench dataset](https://huggingface.co/datasets/meituan-longcat/WBench), [evaluation code](https://github.com/meituan-longcat/WBench), and [model weights](https://huggingface.co/meituan-longcat/WBench-weights).
 
@@ -263,11 +264,18 @@ export VIDEO_API_KEY="your-key"
 - [ ] Camera-conditioned model generation example
 - [ ] Action-conditioned model generation example
 - [ ] Model submission portal (auto-evaluation)
-- [ ] ArXiv paper release
+- [x] ArXiv paper release
 
 ## 📝 Citation
 
-Coming soon.
+```bibtex
+@article{ying2025wbench,
+  title={WBench: A Comprehensive Multi-turn Benchmark for Interactive Video World Model Evaluation},
+  author={Ying, Kaining and Hu, Hengrui and Ren, Siyu and Li, Jiamu and Chen, Fengjiao and Wang, Ziwen and Cao, Xuezhi and Cai, Xunliang and Ding, Henghui},
+  journal={arXiv preprint arXiv:2605.25874},
+  year={2025}
+}
+```
 
 ## 🙏 Acknowledgement
 
