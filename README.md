@@ -10,11 +10,13 @@
 
 [![Homepage](https://img.shields.io/badge/Homepage-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://meituan-longcat.github.io/WBench/)
 [![Paper](https://img.shields.io/badge/Paper-red?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2605.25874)
+[![HF Daily Paper](https://img.shields.io/badge/Daily_Paper_%232-FFD21E?style=for-the-badge&logo=huggingface&logoColor=white&color=FF9D00)](https://huggingface.co/papers/2605.25874)
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-32CD32?style=for-the-badge&logo=google-chrome&logoColor=white)](https://meituan-longcat.github.io/WBench/#leaderboard)
 [![Datasets](https://img.shields.io/badge/Datasets-4285F4?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/datasets/meituan-longcat/WBench)
 [![Weights](https://img.shields.io/badge/Weights-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/meituan-longcat/WBench-weights)
 [![ModelScope](https://img.shields.io/badge/ModelScope-6B4EFF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgZmlsbC1ydWxlPSJldmVub2RkIiBoZWlnaHQ9IjFlbSIgc3R5bGU9ImZsZXg6bm9uZTtsaW5lLWhlaWdodDoxIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxZW0iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPk1vZGVsU2NvcGU8L3RpdGxlPjxwYXRoIGQ9Ik0yLjY2NyA1LjNIOHYyLjY2N0g1LjMzM3YyLjY2NkgyLjY2N1Y4LjQ2N0guNXYyLjE2NmgyLjE2N1YxMy4zSDBWNy45NjdoMi42NjdWNS4zek0yLjY2NyAxMy4zaDIuNjY2djIuNjY3SDh2Mi42NjZIMi42NjdWMTMuM3pNOCAxMC42MzNoMi42NjdWMTMuM0g4di0yLjY2N3pNMTMuMzMzIDEzLjN2Mi42NjdoLTIuNjY2VjEzLjNoMi42NjZ6TTEzLjMzMyAxMy4zdi0yLjY2N0gxNlYxMy4zaC0yLjY2N3oiPjwvcGF0aD48cGF0aCBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMS4zMzMgMTMuM3YtMi42NjdoLTIuNjY2VjcuOTY3SDE2VjUuM2g1LjMzM3YyLjY2N0gyNFYxMy4zaC0yLjY2N3ptMC0yLjY2N0gyMy41VjguNDY3aC0yLjE2N3YyLjE2NnoiPjwvcGF0aD48cGF0aCBkPSJNMjEuMzMzIDEzLjN2NS4zMzNIMTZ2LTIuNjY2aDIuNjY3VjEzLjNoMi42NjZ6Ij48L3BhdGg+PC9zdmc+&logoColor=white)](https://modelscope.cn/datasets/meituan-longcat/WBench)
 [![中文解读](https://img.shields.io/badge/中文解读-07C160?style=for-the-badge&logo=wechat&logoColor=white)](https://mp.weixin.qq.com/s/br3RlOBGtReolLZc5YW2HA)
+[![WeChat Group](https://img.shields.io/badge/WeChat_Group-07C160?style=for-the-badge&logo=wechat&logoColor=white)](assets/wx_qr.png)
 
 </div>
 
@@ -34,6 +36,7 @@
 
 ## 📢 News
 
+- **[2026/05/29]** Our paper ranked **#2** on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.25874)!
 - **[2026/05/28]** Our paper is now available on [arXiv](https://arxiv.org/abs/2605.25874)!
 - **[2026/05/28]** [Homepage](https://meituan-longcat.github.io/WBench/) with interactive leaderboard and dataset gallery is live!
 - **[2026/05/28]** We release the full [WBench dataset](https://huggingface.co/datasets/meituan-longcat/WBench), [evaluation code](https://github.com/meituan-longcat/WBench), and [model weights](https://huggingface.co/meituan-longcat/WBench-weights).
@@ -141,8 +144,8 @@ cd WBench
 
 # Download data and weights
 pip install huggingface_hub
-huggingface-cli download meituan-longcat/WBench --repo-type dataset --local-dir data/ --exclude "splits/*"
-huggingface-cli download meituan-longcat/WBench-weights --local-dir weights/
+hf download meituan-longcat/WBench --repo-type dataset --local-dir data/ --exclude "splits/*"
+hf download meituan-longcat/WBench-weights --local-dir weights/
 
 # Environment 1: wbench-main (all metrics except visual_plausibility)
 bash tools/install.sh wbench-main
@@ -273,11 +276,11 @@ export VIDEO_API_KEY="your-key"
 If you find our work useful, please consider citing:
 
 ```bibtex
-@article{ying2025wbench,
+@article{ying2026wbenchcomprehensivemultiturnbenchmark,
   title={WBench: A Comprehensive Multi-turn Benchmark for Interactive Video World Model Evaluation},
   author={Ying, Kaining and Hu, Hengrui and Ren, Siyu and Li, Jiamu and Chen, Fengjiao and Wang, Ziwen and Cao, Xuezhi and Cai, Xunliang and Ding, Henghui},
   journal={arXiv preprint arXiv:2605.25874},
-  year={2025}
+  year={2026}
 }
 ```
 
@@ -303,6 +306,11 @@ Feel free to open an [Issue](https://github.com/meituan-longcat/WBench/issues) o
 
 - **Kaining Ying**: `kaining.ying.cv@gmail.com`
 - **Siyu Ren**: `rensiyu07@meituan.com`
+
+<div align="center" id="wechat-group">
+  <img src="assets/wx_qr.png" width="150"><br>
+  <sub>Scan to join our WeChat group</sub>
+</div>
 
 ## 📄 License
 
