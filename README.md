@@ -34,11 +34,15 @@
 <b>TL;DR</b> — WBench evaluates 20 video world models across 5 dimensions and 22 metrics.
 </p>
 
+<div align="center">
+  <img src="assets/qr_code.png" width="300">
+</div>
+
 ## 📢 News
 
 - **[2026/05/29]** Our paper ranked **#2** on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.25874)!
 - **[2026/05/28]** Our paper is now available on [arXiv](https://arxiv.org/abs/2605.25874)!
-- **[2026/05/28]** [Homepage](https://meituan-longcat.github.io/WBench/) with interactive leaderboard and dataset gallery is live!
+- **[2026/05/28]** [Homepage](https://meituan-longcat.github.io/WBench/) with interactive [leaderboard](https://meituan-longcat.github.io/WBench/#leaderboard) and [dataset gallery](https://meituan-longcat.github.io/WBench/#gallery) is live!
 - **[2026/05/28]** We release the full [WBench dataset](https://huggingface.co/datasets/meituan-longcat/WBench), [evaluation code](https://github.com/meituan-longcat/WBench), and [model weights](https://huggingface.co/meituan-longcat/WBench-weights).
 
 ## ✨ Contributions
@@ -307,11 +311,6 @@ Feel free to open an [Issue](https://github.com/meituan-longcat/WBench/issues) o
 - **Kaining Ying**: `kaining.ying.cv@gmail.com`
 - **Siyu Ren**: `rensiyu07@meituan.com`
 
-<div align="center" id="wechat-group">
-  <img src="assets/wx_qr.png" width="150"><br>
-  <sub>Scan to join our WeChat group</sub>
-</div>
-
 ## 📄 License
 
-Code and data: [MIT License](LICENSE). Model weights retain their [original licenses](weights/LICENSE_NOTICE.md).
+Code and data: [MIT License](LICENSE). Model weights retain their [original licenses](https://huggingface.co/meituan-longcat/WBench-weights/blob/main/LICENSE_NOTICE.md).
