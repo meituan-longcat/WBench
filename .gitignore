@@ -9,6 +9,7 @@ build/
 
 # Weights (too large for repo)
 weights/
+weights
 
 # Third-party build artifacts
 third_party/**/build/
@@ -31,5 +32,9 @@ results_*.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Local-only (not for publish)
 CLAUDE.md
 homepage/
+image.png
+wbench_open_models_for_hf.csv

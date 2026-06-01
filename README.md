@@ -14,6 +14,7 @@
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-32CD32?style=for-the-badge&logo=google-chrome&logoColor=white)](https://meituan-longcat.github.io/WBench/#leaderboard)
 [![Datasets](https://img.shields.io/badge/Datasets-4285F4?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/datasets/meituan-longcat/WBench)
 [![Weights](https://img.shields.io/badge/Weights-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/meituan-longcat/WBench-weights)
+[![Examples](https://img.shields.io/badge/Examples-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/datasets/meituan-longcat/WBench-examples)
 [![ModelScope](https://img.shields.io/badge/ModelScope-6B4EFF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgZmlsbC1ydWxlPSJldmVub2RkIiBoZWlnaHQ9IjFlbSIgc3R5bGU9ImZsZXg6bm9uZTtsaW5lLWhlaWdodDoxIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxZW0iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPk1vZGVsU2NvcGU8L3RpdGxlPjxwYXRoIGQ9Ik0yLjY2NyA1LjNIOHYyLjY2N0g1LjMzM3YyLjY2NkgyLjY2N1Y4LjQ2N0guNXYyLjE2NmgyLjE2N1YxMy4zSDBWNy45NjdoMi42NjdWNS4zek0yLjY2NyAxMy4zaDIuNjY2djIuNjY3SDh2Mi42NjZIMi42NjdWMTMuM3pNOCAxMC42MzNoMi42NjdWMTMuM0g4di0yLjY2N3pNMTMuMzMzIDEzLjN2Mi42NjdoLTIuNjY2VjEzLjNoMi42NjZ6TTEzLjMzMyAxMy4zdi0yLjY2N0gxNlYxMy4zaC0yLjY2N3oiPjwvcGF0aD48cGF0aCBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMS4zMzMgMTMuM3YtMi42NjdoLTIuNjY2VjcuOTY3SDE2VjUuM2g1LjMzM3YyLjY2N0gyNFYxMy4zaC0yLjY2N3ptMC0yLjY2N0gyMy41VjguNDY3aC0yLjE2N3YyLjE2NnoiPjwvcGF0aD48cGF0aCBkPSJNMjEuMzMzIDEzLjN2NS4zMzNIMTZ2LTIuNjY2aDIuNjY3VjEzLjNoMi42NjZ6Ij48L3BhdGg+PC9zdmc+&logoColor=white)](https://modelscope.cn/datasets/meituan-longcat/WBench)
 [![中文解读](https://img.shields.io/badge/中文解读-07C160?style=for-the-badge&logo=wechat&logoColor=white)](https://mp.weixin.qq.com/s/br3RlOBGtReolLZc5YW2HA)
 [![WeChat Group](https://img.shields.io/badge/WeChat_Group-07C160?style=for-the-badge&logo=wechat&logoColor=white)](assets/wx_qr.png)
@@ -40,6 +41,7 @@
 
 ## 📢 News
 
+- **[2026/06/01]** We release [WBench-examples](https://huggingface.co/datasets/meituan-longcat/WBench-examples) — generated videos from two reference models (HY-World 1.5, Kling 3.0) as ready-to-evaluate submission examples.
 - **[2026/05/29]** Our paper ranked **#2** on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.25874)!
 - **[2026/05/28]** Our paper is now available on [arXiv](https://arxiv.org/abs/2605.25874)!
 - **[2026/05/28]** [Homepage](https://meituan-longcat.github.io/WBench/) with interactive [leaderboard](https://meituan-longcat.github.io/WBench/#leaderboard) and [dataset gallery](https://meituan-longcat.github.io/WBench/#gallery) is live!
@@ -230,8 +232,8 @@ WBench supports 3 model types with different control interfaces:
 | Type | Input | Cases | Status |
 |:---|:---|:---:|:---:|
 | **Text-conditioned** | Text prompt + first-frame image | 289 (all) | ✅ Implemented |
-| **Camera-conditioned** | First-frame image + 6-DoF camera pose | 158 (navi) | 🚧 Coming soon |
-| **Action-conditioned** | First-frame image + discrete action | 158 (navi) | 🚧 Coming soon |
+| **Camera-conditioned** | First-frame image + 6-DoF camera pose | 158 (navi) | ✅ Implemented |
+| **Action-conditioned** | First-frame image + discrete action | 158 (navi) | ✅ Implemented |
 
 ### Text-conditioned models
 
@@ -259,20 +261,88 @@ export VIDEO_API_KEY="your-key"
 
 ### Camera-conditioned models
 
-🚧 Coming soon — will accept camera extrinsics per turn.
+The benchmark's navigation actions (W/A/S/D + arrows) are converted to per-turn
+`{move, yaw, pitch}` intent and then to a 6-DoF camera trajectory. Subclass
+`CameraConditionedModel` and implement one hook — case parsing, action→pose
+conversion, and video writing are handled for you:
+
+```python
+from src.models.camera import CameraConditionedModel
+
+class MyWorldModel(CameraConditionedModel):
+    def generate_with_poses(self, image, poses, video_length, **kw):
+        # image: first-frame path; poses: {"<latent_idx>": {"extrinsic": 4x4, "K": 3x3}, ...}
+        # return: list of `video_length` BGR uint8 frames
+        return my_model.infer(image, poses, video_length)
+
+MyWorldModel("mymodel").generate_multi_turn(case_dict,
+    "work_dirs/mymodel/videos/case_1_combined.mp4", data_root="data/")
+```
+
+The pose convention (axes, speeds, intrinsics) lives in `src/models/camera/poses.py`
+— copy and adapt it to your model; the navigation metric normalises scale, so what
+matters is matching the per-action *intent*. Quick look at one case:
+
+```bash
+python -m src.models.camera.demo --case data/cases/case_1.json   # prints poses + renders a preview
+```
+
+> **Note:** Camera/action models only cover the **158 navigation cases** (cases
+> containing at least one W/A/S/D/arrow action). When generating at scale, pass
+> only those cases — e.g. via `generate.py --model your_model --cases <navi_list>`.
 
 ### Action-conditioned models
 
-🚧 Coming soon — will accept discrete action signals per frame/turn.
+Two flavours, both fed from the same per-turn navigation plan:
+
+**Programmatic controllers** (e.g. Matrix-Game-3). Subclass `ActionConditionedModel`
+and implement `generate_with_actions`. Each action carries both raw key `tokens`
+and an MG3-style `{keyboard, mouse}` tensor:
+
+```python
+from src.models.action import ActionConditionedModel
+
+class MyActionModel(ActionConditionedModel):
+    def generate_with_actions(self, image, actions, video_length, **kw):
+        # actions: [{"turn", "tokens", "keyboard", "mouse", "duration"}, ...]
+        return my_model.infer(image, actions, video_length)
+
+MyActionModel("mymodel").generate_multi_turn(case_dict,
+    "work_dirs/mymodel/videos/case_1_combined.mp4", data_root="data/")
+```
+
+```bash
+python -m src.models.action.demo --case data/cases/case_1.json   # prints actions + renders a preview
+```
+
+**Web products** (e.g. Project Genie, Happy Oyster) — no weights/API; driven by
+browser automation + simulated keystrokes. See
+[`src/models/action/web/`](src/models/action/web/README.md).
+
+## 🤖 Claude Code Skills
+
+If you use [Claude Code](https://claude.com/claude-code), this repo ships
+skills that drive the full workflow — just ask in natural language and Claude
+runs the right commands:
+
+| Skill | Triggers on | What it does |
+|:---|:---|:---|
+| `wbench-generate` | "generate kling videos" | Runs `generate.py` over the dataset → `work_dirs/<model>/videos/` |
+| `wbench-evaluate` | "evaluate kling3" | Runs the 4-phase `main.py` pipeline (precompute → gpu → vlm → report) |
+| `wbench-submit` | "package my model for submission" | Builds the `meta.json` / `turns.json` bundle and uploads to HuggingFace |
+| `genie3` / `happy` | "run case_5 on genie3" | Browser automation for the web products ([details](src/models/action/web/README.md)) |
+
+Skills live in `.claude/skills/` (and `src/models/action/web/.claude/skills/`) and
+are auto-discovered when you open the repo in Claude Code.
 
 ## 📋 TODO
 
 - [x] Text-conditioned model generation (Wan, Kling, Seedance)
 - [x] Homepage with interactive leaderboard
 - [x] Dataset and weights release on HuggingFace
-- [ ] Camera-conditioned model generation example
-- [ ] Action-conditioned model generation example
-- [ ] Model submission portal (auto-evaluation)
+- [x] Camera-conditioned model generation example
+- [x] Action-conditioned model generation example
+- [ ] Hosted submission & evaluation service (submit videos, get scores)
 - [x] ArXiv paper release
 
 ## 📝 Citation
