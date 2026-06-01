@@ -42,6 +42,7 @@
 ## 📢 News
 
 - **[2026/06/01]** We release [WBench-examples](https://huggingface.co/datasets/meituan-longcat/WBench-examples) — generated videos from two reference models (HY-World 1.5, Kling 3.0) as ready-to-evaluate submission examples.
+- **[2026/06/01]** We add [camera- and action-conditioned model examples](#-implement-your-model), a web-product automation pipeline (Project Genie, Happy Oyster), and [Claude Code skills](#-claude-code-skills) for generation, evaluation, and submission.
 - **[2026/05/29]** Our paper ranked **#2** on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.25874)!
 - **[2026/05/28]** Our paper is now available on [arXiv](https://arxiv.org/abs/2605.25874)!
 - **[2026/05/28]** [Homepage](https://meituan-longcat.github.io/WBench/) with interactive [leaderboard](https://meituan-longcat.github.io/WBench/#leaderboard) and [dataset gallery](https://meituan-longcat.github.io/WBench/#gallery) is live!
