@@ -10,6 +10,10 @@ set -e
 # export http_proxy=http://your-proxy:port
 # export https_proxy=http://your-proxy:port
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 ENV_NAME="${1:-wbench}"
 PYTHON_VERSION="3.10"
 TORCH_VERSION="2.4.0"
@@ -148,7 +152,7 @@ echo "╚═══════════════════════�
 echo ""
 echo "  Activate:  conda activate $ENV_NAME"
 echo "  Run:       export LD_LIBRARY_PATH=\$CONDA_PREFIX/lib:\$LD_LIBRARY_PATH"
-echo "             python evaluate.py --video <video> --case <case.json>"
+echo "             python src/evaluate.py --video <video> --case <case.json>"
 echo ""
 echo "  If you see 'GLIBCXX not found' errors, make sure LD_LIBRARY_PATH is set."
 echo ""

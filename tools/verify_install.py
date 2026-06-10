@@ -4,14 +4,16 @@ Verify WBench installation — checks all dependencies, weights, and CUDA.
 Usage:
     conda activate wbench
     export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
-    python verify_install.py
+    python tools/verify_install.py
 """
 import sys
 import os
+from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party", "sam2"))
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party", "depth-anything-3", "src"))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "third_party" / "sam2"))
+sys.path.insert(0, str(PROJECT_ROOT / "third_party" / "depth-anything-3" / "src"))
 
 import src.compat  # noqa: F401
 
@@ -116,7 +118,7 @@ check("vlm_client", lambda: __import__("src.metrics.vlm.vlm_evaluator", fromlist
 
 # ── Weights ──────────────────────────────────────────────────────────
 print("\n[Model Weights]")
-WEIGHTS_DIR = os.environ.get("WBENCH_WEIGHTS_DIR") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "weights")
+WEIGHTS_DIR = os.environ.get("WBENCH_WEIGHTS_DIR") or str(PROJECT_ROOT / "weights")
 
 weight_checks = {
     "CLIP ViT-L/14": "clip/ViT-L-14.pt",

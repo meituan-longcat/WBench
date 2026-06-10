@@ -3,16 +3,16 @@ WBench Unified Evaluation Entry Point
 
 Usage:
     # Full evaluation: video + case JSON → all applicable metrics
-    python evaluate.py --video path/to/video.mp4 --case path/to/case.json
+    python src/evaluate.py --video path/to/video.mp4 --case path/to/case.json
 
     # Video-only metrics (no case needed)
-    python evaluate.py --video path/to/video.mp4 --metrics video_quality segment_continuity
+    python src/evaluate.py --video path/to/video.mp4 --metrics video_quality segment_continuity
 
     # Batch evaluation
-    python evaluate.py --video_dir work_dirs/model/videos --case_dir data/cases --metrics all
+    python src/evaluate.py --video_dir work_dirs/model/videos --case_dir data/cases --metrics all
 
     # With pre-computed data (MegaSAM poses, SAM2 masks, DA3 depth)
-    python evaluate.py --video path/to/video.mp4 --case path/to/case.json \
+    python src/evaluate.py --video path/to/video.mp4 --case path/to/case.json \
         --poses poses.npz --mask_dir masks/case_1 --depth depth.npy
 """
 import argparse
@@ -20,19 +20,19 @@ import json
 import os
 import sys
 import warnings
+from pathlib import Path
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
 os.environ["PYTHONWARNINGS"] = "ignore"
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party", "sam2"))
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party", "depth-anything-3", "src"))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "third_party" / "sam2"))
+sys.path.insert(0, str(PROJECT_ROOT / "third_party" / "depth-anything-3" / "src"))
 import src.compat  # noqa: F401 — stub optional deps before any third-party imports
 import time
-from pathlib import Path
 from typing import Dict, Any, List, Optional
-
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
 def _header(title: str):
@@ -574,13 +574,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
   # Full evaluation (all metrics)
-  python evaluate.py --video video.mp4 --case case.json
+  python src/evaluate.py --video video.mp4 --case case.json
 
   # Video-only metrics
-  python evaluate.py --video video.mp4 --metrics video_quality segment_continuity
+  python src/evaluate.py --video video.mp4 --metrics video_quality segment_continuity
 
   # Batch mode
-  python evaluate.py --video_dir videos/ --metrics video_quality --gpus 0,1,2,3
+  python src/evaluate.py --video_dir videos/ --metrics video_quality --gpus 0,1,2,3
 """,
     )
     parser.add_argument("--video", type=str, help="Path to a single video file")

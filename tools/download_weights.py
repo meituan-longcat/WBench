@@ -2,15 +2,17 @@
 Download all model weights from HuggingFace to weights/ directory.
 
 Usage:
-    python download_weights.py          # Download all weights
-    python download_weights.py --only clip raft  # Download specific models
+    python tools/download_weights.py          # Download all weights
+    python tools/download_weights.py --only clip raft  # Download specific models
 """
 import argparse
 import os
 import sys
+from pathlib import Path
 
 HF_REPO = "KainingYing/WBench-Weights"
-WEIGHTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "weights")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+WEIGHTS_DIR = os.environ.get("WBENCH_WEIGHTS_DIR") or str(PROJECT_ROOT / "weights")
 
 WEIGHT_FILES = {
     "clip": [
