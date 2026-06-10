@@ -35,6 +35,7 @@ Thumbs.db
 
 # Local-only (not for publish)
 CLAUDE.md
+AGENT.md
 homepage/
 image.png
 wbench_open_models_for_hf.csv
