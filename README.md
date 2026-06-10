@@ -44,7 +44,7 @@
 
 - **[2026/06/01]** WBench is now an official benchmark on [Hugging Face](https://huggingface.co/datasets/meituan-longcat/WBench) 🤗 (navi & full tasks)!
 - **[2026/06/01]** 📦 Released [WBench-examples](https://huggingface.co/datasets/meituan-longcat/WBench-examples): ready-to-eval videos from HY-World 1.5 & Kling 3.0.
-- **[2026/06/01]** 🎮 Added [camera- & action-conditioned examples](#-implement-your-model) + web automation (Project Genie, Happy Oyster).
+- **[2026/06/01]** 🎮 Added [camera- & action-conditioned examples](#-implement-your-model) + web automation (Genie3, Happy Oyster).
 - **[2026/06/01]** Added [Claude Code skills](#-claude-code-skills) 🤖 for generation, evaluation & submission.
 - **[2026/05/29]** Paper ranked **#2** 🏅 on [Hugging Face Daily Papers](https://huggingface.co/papers/2605.25874)!
 - **[2026/05/28]** Paper now available on [arXiv](https://arxiv.org/abs/2605.25874) 📄!
