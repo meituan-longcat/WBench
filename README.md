@@ -154,6 +154,9 @@
 git clone --recursive https://github.com/meituan-longcat/WBench.git
 cd WBench
 
+# If you already cloned without submodules
+git submodule update --init --recursive
+
 # Download data and weights
 pip install huggingface_hub
 hf download meituan-longcat/WBench --repo-type dataset --local-dir data/ --exclude "splits/*"

@@ -14,6 +14,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+if [ -f ".gitmodules" ]; then
+    echo ""
+    echo "[0/7] Initializing git submodules ..."
+    git submodule sync --recursive
+    git submodule update --init --recursive
+fi
+
 ENV_NAME="${1:-wbench}"
 PYTHON_VERSION="3.10"
 TORCH_VERSION="2.4.0"
