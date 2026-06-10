@@ -17,6 +17,7 @@
 [![Examples](https://img.shields.io/badge/Examples-FF9D00?style=for-the-badge&logo=huggingface&logoColor=white)](https://huggingface.co/datasets/meituan-longcat/WBench-examples)
 [![ModelScope](https://img.shields.io/badge/ModelScope-6B4EFF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyBmaWxsPSJ3aGl0ZSIgZmlsbC1ydWxlPSJldmVub2RkIiBoZWlnaHQ9IjFlbSIgc3R5bGU9ImZsZXg6bm9uZTtsaW5lLWhlaWdodDoxIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxZW0iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPk1vZGVsU2NvcGU8L3RpdGxlPjxwYXRoIGQ9Ik0yLjY2NyA1LjNIOHYyLjY2N0g1LjMzM3YyLjY2NkgyLjY2N1Y4LjQ2N0guNXYyLjE2NmgyLjE2N1YxMy4zSDBWNy45NjdoMi42NjdWNS4zek0yLjY2NyAxMy4zaDIuNjY2djIuNjY3SDh2Mi42NjZIMi42NjdWMTMuM3pNOCAxMC42MzNoMi42NjdWMTMuM0g4di0yLjY2N3pNMTMuMzMzIDEzLjN2Mi42NjdoLTIuNjY2VjEzLjNoMi42NjZ6TTEzLjMzMyAxMy4zdi0yLjY2N0gxNlYxMy4zaC0yLjY2N3oiPjwvcGF0aD48cGF0aCBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMS4zMzMgMTMuM3YtMi42NjdoLTIuNjY2VjcuOTY3SDE2VjUuM2g1LjMzM3YyLjY2N0gyNFYxMy4zaC0yLjY2N3ptMC0yLjY2N0gyMy41VjguNDY3aC0yLjE2N3YyLjE2NnoiPjwvcGF0aD48cGF0aCBkPSJNMjEuMzMzIDEzLjN2NS4zMzNIMTZ2LTIuNjY2aDIuNjY3VjEzLjNoMi42NjZ6Ij48L3BhdGg+PC9zdmc+&logoColor=white)](https://modelscope.cn/datasets/meituan-longcat/WBench)
 [![中文解读](https://img.shields.io/badge/中文解读-07C160?style=for-the-badge&logo=wechat&logoColor=white)](https://mp.weixin.qq.com/s/br3RlOBGtReolLZc5YW2HA)
+[![WeChat Live](https://img.shields.io/badge/WeChat_Live-07C160?style=for-the-badge&logo=wechat&logoColor=white)](https://weixin.qq.com/sph/Aue3nWCWCx)
 [![TWITTER POST](https://img.shields.io/badge/TWITTER_POST-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/Meituan_LongCat/status/2059658634829996047)
 [![WeChat Group](https://img.shields.io/badge/WeChat_Group-07C160?style=for-the-badge&logo=wechat&logoColor=white)](assets/wx_qr.png)
 
@@ -42,6 +43,7 @@
 
 ## 📢 News
 
+- **[2026/06/10]** 🧭 Added [HY-World 1.5 pose exports](https://huggingface.co/datasets/meituan-longcat/WBench-examples/tree/main/hyworld1.5/poses) to [WBench-examples](https://huggingface.co/datasets/meituan-longcat/WBench-examples).
 - **[2026/06/01]** WBench is now an official benchmark on [Hugging Face](https://huggingface.co/datasets/meituan-longcat/WBench) 🤗 (navi & full tasks)!
 - **[2026/06/01]** 📦 Released [WBench-examples](https://huggingface.co/datasets/meituan-longcat/WBench-examples): ready-to-eval videos from HY-World 1.5 & Kling 3.0.
 - **[2026/06/01]** 🎮 Added [camera- & action-conditioned examples](#-implement-your-model) + web automation (Genie3, Happy Oyster).
