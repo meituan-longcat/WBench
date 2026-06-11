@@ -51,6 +51,16 @@ class MotionSmoothnessMetric(BaseMetric):
         finally:
             if _AMT_ROOT in sys.path:
                 sys.path.remove(_AMT_ROOT)
+            # AMT imports its top-level packages (utils, networks, ...) by bare name while
+            # _AMT_ROOT is on sys.path; they leak into sys.modules and shadow same-named
+            # modules other metrics need in the same process (e.g. dino's utils for dreamsim).
+            # The model object is already built, so drop every leaked top-level entry that
+            # resolves into third_party/amt, keeping the `amt.*` package that compute() uses.
+            _amt_prefix = _AMT_ROOT + os.sep
+            for _k in [k for k, v in list(sys.modules.items())
+                       if not (k == "amt" or k.startswith("amt."))
+                       and _amt_prefix in (getattr(v, "__file__", "") or "")]:
+                del sys.modules[_k]
         ckpt = torch.load(ckpt_path, map_location="cpu")
         state_dict = ckpt.get('state_dict', ckpt)
         model.load_state_dict({k.replace('module.', ''): v for k, v in state_dict.items()})

@@ -66,14 +66,24 @@ def setup_env(device=None):
         env["CUDA_VISIBLE_DEVICES"] = str(device)
     env["PYTHONPATH"] = f"{MEGASAM_ROOT / 'UniDepth'}:{env.get('PYTHONPATH', '')}"
 
-    torch_home = MEGASAM_WEIGHTS / "torch_home"
+    torch_home = Path(WEIGHTS_DIR)
     hub_dir = torch_home / "hub"
     hub_dir.mkdir(parents=True, exist_ok=True)
 
-    dinov2_src = MEGASAM_WEIGHTS / "facebookresearch_dinov2_main"
-    dinov2_dst = hub_dir / "facebookresearch_dinov2_main"
-    if dinov2_src.exists() and not dinov2_dst.exists():
-        os.symlink(str(dinov2_src), str(dinov2_dst))
+    # torch.hub looks under $TORCH_HOME/hub/. Link torch_hub → hub/torchhub so that
+    # hub/torchhub/facebookresearch_dinov2_main/ points at weights/torch_hub/facebookresearch_dinov2_main/.
+    torchhub_link = hub_dir / "torchhub"
+    torchhub_src = torch_home / "torch_hub"
+    if torchhub_src.exists() and not torchhub_link.exists():
+        os.symlink(str(torchhub_src), str(torchhub_link))
+
+    # Depth-Anything's localhub mode calls torch.hub.load('torchhub/facebookresearch_dinov2_main',
+    # source='local'); that relative path is resolved against the subprocess cwd=MEGASAM_ROOT
+    # (it does NOT go through $TORCH_HOME), so MEGASAM_ROOT/torchhub must point at the vendored
+    # dinov2 hub code.
+    megasam_torchhub = MEGASAM_ROOT / "torchhub"
+    if torchhub_src.exists() and not megasam_torchhub.exists() and not megasam_torchhub.is_symlink():
+        os.symlink(str(torchhub_src), str(megasam_torchhub))
 
     ckpt_src = MEGASAM_WEIGHTS / "torch_hub_checkpoints"
     ckpt_dst = hub_dir / "checkpoints"

@@ -7,6 +7,7 @@
 [submodule "third_party/mega-sam"]
 	path = third_party/mega-sam
 	url = https://github.com/mega-sam/mega-sam.git
+	ignore = dirty
 [submodule "third_party/sam2"]
 	path = third_party/sam2
 	url = https://github.com/facebookresearch/sam2.git
@@ -19,3 +20,4 @@
 [submodule "third_party/transnetv2_pytorch"]
 	path = third_party/transnetv2_pytorch
 	url = https://github.com/YangTuanAnh/transnetv2_pytorch.git
+	ignore = dirty
