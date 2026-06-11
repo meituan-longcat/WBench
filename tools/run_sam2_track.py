@@ -301,8 +301,13 @@ def main():
                 p.start()
                 processes.append(p)
 
+            done, fail = 0, 0
             for p in processes:
                 p.join()
+                if p.exitcode == 0:
+                    done += 1
+                else:
+                    fail += 1
 
             logger.info("All workers done.")
         else:
@@ -321,7 +326,7 @@ def main():
                     fail += 1
             logger.info(f"Done: {done}, Failed: {fail}")
 
-        logger.info(f"Done: {done}, skipped: {skip}, failed: {fail}")
+        logger.info(f"Done: {done}, skipped: {skipped}, failed: {fail}")
         return
 
     parser.print_help()
