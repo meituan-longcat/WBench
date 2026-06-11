@@ -163,12 +163,15 @@ hf download meituan-longcat/WBench --repo-type dataset --local-dir data/ --exclu
 hf download meituan-longcat/WBench-weights --local-dir weights/
 
 # Environment 1: wbench-main (all metrics except visual_plausibility)
-bash tools/install.sh wbench-main
+# 2nd arg = PyTorch's CUDA build — match it to YOUR system (check via `nvcc --version`):
+#   cu124 → CUDA 12.x    cu121 → CUDA 12.1    cu118 → CUDA 11.8
+# Always pass it explicitly: if omitted, auto-detection falls back to cu118 when nvcc
+# isn't on PATH, which makes the MegaSAM CUDA extensions fail to build on CUDA-12 machines.
+bash tools/install.sh wbench-main cu124
 conda activate wbench-main
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
-# Environment 2: wbench-vp (visual_plausibility only, requires vLLM)
-bash tools/install_vp.sh wbench-vp
+
 
 # Verify
 conda activate wbench-main
@@ -181,6 +184,14 @@ python main.py --model your_model
 See [docs/installation.md](docs/installation.md) for detailed setup instructions.
 
 ## 🎮 Evaluate Your Model
+
+Set environment variables for VLM metrics first (we use [Doubao-Seed-2.0-lite](https://console.volcengine.com/ark/region:ark+cn-beijing/model/detail?Id=doubao-seed-2-0-lite) via [Volcengine ARK](https://www.volcengine.com/docs/82379/1099475)):
+```bash
+export VLM_API_KEY="<your-ark-api-key>"
+# Optional (defaults shown):
+# export VLM_API_URL="https://ark.cn-beijing.volces.com/api/v3"
+# export VLM_MODEL_NAME="doubao-seed-2-0-lite-260215"
+```
 
 1. Generate multi-turn videos → place in `work_dirs/<model>/videos/case_{id}_combined.mp4`
 2. Run the 3-phase pipeline:
@@ -196,12 +207,18 @@ python main.py --model my_model --phase vlm           # VLM metrics (API)
 python main.py --model my_model --phase report        # Aggregate report
 ```
 
+**Note:** the pipeline above covers 21 of the 22 metrics. `visual_plausibility` is the exception — it runs in the **separate `wbench-vp` environment** (set up in [Quick Start](#-quick-start)):
+```bash
+conda activate wbench-vp
+python tools/run_visual_plausibility.py --model my_model  # uses all available GPUs
+```
+
 3. Results: `work_dirs/<model>/evaluation/{metric}/case_{id}.json` + `report.json`
 
 ```bash
 # Run specific metrics (by name or dimension)
 python main.py --model my_model --phase gpu --metrics hpsv3_quality
-python main.py --model my_model --phase gpu --metrics renderer        # all 6 video quality
+python main.py --model my_model --phase gpu --metrics quality         # all 6 video quality
 python main.py --model my_model --phase gpu --metrics consistency     # all consistency metrics
 
 # Skip pre-computation if already done
@@ -219,19 +236,6 @@ python main.py --video video.mp4 --case data/cases/case_1.json
 | `interaction` | navigation_trajectory, event_edit_adherence, subject_action_adherence, perspective_switch_adherence |
 | `setting` | scene_adherence, subject_adherence |
 | `physical` | visual_plausibility, causal_fidelity |
-
-Set environment variables for VLM metrics (we use [Doubao-Seed-2.0-lite](https://console.volcengine.com/ark/region:ark+cn-beijing/model/detail?Id=doubao-seed-2-0-lite) via [Volcengine ARK](https://www.volcengine.com/docs/82379/1099475)):
-```bash
-export VLM_API_KEY="<your-ark-api-key>"
-# Optional (defaults shown):
-# export VLM_API_URL="https://ark.cn-beijing.volces.com/api/v3"
-# export VLM_MODEL_NAME="doubao-seed-2-0-lite-260215"
-```
-
-For `visual_plausibility`, use the separate `wbench-vp` environment:
-```bash
-python tools/run_visual_plausibility.py --model my_model  # uses all available GPUs
-```
 
 
 ## 🔌 Implement Your Model
