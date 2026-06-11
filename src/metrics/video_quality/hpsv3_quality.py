@@ -18,6 +18,13 @@ from ..weight_utils import get_weights_dir
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 _HPSV3_ROOT = os.path.join(_PROJECT_ROOT, "third_party", "HPSv3")
 
+# Winsorized p1/p99 of all-sample raw HPSv3 rewards, used to map the unbounded raw
+# reward onto [0,1] so this metric lines up with the other [0,1] metrics. These are
+# a fixed global scale (same constants as leaderboard/plot_5dims_tables.py), not
+# re-estimated per run.
+_HPSV3_P1 = -5.21
+_HPSV3_P99 = 8.61
+
 
 class HPSv3QualityMetric(BaseMetric):
     def __init__(self, device="cuda"):
@@ -26,8 +33,10 @@ class HPSv3QualityMetric(BaseMetric):
         _amt_path = os.path.join(_PROJECT_ROOT, "third_party", "amt")
         if _amt_path in sys.path:
             sys.path.remove(_amt_path)
-        for _mod in [k for k in sys.modules if k == "datasets" or k.startswith("datasets.")]:
-            if "amt" in getattr(sys.modules[_mod], "__file__", ""):
+        # Purge modules cached from AMT that shadow RAFT imports (datasets, utils)
+        for _mod in [k for k in sys.modules if k in ("datasets", "utils") or k.startswith(("datasets.", "utils."))]:
+            _file = getattr(sys.modules[_mod], "__file__", "") or ""
+            if "amt" in _file:
                 del sys.modules[_mod]
 
         if _HPSV3_ROOT not in sys.path:
@@ -76,7 +85,13 @@ class HPSv3QualityMetric(BaseMetric):
             for p in tmp_paths:
                 if os.path.exists(p):
                     os.remove(p)
+        raw_mean = float(np.mean(raw_scores))
+        # Normalize the unbounded raw reward to [0,1] via the Winsorized p1/p99 scale,
+        # so hpsv3_quality matches every other metric's [0,1] range. raw_mean is kept
+        # for traceability.
+        score = max(0.0, min(1.0, (raw_mean - _HPSV3_P1) / (_HPSV3_P99 - _HPSV3_P1)))
         return {
-            f"{self.name}_score": float(np.mean(raw_scores)),
+            f"{self.name}_score": score,
+            f"{self.name}_raw_score": raw_mean,
             f"{self.name}_raw_scores": raw_scores,
         }

@@ -190,7 +190,13 @@ class VLMClient:
             )
 
         if not self.api_url:
-            logger.warning("VLM API URL not configured. Set VLM_API_URL env var or pass api_url.")
+            raise RuntimeError(
+                "VLM API URL not configured. Set VLM_API_URL env var or pass api_url."
+            )
+        if not self.api_key:
+            raise RuntimeError(
+                "VLM API key not configured. Set VLM_API_KEY env var or pass api_key."
+            )
 
         self._use_openai_format = "chat/completions" in self.api_url
 

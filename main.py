@@ -191,7 +191,7 @@ DIMENSION_MAP = {
         "subject_adherence",
     ],
     "physical": [
-        "visual_plausibility",  # 独立脚本: tools/run_visual_plausibility.py (wbench-vp env)
+        "visual_plausibility",  # standalone script: tools/run_visual_plausibility.py (wbench-vp env)
         "causal_fidelity",
     ],
 }
@@ -245,7 +245,7 @@ VLM_METRICS = [
     "perspective_switch_adherence",
 ]
 
-# visual_plausibility 需要 wbench-vp 环境，通过独立脚本运行:
+# visual_plausibility needs the wbench-vp env; run it via a standalone script:
 #   CUDA_VISIBLE_DEVICES=X python tools/run_visual_plausibility.py --model <model>
 
 # All known metric names (for validation)
@@ -779,9 +779,30 @@ def run_phase_vlm(model, video_dir, vlm_workers=8, metrics=None):
             continue
         tasks.append((cid, vp, cd, eval_dir, metrics))
 
+    # Fail fast: bail out immediately if there are VLM cases but the API is not configured.
+    # Otherwise workers retry with an empty key (max_retries=6 + 300s timeout each), which
+    # looks like a hang but eventually fails anyway.
+    vlm_model = vlm_key_masked = vlm_url = None
+    if tasks:
+        from src.metrics.vlm.vlm_evaluator import VLMClient
+        try:
+            _probe = VLMClient()
+        except Exception as e:
+            print(f"\n  [ERROR] VLM API not configured, cannot run {len(tasks)} VLM case(s): {e}")
+            print(f"          export VLM_API_KEY=<your-key>              # required")
+            print(f"          export VLM_API_URL=... VLM_MODEL_NAME=...  # optional, defaults to Volces ARK + Doubao")
+            sys.exit(1)
+        # Mask the API key, keeping only the first/last 2 chars (e.g. 'ab****yz').
+        _k = _probe.api_key
+        vlm_key_masked = f"{_k[:2]}****{_k[-2:]}" if len(_k) > 4 else "*" * len(_k)
+        vlm_model, vlm_url = _probe.model_name, _probe.api_url
+
     print(f"\n{'='*60}")
     print(f"  Phase 3: VLM Metrics (API-based)")
     print(f"  Cases: {len(tasks)} | Workers: {vlm_workers}")
+    if vlm_model:
+        print(f"  VLM model: {vlm_model}")
+        print(f"  VLM API:   {vlm_key_masked} ({vlm_url})")
     if metrics:
         print(f"  Metrics filter: {metrics}")
     print(f"{'='*60}")
@@ -939,7 +960,11 @@ def generate_report(model, eval_dir, video_dir, cases_dir):
 
 def run_single_video(video_path, case_path=None, poses_path=None, mask_dir=None, depth_path=None):
     from src.evaluate import evaluate_full
-    result = evaluate_full(video_path, case_path=case_path,
+    case_data = None
+    if case_path:
+        with open(case_path) as f:
+            case_data = json.load(f)
+    result = evaluate_full(video_path, case_data=case_data,
                            poses_path=poses_path, mask_dir=mask_dir,
                            depth_path=depth_path)
     print(json.dumps(result, indent=2, default=str))
@@ -1043,15 +1068,30 @@ def main():
         print(f"\n{'='*70}")
         print(f"  Report: {args.model} | {report['n_cases']} cases | {report['n_navi']} navi")
         print(f"{'='*70}")
-        all_m = sorted(set(list(report.get("full", {}).keys()) + list(report.get("navi", {}).keys())))
+        full_r = report.get("full", {})
+        navi_r = report.get("navi", {})
+
+        def _fmt(info):
+            return f"{info['mean']:.4f} (n={info['n']})" if info else "-"
+
         print(f"\n  {'Metric':<34s} {'Full':<18s} {'Navi':<18s}")
         print(f"  {'-'*34} {'-'*18} {'-'*18}")
-        for m in all_m:
-            fi = report.get("full", {}).get(m)
-            ni = report.get("navi", {}).get(m)
-            fs = f"{fi['mean']:.4f} (n={fi['n']})" if fi else "-"
-            ns = f"{ni['mean']:.4f} (n={ni['n']})" if ni else "-"
-            print(f"  {m:<34s} {fs:<18s} {ns:<18s}")
+
+        # Group by the 5 dimensions (DIMENSION_MAP); show every metric per dimension, '-' if missing.
+        shown = set()
+        for dim, metric_names in DIMENSION_MAP.items():
+            n_have = sum(1 for m in metric_names if m in full_r or m in navi_r)
+            print(f"\n  [{dim.capitalize()}]  ({n_have}/{len(metric_names)})")
+            for m in metric_names:
+                print(f"    {m:<32s} {_fmt(full_r.get(m)):<18s} {_fmt(navi_r.get(m)):<18s}")
+                shown.add(m)
+
+        # Fallback: metrics present in the report but not under any dimension.
+        extras = [m for m in sorted(set(full_r) | set(navi_r)) if m not in shown]
+        if extras:
+            print(f"\n  [Other]")
+            for m in extras:
+                print(f"    {m:<32s} {_fmt(full_r.get(m)):<18s} {_fmt(navi_r.get(m)):<18s}")
 
     total = time.time() - t_start
     print(f"\n  Total: {total:.0f}s ({total/60:.1f}min)\n")
