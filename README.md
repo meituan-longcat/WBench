@@ -8,11 +8,9 @@
 
 <div align="center">
 
-**Kaining Ying**<sup>1*</sup>, **Hengrui Hu**<sup>1*</sup>, **Siyu Ren**<sup>2</sup>, Jiamu Li<sup>2</sup>, Fengjiao Chen<sup>2</sup>, Ziwen Wang<sup>2</sup>, Xuezhi Cao<sup>2</sup>, Xunliang Cai<sup>2</sup>, Henghui Ding<sup>1†</sup>
-
-<sup>1</sup> Fudan University &nbsp;&nbsp; <sup>2</sup> Meituan LongCat Team
-
-<sup>*</sup> Equal contribution &nbsp;&nbsp; <sup>†</sup> Corresponding author
+**Kaining Ying**<sup><img src="assets/icon/fudan.svg" height="10">&ast;</sup>, **Hengrui Hu**<sup><img src="assets/icon/fudan.svg" height="10">&ast;</sup>, **Siyu Ren**<sup><img src="assets/icon/longcat-color.png" height="10"></sup>, Jiamu Li<sup><img src="assets/icon/longcat-color.png" height="10"></sup>, Fengjiao Chen<sup><img src="assets/icon/longcat-color.png" height="10"></sup>,<br>Ziwen Wang<sup><img src="assets/icon/longcat-color.png" height="10"></sup>, Xuezhi Cao<sup><img src="assets/icon/longcat-color.png" height="10"></sup>, Xunliang Cai<sup><img src="assets/icon/longcat-color.png" height="10"></sup>, Henghui Ding<sup><img src="assets/icon/fudan.svg" height="10"></sup> <sup>[✉️](mailto:hhding@fudan.edu.cn)</sup>
+<br>
+<sup><img src="assets/icon/fudan.svg" height="12"></sup> Fudan University &nbsp;&nbsp; <sup><img src="assets/icon/longcat-color.png" height="12"></sup> Meituan LongCat Team
 
 </div>
 
