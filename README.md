@@ -43,6 +43,7 @@
 
 ## 📢 News
 
+- **[2026/06/17]** 🆕 Added [LingBot-World (fast)](https://github.com/robbyant/lingbot-world) to the leaderboard (now 23 models).
 - **[2026/06/16]** 🔌 Open-sourced the [HY-World 1.5 integration example](examples/hy_worldplay).
 - **[2026/06/16]** 🆕 Added 2 camera-controlled world models — [Lyra 2.0](https://research.nvidia.com/labs/sil/projects/lyra2/) & [SANA-WM](https://nvlabs.github.io/Sana/WM/) (4-step AR).
 - **[2026/06/10]** 🧭 Added [HY-World 1.5 pose exports](https://huggingface.co/datasets/meituan-longcat/WBench-examples/tree/main/hyworld1.5/poses) to [WBench-examples](https://huggingface.co/datasets/meituan-longcat/WBench-examples).
