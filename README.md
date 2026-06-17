@@ -8,6 +8,16 @@
 
 <div align="center">
 
+**Kaining Ying**<sup>1*</sup>, **Hengrui Hu**<sup>1*</sup>, **Siyu Ren**<sup>2</sup>, Jiamu Li<sup>2</sup>, Fengjiao Chen<sup>2</sup>, Ziwen Wang<sup>2</sup>, Xuezhi Cao<sup>2</sup>, Xunliang Cai<sup>2</sup>, Henghui Ding<sup>1†</sup>
+
+<sup>1</sup> Fudan University &nbsp;&nbsp; <sup>2</sup> Meituan LongCat Team
+
+<sup>*</sup> Equal contribution &nbsp;&nbsp; <sup>†</sup> Corresponding author
+
+</div>
+
+<div align="center">
+
 [![Homepage](https://img.shields.io/badge/Homepage-blue?style=for-the-badge&logo=google-chrome&logoColor=white)](https://meituan-longcat.github.io/WBench/)
 [![Paper](https://img.shields.io/badge/Paper-red?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2605.25874)
 [![HF Daily Paper](https://img.shields.io/badge/Daily_Paper_%232-FFD21E?style=for-the-badge&logo=huggingface&logoColor=white&color=FF9D00)](https://huggingface.co/papers/2605.25874)
@@ -364,7 +374,7 @@ are auto-discovered when you open the repo in Claude Code.
 - [x] Dataset and weights release on HuggingFace
 - [x] Camera-conditioned model generation example
 - [x] Action-conditioned model generation example
-- [ ] Hosted submission & evaluation service (submit videos, get scores)
+- [x] Hosted submission & evaluation service (submit videos, get scores)
 - [x] ArXiv paper release
 
 ## 📝 Citation
@@ -384,7 +394,7 @@ If you find our work useful, please consider citing:
 
 This project builds upon the following excellent works:
 
-- [WorldScore](https://github.com/WorldScore/WorldScore) — World model evaluation framework
+- [WorldScore](https://github.com/haoyi-duan/WorldScore) — World model evaluation framework
 - [VBench](https://github.com/Vchitect/VBench) — Video quality metrics
 - [SAM2](https://github.com/facebookresearch/sam2) — Segment Anything Model 2 for mask tracking
 - [Depth-Anything-V3](https://github.com/DepthAnything/Depth-Anything-V3) — Monocular depth estimation
@@ -402,6 +412,7 @@ Feel free to open an [Issue](https://github.com/meituan-longcat/WBench/issues) o
 
 - **Kaining Ying**: `kaining.ying.cv@gmail.com`
 - **Siyu Ren**: `rensiyu07@meituan.com`
+- **Henghui Ding**: `hhding@fudan.edu.cn`
 
 ## 📄 License
 
