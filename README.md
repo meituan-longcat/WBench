@@ -52,8 +52,9 @@
 
 ## 📢 News
 
-- **[2026/07/14]** 🆕 Added ABot-World (Amap, action-conditioned) to the leaderboard (now 28 models).
-- **[2026/07/12]** 🆕 Added [Cosmos3-Super & Cosmos3-Nano](https://github.com/nvidia-cosmos) (text) and [LingBot-World (fast v2)](https://github.com/robbyant/lingbot-world) (camera) to the leaderboard (now 27 models).
+- **[2026/07/14]** 🆕 Added [ABot-World](https://github.com/amap-cvlab/ABot-World) (Amap, action-conditioned) to the leaderboard (now 28 models).
+- **[2026/07/12]** 🆕 Added [LingBot-World (fast v2)](https://github.com/Robbyant/lingbot-world-v2) (camera) to the leaderboard (now 27 models).
+- **[2026/07/12]** 🆕 Added [Cosmos3-Super & Cosmos3-Nano](https://github.com/nvidia-cosmos) (text) to the leaderboard (now 26 models).
 - **[2026/06/18]** 🆕 Added [DreamX-World (5B AR)](https://github.com/AMAP-ML/DreamX-World) to the leaderboard (now 24 models).
 - **[2026/06/17]** 🆕 Added [LingBot-World (fast)](https://github.com/robbyant/lingbot-world) to the leaderboard (now 23 models).
 - **[2026/06/16]** 🔌 Open-sourced the [HY-World 1.5 integration example](examples/hy_worldplay).
