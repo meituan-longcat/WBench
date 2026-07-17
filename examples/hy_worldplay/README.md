@@ -74,5 +74,9 @@ the WBench metrics pipeline.
 - **Defaults** (`navigation_to_poses.py`): 24 FPS, temporal compression 4 (6
   latents/sec), forward speed `0.08`, yaw/pitch `3°` per step. Adjust to match
   your weights/config.
+- **Third-person direction convention.** `yaw > 0` (`right`) moves the camera
+  from behind the character toward the character's `+X`/right side; `yaw < 0`
+  (`left`) moves it toward `-X`/left. The adapter uses side-relative wording
+  because clockwise/counterclockwise depends on how a top-down view is drawn.
 - These scripts target HunyuanVideo-1.5 at 480p. See the official repo for
   resolution/model-type (`ar`/`bi`) options.

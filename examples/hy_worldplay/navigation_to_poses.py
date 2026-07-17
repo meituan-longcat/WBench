@@ -71,10 +71,15 @@ def generate_orbit_trajectory(motions, radius=ORBIT_RADIUS, height=ORBIT_HEIGHT)
     always looking at the character position.
 
     Each motion dict may contain:
-      - "yaw":     azimuth delta (radians, positive = orbit right)
+      - "yaw":     side intent (radians, positive = orbit toward subject right)
       - "pitch":   elevation delta (radians, positive = orbit up)
       - "forward": character moves forward; camera + character translate together
       - "right":   character strafes right; camera + character translate together
+
+    The initial camera is behind the character at -Z. Positive/right yaw moves
+    it toward the character's +X/right side, while negative/left yaw moves it
+    toward -X/left. Avoid describing these as clockwise/counterclockwise: that
+    label changes with the top-down viewing and plotting convention.
     """
     poses = []
     azimuth = np.pi  # start behind the character (+Z forward, camera at -Z)
@@ -108,7 +113,7 @@ def generate_orbit_trajectory(motions, radius=ORBIT_RADIUS, height=ORBIT_HEIGHT)
 
     for move in motions:
         # Orbit rotation (camera moves, character stays)
-        # yaw<0 = "turn left" = character faces left = camera orbits clockwise (azimuth increases)
+        # Positive/right yaw moves the initially rear camera toward +X.
         if "yaw" in move:
             azimuth -= move["yaw"]
         if "pitch" in move:
