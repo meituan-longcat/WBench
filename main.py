@@ -470,6 +470,7 @@ def _print_metric_summary(metric, eval_dir, cases_dir):
 
     full_scores, navi_scores, non_navi_scores = [], [], []
     extra_scores = []  # for spatial_consistency ungated (ret_sim)
+    nav_acc, nav_cons = [], []  # navigation_trajectory components
     n_total, n_error = 0, 0
     for f in os.listdir(metric_dir):
         if not f.endswith(".json"):
@@ -480,6 +481,17 @@ def _print_metric_summary(metric, eval_dir, cases_dir):
             data = json.load(open(os.path.join(metric_dir, f)))
         except Exception:
             n_error += 1
+            continue
+
+        # Navigation reports two components with different case sets: a case
+        # without symmetric action pairs has accuracy but no consistency.
+        if metric == "navigation_trajectory":
+            if data.get("accuracy") is None:
+                n_error += 1
+                continue
+            nav_acc.append(data["accuracy"])
+            if data.get("consistency") is not None:
+                nav_cons.append(data["consistency"])
             continue
 
         # Extract score
@@ -507,6 +519,16 @@ def _print_metric_summary(metric, eval_dir, cases_dir):
         # Also collect ret_sim for spatial_consistency (ungated)
         if metric == "spatial_consistency" and data.get("ret_sim") is not None:
             extra_scores.append(data["ret_sim"])
+
+    if metric == "navigation_trajectory":
+        if not nav_acc:
+            return
+        print(f"     ┌─ {metric}: {len(nav_acc)} ok, {n_error} fail, {n_total} total")
+        print(f"     │  Accuracy:    {np.mean(nav_acc):.4f} (n={len(nav_acc)})")
+        print(f"     │  Consistency: {np.mean(nav_cons):.4f} (n={len(nav_cons)})")
+        print(f"     │  NavScore:    {(np.mean(nav_acc) + np.mean(nav_cons)) / 2:.4f}")
+        print(f"     └")
+        return
 
     if not full_scores and n_total == 0:
         return
@@ -878,8 +900,12 @@ def generate_report(model, eval_dir, video_dir, cases_dir):
                     psnr = details["photometric_psnr"]
                     all_scores[cid]["photometric_consistency"] = 1.0 - 10**(-psnr/20.0)
             elif metric == "navigation_trajectory":
-                if data.get("NavScore") is not None:
-                    all_scores[cid]["navigation_trajectory"] = data["NavScore"]
+                # Components are aggregated separately so that a case without
+                # symmetric action pairs still contributes its accuracy.
+                if data.get("accuracy") is not None:
+                    all_scores[cid]["navigation_accuracy"] = data["accuracy"]
+                if data.get("consistency") is not None:
+                    all_scores[cid]["navigation_consistency"] = data["consistency"]
             elif metric == "spatial_consistency":
                 if data.get("score") is not None:
                     all_scores[cid]["gated_spatial_consistency"] = data["score"]
@@ -936,8 +962,17 @@ def generate_report(model, eval_dir, video_dir, cases_dir):
                 navi_metrics.setdefault(k, []).append(v)
 
     def agg(d):
-        return {k: {"mean": round(float(np.mean(v)), 4), "n": len(v)}
-                for k, v in sorted(d.items())}
+        out = {k: {"mean": round(float(np.mean(v)), 4), "n": len(v)}
+               for k, v in sorted(d.items())}
+        acc = out.get("navigation_accuracy")
+        cons = out.get("navigation_consistency")
+        if acc and cons:
+            out["navigation_trajectory"] = {
+                "mean": round((acc["mean"] + cons["mean"]) / 2, 4),
+                "n": acc["n"],
+                "n_consistency": cons["n"],
+            }
+        return out
 
     report = {
         "model": model,

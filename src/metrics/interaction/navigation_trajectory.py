@@ -13,12 +13,18 @@ NavScore formula (ATE-only, no RPE):
     Accuracy    = 1 - (nATE_t + nATE_r) / 2
     Consistency = 1 - (cnATE_t + cnATE_r) / 2
     NavScore    = (Accuracy + Consistency) / 2
+
+Consistency needs at least one repeated or symmetric action pair. When a case has
+none it is reported as null instead of a perfect score, and the per-case NavScore
+is null too: the model-level NavScore averages Accuracy and Consistency over
+their own case sets before combining them, so such a case still contributes its
+Accuracy.
 """
 from __future__ import annotations
 
 import logging
 from itertools import combinations
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -393,25 +399,47 @@ def _build_gt_rotation(pred_turn: np.ndarray, action: str, perspective: str) -> 
 
 # ── Consistency (trajectory shape similarity between same-group turns) ────────
 
-def _need_mirror(act1: str, act2: str) -> Optional[str]:
+_MIRROR_PAIRS = {
+    frozenset({"right", "left"}): "yaw",
+    frozenset({"up", "down"}): "pitch",
+    frozenset({"W", "S"}): "forward",
+    frozenset({"A", "D"}): "lateral",
+}
+
+# Local-frame axis flipped by each mirror op (X-right, Y-up, Z-forward).
+# yaw and lateral share axis X: turning left/right and strafing left/right are
+# both undone by the same reflection, so ops are composed as a set of axes
+# rather than a matrix product (which would cancel a double X-flip).
+_MIRROR_AXES = {"yaw": 0, "pitch": 1, "forward": 2, "lateral": 0}
+
+
+def _need_mirror(act1: str, act2: str) -> Optional[List[str]]:
+    """Mirror ops that make act2's trajectory comparable to act1's.
+
+    Returns [] for identical actions, a list of mirror types for symmetric
+    counterparts, or None when the pair is not comparable. Compound actions are
+    decomposed per symmetry group, so "W+left" vs "W+right" yields ["yaw"]
+    instead of falling through as un-mirrorable.
+    """
     a1, a2 = normalize_action(act1), normalize_action(act2)
     if a1 == a2:
+        return []
+
+    g1 = {_SYMMETRIC_GROUPS.get(p, p): p for p in a1.split("+")}
+    g2 = {_SYMMETRIC_GROUPS.get(p, p): p for p in a2.split("+")}
+    if set(g1) != set(g2):
         return None
-    pairs = {
-        frozenset({"right", "left"}): "yaw",
-        frozenset({"up", "down"}): "pitch",
-        frozenset({"W", "S"}): "forward",
-        frozenset({"A", "D"}): "lateral",
-    }
-    return pairs.get(frozenset({a1, a2}))
 
-
-_MIRROR_MATRICES = {
-    "yaw": np.diag([-1.0, 1.0, 1.0]),
-    "pitch": np.diag([1.0, -1.0, 1.0]),
-    "forward": np.diag([1.0, 1.0, -1.0]),
-    "lateral": np.diag([-1.0, 1.0, 1.0]),
-}
+    mirrors = []
+    for group, c1 in g1.items():
+        c2 = g2[group]
+        if c1 == c2:
+            continue
+        mirror = _MIRROR_PAIRS.get(frozenset({c1, c2}))
+        if mirror is None:
+            return None
+        mirrors.append(mirror)
+    return mirrors
 
 
 def _normalize_turn(poses: np.ndarray) -> np.ndarray:
@@ -425,8 +453,10 @@ def _normalize_turn(poses: np.ndarray) -> np.ndarray:
     return out
 
 
-def _mirror_turn(poses: np.ndarray, mirror_type: str) -> np.ndarray:
-    M = _MIRROR_MATRICES[mirror_type]
+def _mirror_turn(poses: np.ndarray, mirror_types: Sequence[str]) -> np.ndarray:
+    M = np.eye(3)
+    for axis in {_MIRROR_AXES[mt] for mt in mirror_types}:
+        M[axis, axis] = -1.0
     out = np.zeros_like(poses)
     for i in range(len(poses)):
         out[i, :3, :3] = M @ poses[i, :3, :3] @ M
@@ -440,12 +470,12 @@ def _resample_poses(poses: np.ndarray, n: int) -> np.ndarray:
 
 
 def _compute_turn_pair_error(poses1: np.ndarray, poses2: np.ndarray,
-                             mirror_type: Optional[str] = None) -> Dict[str, float]:
+                             mirror_types: Sequence[str] = ()) -> Dict[str, float]:
     """Compute normalized ATE between two turns (for consistency)."""
     n1 = _normalize_turn(poses1)
     n2 = _normalize_turn(poses2)
-    if mirror_type:
-        n2 = _mirror_turn(n2, mirror_type)
+    if mirror_types:
+        n2 = _mirror_turn(n2, mirror_types)
 
     nc = min(len(n1), len(n2))
     n1 = _resample_poses(n1, nc)
@@ -485,10 +515,12 @@ def _compute_consistency_trajectory(
         if k1 != k2:
             continue
         mt = _need_mirror(a1, a2)
-        all_errs.append(_compute_turn_pair_error(p1, p2, mirror_type=mt))
+        if mt is None:
+            continue
+        all_errs.append(_compute_turn_pair_error(p1, p2, mirror_types=mt))
 
     if not all_errs:
-        return {"cnATE_t": 0.0, "cnATE_r": 0.0, "n_pairs": 0}
+        return {"cnATE_t": None, "cnATE_r": None, "n_pairs": 0}
 
     return {
         "cnATE_t": float(np.mean([e["nATE_t"] for e in all_errs])),
@@ -566,15 +598,21 @@ def evaluate_navigation(
     # Trajectory consistency (same-group turn pairs)
     ct = _compute_consistency_trajectory(poses, turn_bounds, actions)
 
-    # NavScore = (Accuracy + Consistency) / 2
     accuracy = 1.0 - (nate_t + nate_r) / 2.0
-    consistency = 1.0 - (ct["cnATE_t"] + ct["cnATE_r"]) / 2.0
-    nav_score = (accuracy + consistency) / 2.0
+    if ct["n_pairs"] > 0:
+        consistency = 1.0 - (ct["cnATE_t"] + ct["cnATE_r"]) / 2.0
+        nav_score = (accuracy + consistency) / 2.0
+    else:
+        # No repeated or symmetric action pair exists, so consistency is
+        # undefined for this case rather than perfect. Model-level NavScore
+        # averages each component over the cases where it is defined.
+        consistency = None
+        nav_score = None
 
     return {
-        "NavScore": float(nav_score),
+        "NavScore": nav_score,
         "accuracy": float(accuracy),
-        "consistency": float(consistency),
+        "consistency": consistency,
         "nATE_t": float(nate_t),
         "nATE_r": float(nate_r),
         "cnATE_t": ct["cnATE_t"],
