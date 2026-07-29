@@ -52,8 +52,8 @@
 
 ## 📢 News
 
-- **[2026/07/29]** 🆕 Added HiDream-O1-World (HiDream.ai, camera-conditioned) to the leaderboard (now 30 models) — it tops the navigation split.
-- **[2026/07/29]** 🆕 Added AlayaWorld (Alaya Lab, camera-conditioned) to the leaderboard (now 29 models).
+- **[2026/07/29]** 🆕 Added [HiDream-O1-World](https://hidream.org/zh) 🥇 (HiDream.ai, camera-conditioned) to the leaderboard (now 30 models).
+- **[2026/07/29]** 🆕 Added [AlayaWorld](https://github.com/AlayaLab/AlayaWorld) (Alaya Lab, camera-conditioned) to the leaderboard (now 29 models).
 - **[2026/07/14]** 🆕 Added [ABot-World](https://github.com/amap-cvlab/ABot-World) (Amap, action-conditioned) to the leaderboard (now 28 models).
 - **[2026/07/12]** 🆕 Added [LingBot-World (fast v2)](https://github.com/Robbyant/lingbot-world-v2) (camera) to the leaderboard (now 27 models).
 - **[2026/07/12]** 🆕 Added [Cosmos3-Super & Cosmos3-Nano](https://github.com/nvidia-cosmos) (text) to the leaderboard (now 26 models).
