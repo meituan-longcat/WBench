@@ -2,9 +2,9 @@
 """Add Alaya-EVOKE (camera-conditioned, Alaya Lab) to README + homepage.
 
 Scores from Alaya Lab's submission (self-reported, navi split, 158 cases —
-same per-metric case sets as the other models). EVOKE enters at rank 1 with a
-5-dimension average of 80.8, taking the Quality crown (82.8) and tying
-Physical (72.1) with HiDream-O1-World (tie broken by table order).
+same per-metric case sets as the other models). Against HiDream-O1-World's
+2026-08-14 submission, EVOKE ranks second with a 5-dimension average of 80.8
+and retains the Quality crown (82.8).
 
 README  : 30 -> 31 models. homepage: 30 -> 31 models.
 """
@@ -200,6 +200,16 @@ def update_homepage():
     html = html.replace(">All<br><small>(27)</small>", ">All<br><small>(31)</small>")
     html = html.replace("Camera<br><small>(10)</small>", "Camera<br><small>(13)</small>")
     html = html.replace("Action<br><small>(6)</small>", "Action<br><small>(7)</small>")
+    html = html.replace(
+        '<div class="stat-num">30</div><div class="stat-title">Models</div>',
+        '<div class="stat-num">31</div><div class="stat-title">Models</div>',
+    )
+    html = html.replace(
+        '<span>📝 11 Text</span><span>📷 10 Camera</span>'
+        '<span>🎮 6 Action</span>',
+        '<span>📝 11 Text</span><span>📷 13 Camera</span>'
+        '<span>🎮 7 Action</span>',
+    )
     html = html.replace("evaluating 30 models", "evaluating 31 models")
 
     open(HOMEPAGE, "w", encoding="utf-8").write(html)

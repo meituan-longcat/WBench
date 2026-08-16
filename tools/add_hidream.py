@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Add HiDream-O1-World (camera-conditioned, HiDream.ai) to README + homepage.
 
-Values come from the submission repo's report.json (self-reported, navi split,
-158 cases — same case sets as Lyra/SANA/ABot). Also syncs the homepage to the
-README's current state: refreshed navigation_trajectory column + AlayaWorld,
-which had only landed in the README.
+Values come from the 2026-08-14 submission's report.json (self-reported, navi
+split, 158 cases — same case sets as Lyra/SANA/ABot). Also syncs the homepage
+to the README's current state: refreshed navigation_trajectory column +
+AlayaWorld, which had only landed in the README.
 
 README  : 29 -> 30 models. homepage: 28 -> 30 models.
 """
@@ -35,17 +35,18 @@ HD = ["Aesthetic Quality", "Imaging Quality", "Temporal Flickering", "Dynamic De
 
 HIDREAM = {"name": "HiDream-O1-World", "icon": "hidream.png", "type": "camera",
            "creator": "HiDream.ai",
-           "det": dict(zip(RD, [65.6, 69.9, 93.7, 91.8, 88.6, 97.2, 78.1, 71.9, 91.9, 79.5,
-                                84.8, 83.1, 83.6, 98.7, 88.9, 78.4, 92.6, 62.5, 81.7])),
-           "dims": [80.7, 81.9, 81.9, 79.5, 88.0, 72.1]}
+           "det": dict(zip(RD, [65.34, 67.46, 93.37, 92.22, 88.61, 96.88, 75.22, 72.22, 92.16,
+                                79.98, 84.43, 83.05, 83.56, 98.73, 88.78, 79.80, 92.12, 61.77,
+                                84.88])),
+           "dims": [80.886, 80.955, 82.190, 79.980, 87.980, 73.325]}
 ALAYA = {"name": "AlayaWorld", "icon": "alayaworld.png", "type": "camera", "creator": "Alaya Lab · Open Source",
-         "det": dict(zip(RD, [64.5, 67.3, 95.7, 96.1, 13.3, 98.6, 61.4, 52.0, 79.6, 73.9,
-                              94.3, 63.0, 80.7, 99.4, 96.8, 87.7, None, 63.6, 76.7])),
-         "dims": [73.0, 66.9, 65.8, 73.9, 88.2, 70.1]}
+         "det": dict(zip(RD, [62.8, 67.7, 94.1, 92.7, 91.1, 97.0, 64.3, 51.6, 87.7, 80.0,
+                              87.9, 81.9, 86.6, 98.1, 94.1, 80.3, 93.4, 61.1, 65.1])),
+         "dims": [76.3, 79.3, 69.7, 80.0, 89.5, 63.1]}
 
 
 def hu(x): return float(Decimal(str(x)).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
-def fmt(v): return f"{v:.1f}"
+def fmt(v): return f"{hu(v):.1f}"
 def key(c): return re.sub(r'<img[^>]*>', '', c).strip()
 def cells(l): return [c.strip() for c in l.strip().strip("|").split("|")]
 def num(c):
