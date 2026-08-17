@@ -14,6 +14,12 @@ Sign conventions:
     move = [forward, right]   forward > 0 = ahead,  right > 0 = strafe right
     yaw                        > 0 = turn right,    < 0 = turn left
     pitch                      > 0 = look up,       < 0 = look down
+
+For third-person orbit adapters, left/right name the side of the subject that
+the camera moves toward. The reference trajectory starts behind a subject
+facing world +Z, so yaw > 0 moves the camera toward the subject's +X/right
+side. Clockwise/counterclockwise is intentionally avoided because it depends
+on the top-down viewing and plotting convention.
 """
 from typing import Dict, List, Optional, Any
 

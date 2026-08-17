@@ -145,6 +145,11 @@ def generate_orbit_trajectory(
     character (and the camera with it). The character's heading is fixed, so
     forward is along world +Z — turning only re-frames the character, it does
     not steer the walk direction.
+
+    The initial camera is behind the character at -Z. A positive yaw (the
+    WBench "right" action) moves it toward the character's +X/right side; a
+    negative yaw moves it toward -X/left. This side-based definition avoids
+    the viewpoint-dependent ambiguity of clockwise/counterclockwise.
     """
     poses = []
     azimuth = np.pi  # start behind the character (+Z forward, camera at -Z)
@@ -176,6 +181,7 @@ def generate_orbit_trajectory(
 
     for move in motions:
         if "yaw" in move:
+            # Positive/right yaw moves the initially rear camera toward +X.
             azimuth -= move["yaw"]
         if "pitch" in move:
             elevation = np.clip(elevation - move["pitch"], np.deg2rad(-60), np.deg2rad(60))
