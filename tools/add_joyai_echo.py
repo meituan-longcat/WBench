@@ -154,7 +154,9 @@ def update_readme():
     text = text[:detail.start()] + detail_block + text[detail.end():]
 
     news = (
-        "- **[2026/08/24]** 🆕 Added JoyAI-Echo-1.5 (WM): **81.6**, #1 · "
+        "- **[2026/08/24]** 🆕 Added [JoyAI-Echo-1.5 (WM)]"
+        "(https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/): "
+        "**81.6**, #1 · "
         "thanks [@franklinz233](https://github.com/franklinz233).\n"
     )
     text = replace_once(text, "## 📢 News\n\n", "## 📢 News\n\n" + news,
