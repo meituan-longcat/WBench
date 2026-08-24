@@ -120,8 +120,11 @@ def update_readme():
     text = text[:m2.start()] + m2.group(1).replace("30 Models", "31 Models") + det_row + "\n" + text[m2.end():]
 
     # ── News ──
-    news = ("- **[2026/08/14]** 🆕 Added [Alaya-EVOKE](https://evoke-world.github.io/Evoke) "
-            "🥇 (Alaya Lab, camera-conditioned) to the leaderboard (now 31 models).\n")
+    news = (
+        "- **[2026/08/14]** 🆕 Added "
+        "[Alaya-EVOKE](https://evoke-world.github.io/Evoke) · thanks "
+        "[@SII-YuanyangYin](https://github.com/SII-YuanyangYin).\n"
+    )
     text = text.replace("## 📢 News\n\n", "## 📢 News\n\n" + news, 1)
 
     open(README, "w", encoding="utf-8").write(text)

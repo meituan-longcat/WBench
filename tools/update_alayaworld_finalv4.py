@@ -90,8 +90,11 @@ def update_readme():
     text, count = detail_pattern.subn(detail_row, text)
     assert count == 1, f"expected one AlayaWorld detail row, got {count}"
 
-    news = ("- **[2026/08/16]** 🔄 Updated AlayaWorld to its final-v4 "
-            "submission (**76.3**, #12 overall).\n")
+    news = (
+        "- **[2026/08/16]** 🔄 Updated [AlayaWorld]"
+        "(https://github.com/AlayaLab/AlayaWorld) final-v4: **76.3**, #12 · "
+        "thanks [@nevermorelch](https://github.com/nevermorelch).\n"
+    )
     if news not in text:
         text = text.replace("## 📢 News\n\n", "## 📢 News\n\n" + news, 1)
 
