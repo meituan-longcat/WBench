@@ -31,7 +31,7 @@ README = ROOT / "README.md"
 HOMEPAGE = ROOT / "homepage/index.html"
 MODEL_NAME = "JoyAI-Echo-1.5 (WM)"
 MODEL_TYPE = "action"
-CREATOR = "JD Future Academy · JD"
+CREATOR = "JD Future Academy · Open Source"
 ICON = "jd.png"
 
 # Scores are percentages converted from report.json's Navi means.
@@ -188,6 +188,7 @@ def update_homepage():
 
     name_cell = (
         f'<img src="imgs/{ICON}" class="model-icon">{MODEL_NAME}<br>'
+        '<span class="model-tag">bidirection</span><br>'
         f'<span class="creator">{CREATOR}</span>'
     )
     models.append((MODEL_TYPE, name_cell,
