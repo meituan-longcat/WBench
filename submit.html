@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Your Model - WBench</title>
+<link rel="icon" type="image/svg+xml" href="imgs/longcat_black.svg">
+<link rel="icon" type="image/png" href="imgs/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;color:#1a1a1a;font-family:'Inter',-apple-system,sans-serif;line-height:1.6;min-height:100vh;display:flex;flex-direction:column}
+nav{border-bottom:1px solid #eee;padding:16px 0}
+nav .container{max-width:900px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+nav .logo{height:32px}
+nav .links{display:flex;gap:20px;align-items:center}
+nav .links a{color:#666;text-decoration:none;font-size:14px;font-weight:500}
+nav .links a:hover{color:#000}
+.nav-btn{background:#1a1a1a!important;color:#fff!important;padding:6px 14px;border-radius:6px;font-weight:600!important}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:60px 32px}
+.coming-soon{text-align:center;max-width:500px}
+.coming-soon h1{font-size:36px;font-weight:700;font-family:'Source Serif 4',Georgia,serif;margin-bottom:16px;color:#0f172a}
+.coming-soon p{color:#666;font-size:16px;margin-bottom:24px;line-height:1.7}
+.coming-soon .back-link{display:inline-block;padding:10px 24px;background:#1a1a1a;color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;transition:background .2s}
+.coming-soon .back-link:hover{background:#333}
+.coming-soon .icon{font-size:64px;margin-bottom:20px;opacity:.6}
+footer{border-top:1px solid #eee;padding:24px 0;text-align:center;color:#999;font-size:12px}
+footer a{color:#666;text-decoration:none;margin:0 12px}
+</style>
+</head>
+<body>
+<nav><div class="container"><a href="index.html"><img src="imgs/longcat-logo-full.png" class="logo"></a><div class="links"><a href="index.html#leaderboard">Leaderboard</a><a href="index.html#dataset">Dataset</a><a href="https://github.com/meituan-longcat/WBench/blob/main/WBench_Longcat_early_access.pdf">Paper</a><a href="https://github.com/meituan-longcat/WBench" class="nav-btn">GitHub</a></div></div></nav>
+<main>
+  <div class="coming-soon">
+    <div class="icon">&#x1F680;</div>
+    <h1>Submit Your Model</h1>
+    <p>We are building a submission portal where you can upload your model's generated videos and get evaluated automatically on WBench's 22 metrics across 5 dimensions.</p>
+    <p style="color:#888;font-size:14px">In the meantime, please email us at <b>kaining.ying.cv@gmail.com</b> with your model name and video outputs. We evaluate for free!</p>
+    <a href="index.html" class="back-link">&larr; Back to Leaderboard</a>
+  </div>
+</main>
+<footer><a href="https://github.com/meituan-longcat/WBench">GitHub</a><a href="https://huggingface.co/datasets/meituan-longcat/WBench">Dataset</a><p style="margin-top:12px">&copy; 2026 Meituan LongCat Team & Fudan University</p></footer>
+</body>
+</html>

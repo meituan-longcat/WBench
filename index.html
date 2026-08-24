@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WBench - Interactive World Model Benchmark</title>
+<link rel="icon" type="image/svg+xml" href="imgs/longcat_black.svg">
+<link rel="icon" type="image/png" href="imgs/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Serif+4:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="chart.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;color:#1a1a1a;font-family:'Inter',-apple-system,sans-serif;line-height:1.6;font-size:16px}
+.container{max-width:900px;margin:0 auto;padding:0 32px}
+nav{border-bottom:1px solid #eee;padding:16px 0;position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(8px)}
+nav .container{display:flex;align-items:center;justify-content:space-between}
+nav .logo{height:32px}
+nav .links{display:flex;gap:20px;align-items:center}
+nav .links a{color:#666;text-decoration:none;font-size:14px;font-weight:500}
+nav .links a:hover{color:#000}
+.nav-btn{background:#1a1a1a!important;color:#fff!important;padding:6px 14px;border-radius:6px;font-weight:600!important}
+.nav-btn-submit{background:#2563eb!important;color:#fff!important;padding:6px 14px;border-radius:6px;font-weight:600!important;margin-right:8px}
+.nav-contact{position:relative;color:#666;font-size:14px;font-weight:500;cursor:default;padding:4px 0}
+.nav-contact:hover{color:#000}
+.contact-popup{position:absolute;top:100%;right:-10px;padding-top:8px;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .2s,transform .2s;z-index:200}
+.nav-contact:hover .contact-popup{opacity:1;transform:translateY(0);pointer-events:auto}
+.contact-popup-inner{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px}
+.contact-popup-inner::before{content:'';position:absolute;top:2px;right:24px;width:12px;height:12px;background:#fff;border-left:1px solid #e0e0e0;border-top:1px solid #e0e0e0;transform:rotate(45deg)}
+.contact-popup-item{margin-bottom:10px}
+.contact-popup-item b{display:block;font-size:13px;color:#1a1a1a}
+.contact-popup-item span{font-size:12px;color:#2563eb}
+.contact-popup-qr{text-align:center;padding-top:10px;border-top:1px solid #eee}
+.contact-popup-qr img{width:100px;height:100px;border-radius:6px;margin-bottom:4px}
+.contact-popup-qr span{font-size:11px;color:#888;display:block}
+.top-banner{background:#eff6ff;border-bottom:1px solid #dbeafe;padding:8px 24px;text-align:center;font-size:13px;color:#1e40af}
+.top-banner a{color:#1e40af;font-weight:600;text-decoration:underline}
+.hero{padding:48px 0 24px;text-align:center}
+.hero h1{font-size:48px;font-weight:700;font-family:'Source Serif 4',Georgia,serif;letter-spacing:-.02em;margin-bottom:12px;background:linear-gradient(135deg,#003da5,#0cbf66);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .cursor{border-right:3px solid #0cbf66;animation:blink .7s step-end 5;padding-right:2px;-webkit-text-fill-color:initial;background:none}
+@keyframes blink{50%{border-color:transparent}}
+.hero .desc{color:#444;font-size:16px;margin-bottom:14px;font-weight:500}
+.hero .authors{font-size:15px;color:#333;margin-bottom:6px}
+.hero .affiliations{font-size:14px;color:#888;margin-bottom:6px}
+.hero .footnotes{font-size:12px;color:#999;margin-bottom:28px}
+.hero .footnotes a{color:#666;text-decoration:none}
+.aff-icon{height:16px;vertical-align:middle;margin:0 4px 0 2px}
+.stats-expanded{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0 16px}
+.stat-card{background:#fafbfc;border:1px solid #eee;border-radius:10px;padding:20px;text-align:center;position:relative;transition:all .3s;overflow:hidden}
+.stat-card .stat-pin{position:absolute;top:8px;right:10px;font-size:14px;opacity:.4}
+.stat-card .stat-num{font-size:36px;font-weight:700;color:#1a1a1a;font-family:'Source Serif 4',Georgia,serif}
+.stat-card .stat-title{font-size:13px;font-weight:600;color:#555;margin-top:2px}
+.stat-card .stat-details{display:inline-flex;flex-direction:column;gap:4px;text-align:left;max-height:0;opacity:0;overflow:hidden;transition:max-height .4s,opacity .3s,margin .3s;margin-top:0}
+.stats-expanded:hover .stat-details{max-height:200px;opacity:1;margin-top:12px}
+.stats-expanded:hover .stat-card{box-shadow:0 8px 24px rgba(0,0,0,.08);border-color:#ddd}
+.stat-card .stat-details span{font-size:12px;color:#777}
+section{margin:56px 0}
+section h2{font-size:24px;font-weight:700;margin-bottom:8px;font-family:'Source Serif 4',Georgia,serif}
+section .desc{color:#666;font-size:15px;margin-bottom:10px}
+.video-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.video-item{text-align:center;position:relative}
+.video-item video{width:100%;border-radius:8px;border:1px solid #eee;display:block;aspect-ratio:16/9;object-fit:cover;transition:transform .3s,box-shadow .3s;cursor:pointer}
+.video-item video:hover{transform:scale(1.8);z-index:50;position:relative;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.video-label{font-size:12px;font-weight:700;color:#1a1a1a;margin-top:8px}
+.video-desc{font-size:11px;color:#888;margin-top:2px}
+.filter-row{display:flex;gap:24px;margin-bottom:8px;align-items:center;flex-wrap:nowrap}
+.filter-group{display:flex;align-items:center;gap:0;background:#f0f1f3;border-radius:8px;padding:3px;position:relative}
+.filter-label{font-size:12px;font-weight:600;color:#666;padding:0 10px}
+.filter-group button{padding:7px 16px;border:none;border-radius:6px;background:transparent;color:#666;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:color .2s;position:relative;z-index:1}
+.filter-group button:hover{color:#000}
+.filter-group button.active{color:#fff}
+.filter-group button small{font-size:10px;opacity:.6;font-weight:400}
+.filter-group .slider{position:absolute;height:calc(100% - 6px);border-radius:6px;background:#1a1a1a;transition:left .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1);top:3px;z-index:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.dim-legend{display:flex;gap:16px;margin:0 0 4px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:12px;color:#666}
+.legend-bar{width:20px;height:3px;border-radius:2px}
+.legend-note{font-size:11px;color:#aaa;font-style:italic;margin-left:12px}
+.table-wrap{overflow-x:auto;overflow-y:visible;border:1px solid #eee;border-radius:12px}
+.table-wrap.collapsed{max-height:0;overflow:hidden;border:none;margin:0;padding:0;transition:max-height .4s ease}
+.table-wrap.expanded{max-height:none}
+.expand-btn{display:none;margin:8px 0;padding:8px 20px;background:#f0f1f3;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#555;transition:background .2s}
+.expand-btn:hover{background:#e0e0e0}
+.expand-btn.visible{display:inline-block}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th{padding:12px;text-align:center;font-size:11px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #ddd;cursor:pointer;user-select:none;white-space:nowrap;background:#f5f7fa;position:relative}
+th:hover{color:#000;background:#f0f4f8}
+th[data-tip]:hover::after{content:attr(data-tip);position:absolute;top:100%;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;white-space:nowrap;z-index:200;pointer-events:none;margin-top:4px}
+.dim-sep{border-left:2px solid #ddd}
+td{padding:16px 14px;text-align:center;border-bottom:1px solid #eee;font-size:14px;font-family:'JetBrains Mono',monospace}
+th:first-child,td:first-child{width:36px}
+th:nth-child(n+3),td:nth-child(n+3){text-align:center}
+td:nth-child(2){font-weight:600;white-space:nowrap;font-family:'Inter',sans-serif;font-size:14px;line-height:1.4;text-align:left}
+th:nth-child(2){text-align:left}
+tr:hover{background:#fafafa}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(1){background:#fffbeb}
+tbody tr:nth-child(2){background:#f8fafc}
+tbody tr:nth-child(3){background:#fff7ed}
+td:first-child{color:#999;font-weight:500;font-size:22px}
+.rank-gold{color:#d97706;font-weight:700}
+.rank-silver{color:#6b7280;font-weight:600}
+.rank-bronze{color:#b45309;font-weight:600}
+.col-avg{font-weight:700;color:#1a1a1a}
+.model-icon{width:24px;height:24px;border-radius:4px;margin-right:10px;vertical-align:middle;object-fit:cover}
+.creator{font-size:11px;font-weight:400;color:#999}
+.model-note{font-size:11px;font-weight:500;color:#76b900}
+.col-rank{font-size:13px;color:#bbb;font-family:'JetBrains Mono',monospace;display:block;text-align:center;margin-top:2px}
+#table-navi th:nth-child(4){border-bottom:3px solid #2563eb}
+#table-navi th:nth-child(5){border-bottom:3px solid #ea580c}
+#table-navi th:nth-child(6){border-bottom:3px solid #16a34a}
+#table-navi th:nth-child(7){border-bottom:3px solid #7c3aed}
+#table-navi th:nth-child(8){border-bottom:3px solid #dc2626}
+#table-full th:nth-child(4){border-bottom:3px solid #2563eb}
+#table-full th:nth-child(5){border-bottom:3px solid #ea580c}
+#table-full th:nth-child(6){border-bottom:3px solid #16a34a}
+#table-full th:nth-child(7){border-bottom:3px solid #7c3aed}
+#table-full th:nth-child(8){border-bottom:3px solid #dc2626}
+#table-detail th:nth-child(9),#table-detail td:nth-child(9),#table-detail th:nth-child(11),#table-detail td:nth-child(11),#table-detail th:nth-child(12),#table-detail td:nth-child(12),#table-detail th:nth-child(20),#table-detail td:nth-child(20){border-left:2px solid #ddd}
+#table-detail-full th:nth-child(9),#table-detail-full td:nth-child(9),#table-detail-full th:nth-child(11),#table-detail-full td:nth-child(11),#table-detail-full th:nth-child(15),#table-detail-full td:nth-child(15),#table-detail-full th:nth-child(23),#table-detail-full td:nth-child(23){border-left:2px solid #ddd}
+/* All-metrics dimension color bars (navi: Q3-8 / S9-10 / I11 / C12-19 / P20-21) */
+#table-detail th:nth-child(n+3):nth-child(-n+8){border-bottom:3px solid #2563eb}
+#table-detail th:nth-child(n+9):nth-child(-n+10){border-bottom:3px solid #ea580c}
+#table-detail th:nth-child(11){border-bottom:3px solid #16a34a}
+#table-detail th:nth-child(n+12):nth-child(-n+19){border-bottom:3px solid #7c3aed}
+#table-detail th:nth-child(n+20):nth-child(-n+21){border-bottom:3px solid #dc2626}
+/* All-metrics dimension color bars (full: Q3-8 / S9-10 / I11-14 / C15-22 / P23-24) */
+#table-detail-full th:nth-child(n+3):nth-child(-n+8){border-bottom:3px solid #2563eb}
+#table-detail-full th:nth-child(n+9):nth-child(-n+10){border-bottom:3px solid #ea580c}
+#table-detail-full th:nth-child(n+11):nth-child(-n+14){border-bottom:3px solid #16a34a}
+#table-detail-full th:nth-child(n+15):nth-child(-n+22){border-bottom:3px solid #7c3aed}
+#table-detail-full th:nth-child(n+23):nth-child(-n+24){border-bottom:3px solid #dc2626}
+.page-layout{position:relative}
+.page-sidebar{position:fixed;top:120px;right:calc((100vw - 900px)/2 - 220px);width:180px;border:1px solid #e0e0e0;border-radius:8px;padding:16px;background:#fff}
+@media(max-width:1400px){.page-sidebar{right:20px}}
+@media(max-width:1000px){.page-sidebar{display:none}}
+.toc-title{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:14px}
+.toc a{display:block;padding:6px 0;font-size:13px;color:#888;text-decoration:none;border-left:2px solid transparent;padding-left:12px;transition:all .15s}
+.toc a:hover{color:#333}
+.toc a.active{color:#1a1a1a;border-left-color:#1a1a1a;font-weight:600}
+#particle-canvas{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.4}
+.carousel-outer{display:flex;align-items:center;gap:12px}
+.carousel-container{position:relative;overflow:hidden;flex:1;min-width:0}
+.carousel-track{display:flex;transition:transform .5s ease}
+.carousel-btn{background:#f0f1f3;border:1px solid #e0e0e0;font-size:24px;cursor:pointer;padding:12px 14px;border-radius:10px;color:#333;transition:background .2s,box-shadow .2s;flex-shrink:0}
+.carousel-btn:hover{background:#e8e8e8;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ddd;cursor:pointer;transition:background .2s}
+.dot.active{background:#333}
+.carousel-controls{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:12px}
+.auto-loop-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;border:1px solid #ccc;background:#fff;font-size:12px;cursor:pointer;transition:background .2s,border-color .2s,color .2s;color:#666;user-select:none}
+.auto-loop-btn.active{background:#1a1a1a;border-color:#1a1a1a;color:#fff}
+.auto-loop-btn:hover{border-color:#999}
+.compare-card{min-width:100%;background:#fafbfc;border:1px solid #eee;border-radius:12px;padding:16px}
+.compare-card{background:#fafbfc;border:1px solid #eee;border-radius:12px;padding:16px}
+.compare-title{font-size:14px;font-weight:700;color:#333;margin-bottom:8px}
+.compare-prompt{font-size:12px;color:#555;line-height:1.5;margin-bottom:12px;padding:8px 12px;background:#f0f4f8;border-radius:6px;border-left:3px solid #2563eb}
+.compare-videos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compare-videos.tri{grid-template-columns:1fr 1fr 1fr}
+.compare-item video{width:100%;border-radius:8px;display:block;aspect-ratio:16/9;object-fit:cover}
+.compare-label{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:13px;font-weight:500}
+.compare-label .cs-icon{width:16px;height:16px;border-radius:3px;object-fit:cover}
+.sc-val{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:2px 8px;border-radius:4px;margin-left:auto}
+.sc-val.good{background:#dcfce7;color:#166534}
+.sc-val.mid{background:#fef9c3;color:#854d0e}
+.sc-val.low{background:#fee2e2;color:#991b1b}
+.score-list{display:flex;flex-wrap:wrap;gap:4px 8px;margin-top:8px;font-size:11px;color:#555}
+.score-list span{display:flex;align-items:center;gap:4px}
+.score-list .sc-val{font-size:11px;padding:1px 6px}
+.metrics-grid{display:flex;flex-direction:column;gap:14px}
+.metrics-group{border-left:3px solid var(--c);padding-left:16px}
+.metrics-group h3{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--c)}
+.metrics-group ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:2px 24px}
+.metrics-group li{font-size:12px;color:#444;padding:3px 0}
+.metrics-group li b{color:#1a1a1a;margin-right:4px}
+.metrics-group li span{color:#888}
+@media(max-width:700px){.metrics-group ul{grid-template-columns:1fr}}
+.findings-list{display:flex;flex-direction:column;gap:12px}
+.finding-card{display:flex;gap:14px;padding:16px 20px;background:#fafbfc;border:1px solid #eee;border-radius:10px;transition:box-shadow .2s}
+.finding-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.finding-card{position:relative}
+.finding-pin{position:absolute;top:10px;right:12px;font-size:14px;opacity:.4}
+.finding-num{font-size:28px;font-weight:800;color:#2563eb;font-family:'Source Serif 4',Georgia,serif;line-height:1;flex-shrink:0;width:28px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.finding-icon{font-size:20px;opacity:.7}
+.finding-body{font-size:13px;color:#444;line-height:1.7}
+.finding-body b{color:#1a1a1a}
+.contact-row{display:flex;gap:24px;align-items:flex-start;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.contact-item{text-align:center;font-size:12px;color:#666}
+.contact-item b{display:block;font-size:13px;color:#333;margin-bottom:4px}
+.contact-item a{color:#2563eb;text-decoration:none}
+.contact-item img{width:120px;height:120px;border-radius:8px;border:1px solid #eee;display:block;margin:0 auto 6px}
+.stats-bars{display:flex;flex-direction:column;gap:14px}
+.bar-group{display:flex;align-items:center;gap:12px}
+.bar-label{font-size:12px;font-weight:600;color:#555;width:90px;flex-shrink:0;text-align:right}
+.bar-track{display:flex;flex:1;height:36px;border-radius:6px;overflow:hidden;background:#f5f5f5}
+.bar-seg{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#333;white-space:nowrap;min-width:0;padding:2px 6px;transition:opacity .2s;position:relative;line-height:1.2}
+.bar-num{font-size:8px;font-weight:400;opacity:.65}
+.bar-seg:hover{opacity:.8}
+.bar-seg::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap;z-index:20;pointer-events:none;opacity:0;transition:opacity .15s;transition-delay:0s}
+.bar-seg:hover::after{opacity:1;transition-delay:.5s}
+.gallery-filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.gallery-filters .filter-group{display:flex;align-items:center;gap:0;background:#f0f1f3;border-radius:8px;padding:3px;position:relative}
+.gallery-filters .filter-label{font-size:11px;font-weight:600;color:#666;padding:0 8px}
+.gallery-filters button{padding:5px 12px;border:none;border-radius:6px;background:transparent;color:#666;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;transition:color .2s;position:relative;z-index:1}
+.gallery-filters button:hover{color:#000}
+.gallery-filters button.active{background:#1a1a1a;color:#fff}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;max-height:520px;overflow-y:auto;padding:4px;border:1px solid #eee;border-radius:10px}
+.gallery-item{position:relative;border-radius:6px;overflow:hidden;cursor:pointer;aspect-ratio:16/9;background:#f5f5f5}
+.gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+.gallery-item .mask-overlay{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s;mix-blend-mode:multiply;pointer-events:none}
+.gallery-item:hover .mask-overlay{opacity:0.7}
+.gallery-item .gallery-tag{position:absolute;top:4px;left:4px;font-size:9px;background:rgba(0,0,0,.6);color:#fff;padding:1px 5px;border-radius:3px}
+.gallery-item .gallery-mask-badge{position:absolute;top:4px;right:4px;font-size:9px;background:rgba(37,99,235,.8);color:#fff;padding:1px 5px;border-radius:3px}
+.gallery-item .gallery-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;padding:16px 6px 4px;font-size:10px;opacity:0;transition:opacity .2s}
+.gallery-item:hover .gallery-info{opacity:1}
+.gallery-count{font-size:13px;color:#888;margin-bottom:12px}
+footer{border-top:1px solid #eee;padding:32px 0;margin-top:64px;text-align:center;color:#999;font-size:12px}
+footer a{color:#666;text-decoration:none;margin:0 12px}
+</style>
+</head>
+<body>
+<canvas id="particle-canvas"></canvas>
+<nav><div class="container"><div style="display:flex;align-items:center;gap:12px"><img src="imgs/longcat-logo-full.png" class="logo"></div><div class="links"><a href="#leaderboard">Leaderboard</a><a href="https://huggingface.co/datasets/meituan-longcat/WBench">Dataset</a><a href="https://arxiv.org/abs/2605.25874">Paper</a><a href="https://modelscope.cn/datasets/meituan-longcat/WBench">ModelScope</a><a href="https://mp.weixin.qq.com/s/br3RlOBGtReolLZc5YW2HA">中文解读</a><a href="submit.html">Submit</a><span class="nav-contact">Contact<div class="contact-popup"><div class="contact-popup-inner"><div class="contact-popup-item"><b>Kaining Ying</b><span>kaining.ying.cv@gmail.com</span></div><div class="contact-popup-item"><b>Siyu Ren</b><span>rensiyu07@meituan.com</span></div><div class="contact-popup-qr"><img src="imgs/wx_qr.png" alt="WeChat"><span>WeChat Group</span></div></div></div></span><a href="https://github.com/meituan-longcat/WBench" class="nav-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Get Started</a></div></div></nav>
+<div class="top-banner">📬 Want your model on the leaderboard? We help evaluate for free! <a href="submit.html">Submit here →</a></div>
+<div class="container"><div class="page-layout"><div class="page-main">
+<div class="hero"><h1 id="hero-title"></h1><p class="desc"><strong>A Comprehensive Multi-turn Benchmark for Interactive Video World Model Evaluation</strong></p><p class="authors">Kaining Ying<img src="imgs/fudan.svg" style="height:10px;vertical-align:super;margin:0 1px"><sup>*</sup>, Hengrui Hu<img src="imgs/fudan.svg" style="height:10px;vertical-align:super;margin:0 1px"><sup>*</sup>, Siyu Ren<img src="imgs/longcat-color.png" style="height:10px;vertical-align:super;margin:0 1px">, Jiamu Li<img src="imgs/longcat-color.png" style="height:10px;vertical-align:super;margin:0 1px">, Fengjiao Chen<img src="imgs/longcat-color.png" style="height:10px;vertical-align:super;margin:0 1px">,<br>Ziwen Wang<img src="imgs/longcat-color.png" style="height:10px;vertical-align:super;margin:0 1px">, Xuezhi Cao<img src="imgs/longcat-color.png" style="height:10px;vertical-align:super;margin:0 1px">, Xunliang Cai<img src="imgs/longcat-color.png" style="height:10px;vertical-align:super;margin:0 1px">, Henghui Ding<img src="imgs/fudan.svg" style="height:10px;vertical-align:super;margin:0 1px"><sup>†</sup></p><p class="affiliations"><img src="imgs/fudan.svg" class="aff-icon"><span style="color:#003da5;font-weight:600">Fudan University</span> &nbsp;&nbsp; <img src="imgs/longcat-color.png" class="aff-icon"><span style="color:#06c167;font-weight:600">Meituan LongCat Team</span></p><p class="footnotes"><sup>*</sup>Equal contribution &nbsp;&nbsp; <sup>†</sup>Corresponding author: <a href="mailto:hhding@fudan.edu.cn">hhding@fudan.edu.cn</a></p></div>
+<div class="stats-expanded"><div class="stat-card"><span class="stat-pin">📌</span><div class="stat-num">289</div><div class="stat-title">Test Cases</div><div class="stat-details"><span>👁️ 2 Perspectives</span><span>🧑 5 Subject types</span><span>🌍 6 Scene categories</span><span>🎨 Multiple styles</span></div></div><div class="stat-card"><span class="stat-pin">📎</span><div class="stat-num">1,058</div><div class="stat-title">Interaction Turns</div><div class="stat-details"><span>🧭 601 Navigation</span><span>🎬 183 Event Edit</span><span>🏃 213 Subject Action</span><span>🔄 61 Perspective Switch</span></div></div><div class="stat-card"><span class="stat-pin">🔖</span><div class="stat-num">22</div><div class="stat-title">Metrics</div><div class="stat-details"><span>🎥 6 Video Quality</span><span>🎯 2 Setting</span><span>🕹️ 4 Interaction</span><span>🔗 8 Consistency</span><span>⚙️ 2 Physical</span><span>✅ Human-validated</span></div></div><div class="stat-card"><span class="stat-pin">🏷️</span><div class="stat-num">32</div><div class="stat-title">Models</div><div class="stat-details"><span>📝 11 Text</span><span>📷 13 Camera</span><span>🎮 8 Action</span></div></div></div>
+<section id="tldr"><h2>TL;DR</h2><p class="desc">Interactive world models are advancing rapidly, yet no unified standard exists for systematic evaluation. WBench fills this gap with 289 multi-turn cases across 5 dimensions — evaluating 32 models with 22 metrics validated against human judgments. We find that <strong>no single model dominates all dimensions</strong>.</p><div class="video-row"><div class="video-item"><video autoplay loop muted playsinline><source src="video/multi.mp4" type="video/mp4"></video><div class="video-label">Multi-turn</div><div class="video-desc">Navi + action + event + PS</div></div><div class="video-item"><video autoplay loop muted playsinline><source src="video/navigation.mp4" type="video/mp4"></video><div class="video-label">Navigation</div><div class="video-desc">W/A/S/D/left/right/up/down</div></div><div class="video-item"><video autoplay loop muted playsinline><source src="video/subbject_action.mp4" type="video/mp4"></video><div class="video-label">Subject Action</div><div class="video-desc">Character action</div></div><div class="video-item"><video autoplay loop muted playsinline><source src="video/event_editing.mp4" type="video/mp4"></video><div class="video-label">Event Editing</div><div class="video-desc">Environment change</div></div><div class="video-item"><video autoplay loop muted playsinline><source src="video/perspective_switch.mp4" type="video/mp4"></video><div class="video-label">Perspective Switch</div><div class="video-desc">FP ↔ TP</div></div></div></section>
+<section id="findings"><h2>Key Findings</h2>
+<div class="findings-list">
+  <div class="finding-card">
+    <span class="finding-pin">📌</span>
+    <div class="finding-num">1</div>
+    <div class="finding-body"><b>No model dominates all dimensions.</b> Among <b>32</b> evaluated models, including commercial APIs (Kling 3.0, Seedance 1.5, Wan 2.7), open-source models (HY-Video 1.5, Cosmos 2.5, HY-World 1.5), and closed-source beta world models (Genie 3, Happy Oyster), each excels in different aspects. JoyAI-Echo-1.5 (WM) leads overall but does not top any individual dimension; HY-Video 1.5 ranks <b>1st</b> in Consistency among text-conditioned models but struggles with Interaction; world models like Happy Oyster and HY-World 1.5 dominate Navigation yet underperform in Video Quality.</div>
+  </div>
+  <div class="finding-card">
+    <span class="finding-pin">📌</span>
+    <div class="finding-num">2</div>
+    <div class="finding-body"><b>Navigation is largely independent of other capabilities.</b> Among text-conditioned models, YUME 1.5 achieves the highest navigation score (<b>72.0</b>) yet ranks near bottom on event editing (<b>57.8</b>) and perspective switching (<b>16.7</b>). Conversely, Wan 2.7 leads in event editing (<b>84.0</b>) and subject action (<b>83.4</b>) but scores only <b>66.0</b> on navigation. This suggests navigation and semantic interaction require fundamentally different internal representations.</div>
+  </div>
+  <div class="finding-card">
+    <span class="finding-pin">📌</span>
+    <div class="finding-num">3</div>
+    <div class="finding-body"><b>Camera control does not imply subject control.</b> Navigation accuracy and perspective consistency are two distinct capabilities that most models fail to achieve simultaneously. For example, HY-World 1.5 ranks <b>1st</b> in navigation (<b>87.5</b>) but only scores <b>62.5</b> in perspective consistency; conversely, LingBot-World achieves the highest perspective consistency (<b>90.9</b>) but lags in navigation (<b>79.8</b>).</div>
+  </div>
+  <div class="finding-card">
+    <span class="finding-pin">📌</span>
+    <div class="finding-num">4</div>
+    <div class="finding-body"><b>Physical correctness follows rendering quality, not control ability.</b> Models with higher video quality tend to produce more physically plausible outputs (correlation <b>ρ=0.82</b>), while control ability (navigation, interaction) shows near-zero correlation with physics scores.</div>
+  </div>
+  <div class="finding-card">
+    <span class="finding-pin">📌</span>
+    <div class="finding-num">5</div>
+    <div class="finding-body"><b>Multi-turn interactions compound errors.</b> Navigation accuracy drops <b>-21</b> points from turn 1 to turn 4 as errors compound across steps. Dedicated world models (HY-World 1.5) degrade much less than text-conditioned models (Kling 3.0), suggesting explicit geometric control better preserves spatial state than text-based prompting.</div>
+  </div>
+</div>
+</section>
+<section id="leaderboard"><h2>Leaderboard</h2><p class="desc">Click column headers to sort. Scores 0–100, higher is better. # = per-metric rank.</p><div class="dim-legend"><span class="legend-item"><span class="legend-bar" style="background:#2563eb"></span>Quality</span><span class="legend-item"><span class="legend-bar" style="background:#ea580c"></span>Setting</span><span class="legend-item"><span class="legend-bar" style="background:#16a34a"></span>Interaction</span><span class="legend-item"><span class="legend-bar" style="background:#7c3aed"></span>Consistency</span><span class="legend-item"><span class="legend-bar" style="background:#dc2626"></span>Physical</span><span class="legend-note">Hover abbreviations for full names</span></div><div class="filter-row"><div class="filter-group"><span class="filter-label">Split:</span><button class="active" data-split="navi" onclick="updateTable(this)">Navi (158)</button><button data-split="full" onclick="updateTable(this)">Full (289)</button></div><div class="filter-group"><span class="filter-label">Metric:</span><button class="active" data-view="dims" onclick="updateTable(this)">5 Dimensions</button><button data-view="metrics" onclick="updateTable(this)">All Metrics</button></div><div class="filter-group"><span class="filter-label">Type:</span><button class="active" data-type="all" onclick="filterType(this)">All<br><small>(32)</small></button><button data-type="text" onclick="filterType(this)">Text<br><small>(11)</small></button><button data-type="camera" onclick="filterType(this)">Camera<br><small>(13)</small></button><button data-type="action" onclick="filterType(this)">Action<br><small>(8)</small></button></div></div>
+<div class="table-wrap" id="tab-navi"><table id="table-navi"><thead><tr><th>#</th><th>Model</th><th onclick="sortTable('table-navi',2)">Average ↕</th><th onclick="sortTable('table-navi',3)">Quality ↕</th><th onclick="sortTable('table-navi',4)">Setting ↕</th><th onclick="sortTable('table-navi',5)">Interaction ↕</th><th onclick="sortTable('table-navi',6)">Consistency ↕</th><th onclick="sortTable('table-navi',7)">Physical ↕</th></tr></thead><tbody>
+<tr data-model-type="action"><td class="rank-gold">🥇</td><td><img src="imgs/jd.png" class="model-icon">JoyAI-Echo-1.5 (WM)<br><span class="creator">JD Future Academy · JD</span></td><td class="col-avg">81.6</td><td>81.5</td><td>79.4</td><td>86.6</td><td>89.8</td><td>70.6</td></tr>
+<tr data-model-type="camera"><td class="rank-silver">🥈</td><td><img src="imgs/hidream.png" class="model-icon">HiDream-O1-World<br><span class="creator">HiDream.ai</span></td><td class="col-avg">80.9</td><td>81.0</td><td>82.2</td><td>80.0</td><td>88.0</td><td>73.3</td></tr>
+<tr data-model-type="camera"><td class="rank-bronze">🥉</td><td><img src="imgs/alayaworld.png" class="model-icon">Alaya-EVOKE<br><span class="creator">Alaya Lab · Open Source</span></td><td class="col-avg">80.8</td><td>82.8</td><td>83.8</td><td>78.6</td><td>86.9</td><td>72.1</td></tr>
+<tr data-model-type="camera"><td>4</td><td><img src="imgs/lingbot.png" class="model-icon">LingBot-World v2<br><span class="model-note">fast</span><br><span class="creator">Ant Group · Open Source</span></td><td class="col-avg">79.4</td><td>81.8</td><td>76.8</td><td>82.8</td><td>86.5</td><td>69.1</td></tr>
+<tr data-model-type="text"><td>5</td><td><img src="imgs/kling.jpeg" class="model-icon">Kling 3.0<br><span class="creator">Kling AI · API</span></td><td class="col-avg">79.0</td><td>81.4</td><td>91.0</td><td>69.4</td><td>83.7</td><td>69.3</td></tr>
+<tr data-model-type="camera"><td>6</td><td><img src="imgs/lingbot.png" class="model-icon">LingBot-World<br><span class="model-note">base-camera</span><br><span class="creator">Ant Group · Open Source</span></td><td class="col-avg">78.5</td><td>78.9</td><td>72.6</td><td>80.1</td><td>89.9</td><td>71.2</td></tr>
+<tr data-model-type="camera"><td>7</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-World 1.5<br><span class="model-note">ar-distill</span><br><span class="creator">Tencent · Open Source</span></td><td class="col-avg">78.1</td><td>78.1</td><td>72.2</td><td>86.8</td><td>86.9</td><td>66.3</td></tr>
+<tr data-model-type="text"><td>8</td><td><img src="imgs/wan.png" class="model-icon">Wan 2.7<br><span class="creator">Alibaba · API</span></td><td class="col-avg">78.1</td><td>81.5</td><td>91.4</td><td>64.4</td><td>81.6</td><td>71.8</td></tr>
+<tr data-model-type="text"><td>9</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-Video 1.5<br><span class="creator">Tencent · Open Source</span></td><td class="col-avg">77.9</td><td>77.6</td><td>85.6</td><td>71.4</td><td>87.4</td><td>67.4</td></tr>
+<tr data-model-type="camera"><td>10</td><td><img src="imgs/lingbot.png" class="model-icon">LingBot-World<br><span class="model-note">fast</span><br><span class="creator">Ant Group · Open Source</span></td><td class="col-avg">77.4</td><td>79.4</td><td>77.9</td><td>79.2</td><td>84.9</td><td>65.7</td></tr>
+<tr data-model-type="action"><td>11</td><td><img src="imgs/alibaba.png" class="model-icon">Happy Oyster<br><span class="creator">Alibaba · Web</span></td><td class="col-avg">76.8</td><td>77.3</td><td>74.2</td><td>84.9</td><td>84.3</td><td>63.5</td></tr>
+<tr data-model-type="camera"><td>12</td><td><img src="imgs/nvidia.svg" class="model-icon">Lyra 2.0<br><span class="model-note">4-step AR</span><br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">76.4</td><td>77.1</td><td>73.2</td><td>85.6</td><td>79.3</td><td>66.7</td></tr>
+<tr data-model-type="camera"><td>13</td><td><img src="imgs/alayaworld.png" class="model-icon">AlayaWorld<br><span class="creator">Alaya Lab · Open Source</span></td><td class="col-avg">76.3</td><td>79.3</td><td>69.7</td><td>80.0</td><td>89.5</td><td>63.1</td></tr>
+<tr data-model-type="text"><td>14</td><td><img src="imgs/bytedance.png" class="model-icon">Seedance 1.5<br><span class="creator">ByteDance · API</span></td><td class="col-avg">76.2</td><td>82.1</td><td>82.9</td><td>66.3</td><td>81.3</td><td>68.4</td></tr>
+<tr data-model-type="text"><td>15</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Super<br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">76.0</td><td>76.4</td><td>91.6</td><td>58.0</td><td>85.0</td><td>69.2</td></tr>
+<tr data-model-type="camera"><td>16</td><td><img src="imgs/nvidia.svg" class="model-icon">SANA-WM<br><span class="model-note">4-step AR</span><br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">76.0</td><td>79.3</td><td>76.1</td><td>82.2</td><td>80.7</td><td>61.9</td></tr>
+<tr data-model-type="camera"><td>17</td><td><img src="imgs/amap.png" class="model-icon">DreamX-World<br><span class="model-note">5B AR</span><br><span class="creator">Amap · Open Source</span></td><td class="col-avg">75.0</td><td>77.5</td><td>80.8</td><td>78.6</td><td>74.9</td><td>63.3</td></tr>
+<tr data-model-type="action"><td>18</td><td><img src="imgs/amap.png" class="model-icon">ABot-World<br><span class="creator">Amap · Open Source</span></td><td class="col-avg">74.7</td><td>76.8</td><td>71.4</td><td>84.0</td><td>79.5</td><td>61.7</td></tr>
+<tr data-model-type="text"><td>19</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos 2.5<br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">74.6</td><td>72.9</td><td>83.3</td><td>63.1</td><td>86.5</td><td>67.4</td></tr>
+<tr data-model-type="text"><td>20</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Nano<br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">74.2</td><td>77.4</td><td>87.3</td><td>59.1</td><td>83.7</td><td>63.6</td></tr>
+<tr data-model-type="text"><td>21</td><td><img src="imgs/lightrix.jpeg" class="model-icon">LTX 2.3<br><span class="creator">Lightricks · Open Source</span></td><td class="col-avg">74.2</td><td>77.1</td><td>85.2</td><td>66.4</td><td>77.2</td><td>64.9</td></tr>
+<tr data-model-type="camera"><td>22</td><td><img src="imgs/inspatio.jpeg" class="model-icon">InSpatio-World<br><span class="creator">InSpatio · Open Source</span></td><td class="col-avg">73.9</td><td>71.5</td><td>71.4</td><td>73.2</td><td>88.4</td><td>65.2</td></tr>
+<tr data-model-type="action"><td>23</td><td><img src="imgs/google.png" class="model-icon">Genie 3<br><span class="creator">Google · Web</span></td><td class="col-avg">73.9</td><td>75.2</td><td>72.5</td><td>73.4</td><td>82.6</td><td>65.7</td></tr>
+<tr data-model-type="camera"><td>24</td><td><img src="imgs/amap.png" class="model-icon">Fantasy-World<br><span class="creator">Amap · Open Source</span></td><td class="col-avg">73.8</td><td>72.4</td><td>71.3</td><td>71.9</td><td>86.4</td><td>66.8</td></tr>
+<tr data-model-type="text"><td>25</td><td><img src="imgs/shlab.png" class="model-icon">YUME 1.5<br><span class="creator">Shanghai AI Lab · Open Source</span></td><td class="col-avg">73.3</td><td>77.6</td><td>72.4</td><td>71.4</td><td>80.1</td><td>65.2</td></tr>
+<tr data-model-type="text"><td>26</td><td><img src="imgs/longcat.png" class="model-icon">LongCat-Video<br><span class="creator">Meituan · Open Source</span></td><td class="col-avg">73.2</td><td>75.4</td><td>72.3</td><td>62.1</td><td>87.1</td><td>68.9</td></tr>
+<tr data-model-type="action"><td>27</td><td><img src="imgs/meituan.png" class="model-icon">Infinite-World<br><span class="creator">Meituan · Open Source</span></td><td class="col-avg">72.8</td><td>77.0</td><td>69.3</td><td>75.4</td><td>80.0</td><td>62.1</td></tr>
+<tr data-model-type="action"><td>28</td><td><img src="imgs/skywork.jpeg" class="model-icon">MatrixGame3<br><span class="creator">Skywork · Open Source</span></td><td class="col-avg">71.3</td><td>75.5</td><td>63.6</td><td>83.6</td><td>74.5</td><td>59.3</td></tr>
+<tr data-model-type="text"><td>29</td><td><img src="imgs/kairos.png" class="model-icon">Kairos 3.0<br><span class="creator">SenseTime · Open Source</span></td><td class="col-avg">70.3</td><td>74.0</td><td>70.3</td><td>64.1</td><td>82.6</td><td>60.4</td></tr>
+<tr data-model-type="action"><td>30</td><td><img src="imgs/skywork.jpeg" class="model-icon">MatrixGame2<br><span class="creator">Skywork · Open Source</span></td><td class="col-avg">68.7</td><td>73.8</td><td>67.1</td><td>80.3</td><td>65.1</td><td>57.2</td></tr>
+<tr data-model-type="action"><td>31</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-GameCraft<br><span class="creator">Tencent · Open Source</span></td><td class="col-avg">68.2</td><td>73.0</td><td>66.6</td><td>66.3</td><td>72.6</td><td>62.4</td></tr>
+<tr data-model-type="camera"><td>32</td><td><img src="imgs/thu.png" class="model-icon">Astra<br><span class="creator">Tsinghua · Open Source</span></td><td class="col-avg">63.7</td><td>67.1</td><td>59.6</td><td>66.9</td><td>73.3</td><td>51.4</td></tr>
+</tbody></table></div>
+<div class="table-wrap" id="tab-full" style="display:none"><table id="table-full"><thead><tr><th>#</th><th>Model</th><th onclick="sortTable('table-full',2)">Average ↕</th><th onclick="sortTable('table-full',3)">Quality ↕</th><th onclick="sortTable('table-full',4)">Setting ↕</th><th onclick="sortTable('table-full',5)">Interaction ↕</th><th onclick="sortTable('table-full',6)">Consistency ↕</th><th onclick="sortTable('table-full',7)">Physical ↕</th></tr></thead><tbody>
+<tr data-model-type="text"><td class="rank-gold">🥇</td><td><img src="imgs/kling.jpeg" class="model-icon">Kling 3.0<br><span class="creator">Kling AI · API</span></td><td class="col-avg">79.4</td><td>80.0</td><td>91.0</td><td>73.1</td><td>83.9</td><td>69.2</td></tr>
+<tr data-model-type="text"><td class="rank-silver">🥈</td><td><img src="imgs/wan.png" class="model-icon">Wan 2.7<br><span class="creator">Alibaba · API</span></td><td class="col-avg">78.4</td><td>81.0</td><td>91.4</td><td>72.1</td><td>75.8</td><td>71.6</td></tr>
+<tr data-model-type="text"><td class="rank-bronze">🥉</td><td><img src="imgs/bytedance.png" class="model-icon">Seedance 1.5<br><span class="creator">ByteDance · API</span></td><td class="col-avg">76.2</td><td>81.9</td><td>82.9</td><td>68.3</td><td>79.9</td><td>68.2</td></tr>
+<tr data-model-type="text"><td class="">4</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-Video 1.5<br><span class="creator">Tencent · Open Source</span></td><td class="col-avg">74.3</td><td>76.6</td><td>85.6</td><td>54.7</td><td>87.5</td><td>67.1</td></tr>
+<tr data-model-type="text"><td class="">5</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Super<br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">72.5</td><td>74.7</td><td>89.4</td><td>45.2</td><td>84.3</td><td>68.9</td></tr>
+<tr data-model-type="text"><td class="">6</td><td><img src="imgs/lightrix.jpeg" class="model-icon">LTX 2.3<br><span class="creator">Lightricks · Open Source</span></td><td class="col-avg">70.9</td><td>77.0</td><td>85.2</td><td>49.4</td><td>78.0</td><td>65.1</td></tr>
+<tr data-model-type="text"><td class="">7</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos 2.5<br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">70.4</td><td>71.7</td><td>83.3</td><td>43.5</td><td>86.3</td><td>67.0</td></tr>
+<tr data-model-type="text"><td class="">8</td><td><img src="imgs/longcat.png" class="model-icon">LongCat-Video<br><span class="creator">Meituan · Open Source</span></td><td class="col-avg">69.9</td><td>77.2</td><td>72.3</td><td>45.1</td><td>86.6</td><td>68.4</td></tr>
+<tr data-model-type="text"><td class="">9</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Nano<br><span class="creator">NVIDIA · Open Source</span></td><td class="col-avg">69.4</td><td>75.0</td><td>86.6</td><td>36.8</td><td>84.5</td><td>63.9</td></tr>
+<tr data-model-type="text"><td class="">10</td><td><img src="imgs/shlab.png" class="model-icon">YUME 1.5<br><span class="creator">Shanghai AI Lab · Open Source</span></td><td class="col-avg">68.9</td><td>77.6</td><td>72.4</td><td>48.4</td><td>80.9</td><td>65.4</td></tr>
+<tr data-model-type="text"><td class="">11</td><td><img src="imgs/kairos.png" class="model-icon">Kairos 3.0<br><span class="creator">SenseTime · Open Source</span></td><td class="col-avg">65.7</td><td>73.1</td><td>70.3</td><td>41.6</td><td>83.2</td><td>60.5</td></tr></tbody></table></div>
+<div class="table-wrap" id="tab-detail" style="display:none"><table id="table-detail"><thead><tr><thead><tr><thead><tr><th>#</th><th>Model</th><th data-tip="Aesthetic Quality" onclick="sortTable('table-detail',2)">Aesth</th><th data-tip="Imaging Quality" onclick="sortTable('table-detail',3)">Imag</th><th data-tip="Temporal Flickering" onclick="sortTable('table-detail',4)">Flick</th><th data-tip="Dynamic Degree" onclick="sortTable('table-detail',5)">Dyn</th><th data-tip="Motion Smoothness" onclick="sortTable('table-detail',6)">Smooth</th><th data-tip="HPSv3 Quality" onclick="sortTable('table-detail',7)">HPSv3</th><th data-tip="Scene Adherence" onclick="sortTable('table-detail',8)">Scene</th><th data-tip="Subject Adherence" onclick="sortTable('table-detail',9)">Subj</th><th data-tip="Navigation Trajectory" onclick="sortTable('table-detail',10)">Navi</th><th data-tip="Background Consistency" onclick="sortTable('table-detail',11)">BgCon</th><th data-tip="Spatial Consistency" onclick="sortTable('table-detail',12)">Spat</th><th data-tip="Gated Spatial Consistency" onclick="sortTable('table-detail',13)">GSp</th><th data-tip="Perspective Consistency" onclick="sortTable('table-detail',14)">Persp</th><th data-tip="Segment Continuity" onclick="sortTable('table-detail',15)">Seg</th><th data-tip="Geometric Consistency" onclick="sortTable('table-detail',16)">Geo</th><th data-tip="Photometric Consistency" onclick="sortTable('table-detail',17)">Photo</th><th data-tip="Subject Consistency Cross-Model" onclick="sortTable('table-detail',18)">SubjC</th><th data-tip="Physical Plausibility" onclick="sortTable('table-detail',19)">VPlaus</th><th data-tip="Physics Fidelity" onclick="sortTable('table-detail',20)">CFid</th></tr></thead><tbody>
+<tr data-model-type="action"><td class="rank-gold">🥇</td><td><img src="imgs/jd.png" class="model-icon">JoyAI-Echo-1.5 (WM)<br><span class="creator">JD Future Academy · JD</span></td><td>63.6</td><td>66.3</td><td>92.9</td><td>98.7</td><td>97.3</td><td>70.1</td><td>66.0</td><td>92.7</td><td>86.6</td><td>93.9</td><td>90.7</td><td>83.8</td><td>84.1</td><td>99.4</td><td>93.6</td><td>82.5</td><td>90.2</td><td>60.8</td><td>80.4</td></tr>
+<tr data-model-type="camera"><td class="rank-silver">🥈</td><td><img src="imgs/hidream.png" class="model-icon">HiDream-O1-World<br><span class="creator">HiDream.ai</span></td><td>65.3</td><td>67.5</td><td>92.2</td><td>88.6</td><td>96.9</td><td>75.2</td><td>72.2</td><td>92.2</td><td>80.0</td><td>93.4</td><td>84.4</td><td>83.1</td><td>83.6</td><td>98.7</td><td>88.8</td><td>79.8</td><td>92.1</td><td>61.8</td><td>84.9</td></tr>
+<tr data-model-type="camera"><td class="rank-bronze">🥉</td><td><img src="imgs/alayaworld.png" class="model-icon">Alaya-EVOKE<br><span class="creator">Alaya Lab · Open Source</span></td><td>66.1</td><td>67.9</td><td>94.3</td><td>96.8</td><td>97.9</td><td>73.8</td><td>74.7</td><td>92.8</td><td>78.6</td><td>92.3</td><td>84.3</td><td>82.5</td><td>69.7</td><td>100.0</td><td>92.7</td><td>82.5</td><td>91.0</td><td>61.7</td><td>82.4</td></tr>
+<tr data-model-type="camera"><td class="">4</td><td><img src="imgs/lingbot.png" class="model-icon">LingBot-World v2<br><span class="model-note">fast</span><br><span class="creator">Ant Group · Open Source</span></td><td>64.4</td><td>67.5</td><td>91.4</td><td>96.2</td><td>96.5</td><td>74.6</td><td>66.7</td><td>86.9</td><td>82.8</td><td>92.5</td><td>82.3</td><td>78.7</td><td>84.5</td><td>98.1</td><td>87.1</td><td>79.8</td><td>88.9</td><td>61.4</td><td>76.7</td></tr>
+<tr data-model-type="text"><td class="">5</td><td><img src="imgs/kling.jpeg" class="model-icon">Kling 3.0<br><span class="creator">Kling AI · API</span></td><td>63.0</td><td>68.1</td><td>93.2</td><td>97.5</td><td>97.6</td><td>69.1</td><td>89.0</td><td>92.9</td><td>69.4</td><td>92.3</td><td>75.2</td><td>75.1</td><td>76.8</td><td>93.0</td><td>88.9</td><td>79.9</td><td>88.5</td><td>60.7</td><td>78.0</td></tr>
+<tr data-model-type="camera"><td class="">6</td><td><img src="imgs/lingbot.png" class="model-icon">LingBot-World<br><span class="model-note">base-camera</span><br><span class="creator">Ant Group · Open Source</span></td><td>66.9</td><td>67.9</td><td>94.1</td><td>66.2</td><td>96.9</td><td>81.4</td><td>51.6</td><td>93.6</td><td>80.1</td><td>96.9</td><td>92.7</td><td>67.1</td><td>90.9</td><td>99.4</td><td>95.4</td><td>83.3</td><td>93.5</td><td>64.8</td><td>77.7</td></tr>
+<tr data-model-type="camera"><td class="">7</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-World 1.5<br><span class="model-note">ar-distill</span><br><span class="creator">Tencent · Open Source</span></td><td>60.1</td><td>65.4</td><td>93.5</td><td>91.1</td><td>98.1</td><td>60.5</td><td>53.5</td><td>90.8</td><td>86.8</td><td>92.7</td><td>90.6</td><td>84.9</td><td>62.5</td><td>100.0</td><td>92.0</td><td>83.1</td><td>89.1</td><td>58.6</td><td>74.0</td></tr>
+<tr data-model-type="text"><td class="">8</td><td><img src="imgs/wan.png" class="model-icon">Wan 2.7<br><span class="creator">Alibaba · API</span></td><td>61.4</td><td>68.0</td><td>92.2</td><td>100.0</td><td>96.3</td><td>71.1</td><td>88.3</td><td>94.6</td><td>64.4</td><td>89.4</td><td>71.0</td><td>71.0</td><td>78.2</td><td>92.4</td><td>83.7</td><td>76.4</td><td>90.7</td><td>60.3</td><td>83.3</td></tr>
+<tr data-model-type="text"><td class="">9</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-Video 1.5<br><span class="creator">Tencent · Open Source</span></td><td>63.4</td><td>67.4</td><td>94.2</td><td>73.9</td><td>98.7</td><td>68.0</td><td>77.5</td><td>93.6</td><td>71.4</td><td>92.1</td><td>79.2</td><td>75.1</td><td>86.6</td><td>99.4</td><td>94.6</td><td>80.3</td><td>91.6</td><td>59.7</td><td>75.0</td></tr>
+<tr data-model-type="camera"><td class="">10</td><td><img src="imgs/lingbot.png" class="model-icon">LingBot-World<br><span class="model-note">fast</span><br><span class="creator">Ant Group · Open Source</span></td><td>62.6</td><td>63.8</td><td>92.4</td><td>95.6</td><td>96.0</td><td>65.7</td><td>63.4</td><td>92.4</td><td>79.2</td><td>90.9</td><td>77.2</td><td>76.9</td><td>82.8</td><td>98.1</td><td>85.4</td><td>79.1</td><td>88.6</td><td>58.8</td><td>72.5</td></tr>
+<tr data-model-type="action"><td class="">11</td><td><img src="imgs/alibaba.png" class="model-icon">Happy Oyster<br><span class="creator">Alibaba · Web</span></td><td>56.6</td><td>63.9</td><td>94.0</td><td>94.2</td><td>97.0</td><td>58.3</td><td>57.4</td><td>91.1</td><td>84.9</td><td>91.4</td><td>77.7</td><td>75.8</td><td>75.0</td><td>96.2</td><td>87.2</td><td>79.8</td><td>91.5</td><td>57.6</td><td>69.3</td></tr>
+<tr data-model-type="camera"><td class="">12</td><td><img src="imgs/nvidia.svg" class="model-icon">Lyra 2.0<br><span class="model-note">4-step AR</span><br><span class="creator">NVIDIA · Open Source</span></td><td>57.2</td><td>65.6</td><td>90.9</td><td>96.2</td><td>97.0</td><td>55.6</td><td>62.2</td><td>84.2</td><td>85.6</td><td>89.2</td><td>87.5</td><td>86.3</td><td>28.4</td><td>90.5</td><td>86.6</td><td>82.7</td><td>82.9</td><td>59.3</td><td>74.0</td></tr>
+<tr data-model-type="camera"><td class="">13</td><td><img src="imgs/alayaworld.png" class="model-icon">AlayaWorld<br><span class="creator">Alaya Lab · Open Source</span></td><td>62.8</td><td>67.7</td><td>92.7</td><td>91.1</td><td>97.0</td><td>64.3</td><td>51.6</td><td>87.7</td><td>80.0</td><td>94.1</td><td>87.9</td><td>81.9</td><td>86.6</td><td>98.1</td><td>94.1</td><td>80.3</td><td>93.4</td><td>61.1</td><td>65.1</td></tr>
+<tr data-model-type="text"><td class="">14</td><td><img src="imgs/bytedance.png" class="model-icon">Seedance 1.5<br><span class="creator">ByteDance · API</span></td><td>61.0</td><td>69.3</td><td>92.4</td><td>99.4</td><td>97.5</td><td>73.0</td><td>71.6</td><td>94.2</td><td>66.3</td><td>89.6</td><td>72.7</td><td>72.4</td><td>70.5</td><td>96.2</td><td>82.4</td><td>76.8</td><td>90.1</td><td>60.7</td><td>76.0</td></tr>
+<tr data-model-type="text"><td class="">15</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Super<br><span class="creator">NVIDIA · Open Source</span></td><td>63.8</td><td>67.6</td><td>93.7</td><td>62.7</td><td>97.9</td><td>72.7</td><td>87.4</td><td>95.8</td><td>58.0</td><td>91.8</td><td>76.4</td><td>75.3</td><td>68.0</td><td>98.7</td><td>95.5</td><td>83.7</td><td>90.5</td><td>61.7</td><td>76.6</td></tr>
+<tr data-model-type="camera"><td class="">16</td><td><img src="imgs/nvidia.svg" class="model-icon">SANA-WM<br><span class="model-note">4-step AR</span><br><span class="creator">NVIDIA · Open Source</span></td><td>60.9</td><td>63.7</td><td>93.9</td><td>95.6</td><td>98.1</td><td>63.5</td><td>61.6</td><td>90.5</td><td>82.2</td><td>90.5</td><td>77.1</td><td>76.4</td><td>49.0</td><td>97.5</td><td>88.7</td><td>81.2</td><td>85.4</td><td>56.5</td><td>67.2</td></tr>
+<tr data-model-type="camera"><td class="">17</td><td><img src="imgs/amap.png" class="model-icon">DreamX-World<br><span class="model-note">5B AR</span><br><span class="creator">Amap · Open Source</span></td><td>59.7</td><td>62.9</td><td>90.0</td><td>96.2</td><td>94.9</td><td>61.3</td><td>74.8</td><td>86.8</td><td>78.6</td><td>88.7</td><td>74.7</td><td>74.4</td><td>31.7</td><td>99.4</td><td>72.2</td><td>75.8</td><td>81.9</td><td>56.8</td><td>69.8</td></tr>
+<tr data-model-type="action"><td class="">18</td><td><img src="imgs/amap.png" class="model-icon">ABot-World<br><span class="creator">Amap · Open Source</span></td><td>57.6</td><td>60.3</td><td>96.0</td><td>97.5</td><td>97.5</td><td>52.1</td><td>55.1</td><td>87.7</td><td>84.0</td><td>86.7</td><td>69.5</td><td>69.3</td><td>62.9</td><td>93.7</td><td>86.3</td><td>84.4</td><td>83.3</td><td>56.6</td><td>66.8</td></tr>
+<tr data-model-type="text"><td class="">19</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos 2.5<br><span class="creator">NVIDIA · Open Source</span></td><td>61.8</td><td>66.9</td><td>94.8</td><td>49.0</td><td>98.2</td><td>66.5</td><td>72.4</td><td>94.2</td><td>63.1</td><td>92.3</td><td>78.1</td><td>74.3</td><td>84.3</td><td>94.3</td><td>94.6</td><td>81.6</td><td>92.3</td><td>60.1</td><td>74.7</td></tr>
+<tr data-model-type="text"><td class="">20</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Nano<br><span class="creator">NVIDIA · Open Source</span></td><td>61.1</td><td>66.1</td><td>94.6</td><td>75.3</td><td>97.9</td><td>69.6</td><td>82.0</td><td>92.7</td><td>59.1</td><td>89.9</td><td>74.1</td><td>71.7</td><td>70.8</td><td>96.2</td><td>94.2</td><td>84.1</td><td>88.2</td><td>60.0</td><td>67.1</td></tr>
+<tr data-model-type="text"><td class="">21</td><td><img src="imgs/lightrix.jpeg" class="model-icon">LTX 2.3<br><span class="creator">Lightricks · Open Source</span></td><td>57.9</td><td>61.0</td><td>93.2</td><td>98.1</td><td>96.4</td><td>56.1</td><td>81.3</td><td>89.2</td><td>66.4</td><td>88.3</td><td>70.2</td><td>70.2</td><td>69.8</td><td>75.8</td><td>76.9</td><td>79.2</td><td>87.2</td><td>55.7</td><td>74.0</td></tr>
+<tr data-model-type="camera"><td class="">22</td><td><img src="imgs/inspatio.jpeg" class="model-icon">InSpatio-World<br><span class="creator">InSpatio · Open Source</span></td><td>64.4</td><td>67.6</td><td>96.0</td><td>26.1</td><td>98.8</td><td>76.1</td><td>51.7</td><td>91.1</td><td>73.2</td><td>95.0</td><td>93.8</td><td>66.5</td><td>72.5</td><td>100.0</td><td>97.3</td><td>87.4</td><td>94.4</td><td>63.1</td><td>67.3</td></tr>
+<tr data-model-type="action"><td class="">23</td><td><img src="imgs/google.png" class="model-icon">Genie 3<br><span class="creator">Google · Web</span></td><td>51.6</td><td>59.3</td><td>95.0</td><td>92.4</td><td>97.8</td><td>55.2</td><td>61.1</td><td>83.8</td><td>73.4</td><td>90.7</td><td>79.9</td><td>78.4</td><td>54.5</td><td>93.6</td><td>88.6</td><td>84.5</td><td>90.4</td><td>59.7</td><td>71.7</td></tr>
+<tr data-model-type="camera"><td class="">24</td><td><img src="imgs/amap.png" class="model-icon">Fantasy-World<br><span class="creator">Amap · Open Source</span></td><td>63.0</td><td>62.8</td><td>95.8</td><td>49.0</td><td>97.9</td><td>65.8</td><td>52.4</td><td>90.1</td><td>71.9</td><td>94.2</td><td>80.6</td><td>64.2</td><td>79.8</td><td>100.0</td><td>95.3</td><td>84.8</td><td>92.5</td><td>59.7</td><td>74.0</td></tr>
+<tr data-model-type="text"><td class="">25</td><td><img src="imgs/shlab.png" class="model-icon">YUME 1.5<br><span class="creator">Shanghai AI Lab · Open Source</span></td><td>58.7</td><td>63.3</td><td>93.0</td><td>96.8</td><td>97.0</td><td>57.0</td><td>53.1</td><td>91.7</td><td>71.4</td><td>90.3</td><td>71.5</td><td>71.4</td><td>48.0</td><td>99.4</td><td>88.0</td><td>83.3</td><td>88.8</td><td>57.7</td><td>72.7</td></tr>
+<tr data-model-type="text"><td class="">26</td><td><img src="imgs/longcat.png" class="model-icon">LongCat-Video<br><span class="creator">Meituan · Open Source</span></td><td>66.5</td><td>69.6</td><td>94.8</td><td>45.9</td><td>97.9</td><td>77.6</td><td>53.1</td><td>91.5</td><td>62.1</td><td>95.1</td><td>83.3</td><td>66.2</td><td>81.5</td><td>99.4</td><td>95.4</td><td>82.2</td><td>93.4</td><td>61.8</td><td>76.0</td></tr>
+<tr data-model-type="action"><td class="">27</td><td><img src="imgs/meituan.png" class="model-icon">Infinite-World<br><span class="creator">Meituan · Open Source</span></td><td>58.7</td><td>66.1</td><td>94.1</td><td>82.8</td><td>98.0</td><td>62.3</td><td>54.0</td><td>84.5</td><td>75.4</td><td>88.8</td><td>74.9</td><td>74.4</td><td>33.8</td><td>100.0</td><td>94.3</td><td>85.1</td><td>88.4</td><td>57.2</td><td>67.0</td></tr>
+<tr data-model-type="action"><td class="">28</td><td><img src="imgs/skywork.jpeg" class="model-icon">MatrixGame3<br><span class="creator">Skywork · Open Source</span></td><td>46.4</td><td>70.0</td><td>86.3</td><td>97.5</td><td>95.4</td><td>57.1</td><td>48.9</td><td>78.4</td><td>83.6</td><td>85.7</td><td>81.0</td><td>80.4</td><td>13.3</td><td>89.8</td><td>87.6</td><td>75.3</td><td>83.0</td><td>54.0</td><td>64.7</td></tr>
+<tr data-model-type="text"><td class="">29</td><td><img src="imgs/kairos.png" class="model-icon">Kairos 3.0<br><span class="creator">SenseTime · Open Source</span></td><td>59.9</td><td>62.7</td><td>95.4</td><td>70.1</td><td>97.5</td><td>58.5</td><td>52.2</td><td>88.5</td><td>64.1</td><td>91.1</td><td>76.8</td><td>62.0</td><td>76.3</td><td>94.3</td><td>89.0</td><td>80.8</td><td>90.8</td><td>58.0</td><td>62.7</td></tr>
+<tr data-model-type="action"><td class="">30</td><td><img src="imgs/skywork.jpeg" class="model-icon">MatrixGame2<br><span class="creator">Skywork · Open Source</span></td><td>54.0</td><td>60.3</td><td>94.6</td><td>94.9</td><td>98.2</td><td>41.0</td><td>49.4</td><td>84.9</td><td>80.3</td><td>86.9</td><td>64.5</td><td>64.5</td><td>29.2</td><td>21.0</td><td>86.1</td><td>81.3</td><td>87.2</td><td>55.0</td><td>59.3</td></tr>
+<tr data-model-type="action"><td class="">31</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-GameCraft<br><span class="creator">Tencent · Open Source</span></td><td>52.6</td><td>58.7</td><td>93.7</td><td>96.8</td><td>97.6</td><td>38.3</td><td>50.6</td><td>82.5</td><td>66.3</td><td>86.5</td><td>60.5</td><td>60.5</td><td>17.9</td><td>99.4</td><td>88.3</td><td>85.0</td><td>82.6</td><td>56.5</td><td>68.3</td></tr>
+<tr data-model-type="camera"><td class="">32</td><td><img src="imgs/thu.png" class="model-icon">Astra<br><span class="creator">Tsinghua · Open Source</span></td><td>48.6</td><td>52.5</td><td>96.0</td><td>79.6</td><td>97.7</td><td>28.0</td><td>43.4</td><td>75.9</td><td>66.9</td><td>85.3</td><td>64.7</td><td>63.3</td><td>30.0</td><td>86.6</td><td>85.6</td><td>87.5</td><td>83.5</td><td>54.6</td><td>48.3</td></tr></tbody></table></div>
+<div class="table-wrap" id="tab-detail-full" style="display:none"><table id="table-detail-full"><thead><tr><thead><tr><thead><tr><th>#</th><th>Model</th><th data-tip="Aesthetic Quality" onclick="sortTable('table-detail-full',2)">Aesth</th><th data-tip="Imaging Quality" onclick="sortTable('table-detail-full',3)">Imag</th><th data-tip="Temporal Flickering" onclick="sortTable('table-detail-full',4)">Flick</th><th data-tip="Dynamic Degree" onclick="sortTable('table-detail-full',5)">Dyn</th><th data-tip="Motion Smoothness" onclick="sortTable('table-detail-full',6)">Smooth</th><th data-tip="HPSv3 Quality" onclick="sortTable('table-detail-full',7)">HPSv3</th><th data-tip="Scene Adherence" onclick="sortTable('table-detail-full',8)">Scene</th><th data-tip="Subject Adherence" onclick="sortTable('table-detail-full',9)">Subj</th><th data-tip="Navigation Trajectory" onclick="sortTable('table-detail-full',10)">Navi</th><th data-tip="Event Edit Adherence" onclick="sortTable('table-detail-full',11)">EE</th><th data-tip="Subject Action Adherence" onclick="sortTable('table-detail-full',12)">SA</th><th data-tip="Perspective Switch Adherence" onclick="sortTable('table-detail-full',13)">PS</th><th data-tip="Background Consistency" onclick="sortTable('table-detail-full',14)">BgCon</th><th data-tip="Spatial Consistency" onclick="sortTable('table-detail-full',15)">Spat</th><th data-tip="Gated Spatial Consistency" onclick="sortTable('table-detail-full',16)">GSp</th><th data-tip="Perspective Consistency" onclick="sortTable('table-detail-full',17)">Persp</th><th data-tip="Segment Continuity" onclick="sortTable('table-detail-full',18)">Seg</th><th data-tip="Geometric Consistency" onclick="sortTable('table-detail-full',19)">Geo</th><th data-tip="Photometric Consistency" onclick="sortTable('table-detail-full',20)">Photo</th><th data-tip="Subject Consistency Cross-Model" onclick="sortTable('table-detail-full',21)">SubjC</th><th data-tip="Physical Plausibility" onclick="sortTable('table-detail-full',22)">VPlaus</th><th data-tip="Physics Fidelity" onclick="sortTable('table-detail-full',23)">CFid</th></tr></thead><tbody>
+<tr data-model-type="text"><td class="rank-gold">🥇</td><td><img src="imgs/kling.jpeg" class="model-icon">Kling 3.0<br><span class="creator">Kling AI · API</span></td><td>61.3</td><td>67.7</td><td>94.5</td><td>89.9</td><td>97.9</td><td>68.8</td><td>89.0</td><td>92.9</td><td>70.3</td><td>81.4</td><td>85.6</td><td>55.0</td><td>92.7</td><td>75.2</td><td>75.1</td><td>76.8</td><td>92.7</td><td>89.4</td><td>80.4</td><td>88.5</td><td>60.4</td><td>78.0</td></tr>
+<tr data-model-type="text"><td class="rank-silver">🥈</td><td><img src="imgs/wan.png" class="model-icon">Wan 2.7<br><span class="creator">Alibaba · API</span></td><td>59.6</td><td>68.1</td><td>93.0</td><td>99.3</td><td>96.5</td><td>69.4</td><td>88.3</td><td>94.6</td><td>66.0</td><td>84.0</td><td>83.4</td><td>55.0</td><td>89.5</td><td>71.0</td><td>71.0</td><td>62.2</td><td>65.6</td><td>82.6</td><td>75.5</td><td>88.7</td><td>59.8</td><td>83.3</td></tr>
+<tr data-model-type="text"><td class="rank-bronze">🥉</td><td><img src="imgs/bytedance.png" class="model-icon">Seedance 1.5<br><span class="creator">ByteDance · API</span></td><td>59.7</td><td>69.8</td><td>93.4</td><td>98.3</td><td>97.6</td><td>72.9</td><td>71.6</td><td>94.2</td><td>68.0</td><td>80.4</td><td>80.0</td><td>45.0</td><td>89.6</td><td>72.7</td><td>72.4</td><td>62.7</td><td>92.4</td><td>83.5</td><td>76.7</td><td>89.3</td><td>60.5</td><td>76.0</td></tr>
+<tr data-model-type="text"><td class="">4</td><td><img src="imgs/hunyuan.png" class="model-icon">HY-Video 1.5<br><span class="creator">Tencent · Open Source</span></td><td>61.9</td><td>67.4</td><td>95.5</td><td>68.8</td><td>98.8</td><td>67.5</td><td>77.5</td><td>93.6</td><td>71.8</td><td>63.8</td><td>55.6</td><td>27.6</td><td>92.4</td><td>79.2</td><td>75.1</td><td>86.6</td><td>99.3</td><td>94.4</td><td>81.4</td><td>91.5</td><td>59.3</td><td>75.0</td></tr>
+<tr data-model-type="text"><td class="">5</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Super<br><span class="creator">NVIDIA · Open Source</span></td><td>61.8</td><td>67.0</td><td>95.0</td><td>55.0</td><td>98.1</td><td>71.2</td><td>87.4</td><td>91.4</td><td>59.3</td><td>53.0</td><td>49.2</td><td>19.4</td><td>91.8</td><td>76.4</td><td>75.3</td><td>66.0</td><td>95.5</td><td>95.3</td><td>84.3</td><td>89.8</td><td>61.2</td><td>76.6</td></tr>
+<tr data-model-type="text"><td class="">6</td><td><img src="imgs/lightrix.jpeg" class="model-icon">LTX 2.3<br><span class="creator">Lightricks · Open Source</span></td><td>56.9</td><td>62.3</td><td>94.1</td><td>94.4</td><td>96.8</td><td>57.7</td><td>81.3</td><td>89.2</td><td>67.6</td><td>53.0</td><td>51.8</td><td>25.0</td><td>89.3</td><td>70.2</td><td>70.2</td><td>69.8</td><td>77.8</td><td>81.1</td><td>79.4</td><td>86.7</td><td>56.2</td><td>74.0</td></tr>
+<tr data-model-type="text"><td class="">7</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos 2.5<br><span class="creator">NVIDIA · Open Source</span></td><td>60.1</td><td>67.2</td><td>96.0</td><td>42.4</td><td>98.3</td><td>65.9</td><td>72.4</td><td>94.2</td><td>64.1</td><td>48.2</td><td>41.6</td><td>20.0</td><td>92.3</td><td>78.1</td><td>74.3</td><td>84.3</td><td>93.1</td><td>94.2</td><td>82.1</td><td>91.8</td><td>59.3</td><td>74.7</td></tr>
+<tr data-model-type="text"><td class="">8</td><td><img src="imgs/longcat.png" class="model-icon">LongCat-Video<br><span class="creator">Meituan · Open Source</span></td><td>64.7</td><td>69.8</td><td>94.9</td><td>59.7</td><td>97.7</td><td>76.3</td><td>53.1</td><td>91.5</td><td>63.1</td><td>50.4</td><td>48.4</td><td>18.3</td><td>94.7</td><td>83.3</td><td>66.2</td><td>81.5</td><td>98.6</td><td>94.7</td><td>81.5</td><td>92.4</td><td>60.8</td><td>76.0</td></tr>
+<tr data-model-type="text"><td class="">9</td><td><img src="imgs/cosmos.png" class="model-icon">Cosmos3-Nano<br><span class="creator">NVIDIA · Open Source</span></td><td>59.9</td><td>65.9</td><td>95.9</td><td>61.3</td><td>98.2</td><td>68.7</td><td>82.0</td><td>91.2</td><td>60.3</td><td>41.5</td><td>37.3</td><td>8.1</td><td>91.1</td><td>74.1</td><td>71.7</td><td>73.9</td><td>95.2</td><td>95.1</td><td>85.1</td><td>89.4</td><td>60.6</td><td>67.1</td></tr>
+<tr data-model-type="text"><td class="">10</td><td><img src="imgs/shlab.png" class="model-icon">YUME 1.5<br><span class="creator">Shanghai AI Lab · Open Source</span></td><td>59.3</td><td>65.7</td><td>94.8</td><td>86.1</td><td>97.7</td><td>62.0</td><td>53.1</td><td>91.7</td><td>72.0</td><td>57.8</td><td>47.0</td><td>16.7</td><td>92.0</td><td>71.5</td><td>71.4</td><td>48.0</td><td>99.3</td><td>91.1</td><td>84.1</td><td>89.4</td><td>58.1</td><td>72.7</td></tr>
+<tr data-model-type="text"><td class="">11</td><td><img src="imgs/kairos.png" class="model-icon">Kairos 3.0<br><span class="creator">SenseTime · Open Source</span></td><td>58.4</td><td>63.6</td><td>96.3</td><td>63.5</td><td>97.9</td><td>58.8</td><td>52.2</td><td>88.5</td><td>65.1</td><td>46.8</td><td>41.4</td><td>13.3</td><td>91.8</td><td>76.8</td><td>62.0</td><td>76.3</td><td>94.1</td><td>91.5</td><td>82.1</td><td>90.7</td><td>58.2</td><td>62.7</td></tr></tbody></table></div>
+</section>
+<section id="metrics-desc">
+  <h2>Evaluation Metrics</h2>
+  <p class="desc">22 metrics across 5 dimensions. All scores normalized to 0–100, higher is better.</p>
+  <div class="metrics-grid">
+    <div class="metrics-group" style="--c:#2563eb"><h3>Video Quality (7)</h3><ul>
+      <li><b>Aesthetic</b> <span>VBench aesthetic scorer</span></li>
+      <li><b>Imaging</b> <span>VBench technical quality</span></li>
+      <li><b>Flickering</b> <span>Inter-frame brightness stability</span></li>
+      <li><b>Dynamic</b> <span>RAFT optical flow magnitude</span></li>
+      <li><b>Smoothness</b> <span>RAFT flow consistency</span></li>
+      <li><b>Background</b> <span>CLIP background similarity</span></li>
+      <li><b>HPSv3</b> <span>Human Preference Score v3</span></li>
+    </ul></div>
+    <div class="metrics-group" style="--c:#ea580c"><h3>Setting Adherence (2)</h3><ul>
+      <li><b>Scene</b> <span>VLM: scene elements vs. environment prompt</span></li>
+      <li><b>Subject</b> <span>VLM: appearance/action vs. character prompt</span></li>
+    </ul></div>
+    <div class="metrics-group" style="--c:#16a34a"><h3>Interaction (4)</h3><ul>
+      <li><b>Navigation</b> <span>MegaSAM pose estimation, NavScore = (Acc+Con)/2</span></li>
+      <li><b>Event Edit</b> <span>VLM: environment changes vs. instruction</span></li>
+      <li><b>Subject Action</b> <span>VLM: action execution correctness</span></li>
+      <li><b>Perspective Switch</b> <span>VLM: FP↔TP transition accuracy</span></li>
+    </ul></div>
+    <div class="metrics-group" style="--c:#7c3aed"><h3>Consistency (8)</h3><ul>
+      <li><b>Spatial</b> <span>DreamSim: first vs. last frame after loop</span></li>
+      <li><b>Gated Spatial</b> <span>Spatial × dynamic degree gate</span></li>
+      <li><b>Perspective</b> <span>SAM2 mask centroid stability</span></li>
+      <li><b>Segment</b> <span>TransNetV2 shot-boundary; 1-cut_rate</span></li>
+      <li><b>Geometric</b> <span>DA3 depth reprojection error</span></li>
+      <li><b>Photometric</b> <span>DA3 pixel reprojection PSNR</span></li>
+      <li><b>Subject</b> <span>DINOv2+CLIP masked similarity</span></li>
+      <li><b>Background</b> <span>CLIP background region similarity</span></li>
+    </ul></div>
+    <div class="metrics-group" style="--c:#dc2626"><h3>Physical (2)</h3><ul>
+      <li><b>Visual Plausibility</b> <span>Tuned VLM-based plausibility regressor</span></li>
+      <li><b>Causal Fidelity</b> <span>VLM: physical cause-effect correctness</span></li>
+    </ul></div>
+  </div>
+</section>
+<section id="metric-compare">
+    <h2>Metric Comparison</h2>
+    <p class="desc">Same case, different models — see how metrics capture quality differences.</p>
+    <div class="carousel-outer">
+      <button class="carousel-btn" onclick="carouselPrev()">‹</button>
+      <div class="carousel-container">
+      <div class="carousel-track" id="carousel-track">
+        <div class="compare-card active">
+          <div class="compare-title">Video Quality (6 sub-metrics)</div>
+          <div class="compare-prompt"><b>Prompt:</b> A modern city street in clear daylight. A Shiba Inu with tan-and-cream fur trots forward on a broad asphalt road lined with storefronts.<br><b>Interactions:</b> W → right → right → left</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/video_quality/astra.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/thu.png" class="cs-icon">Astra</div>
+              <div class="score-list"><span>Aesthetic <b class="sc-val low">43.6</b></span><span>Imaging <b class="sc-val low">52.5</b></span><span>HPSv3 <b class="sc-val low">28.0</b></span><span>Dynamic <b class="sc-val mid">79.6</b></span><span>Smoothness <b class="sc-val good">97.7</b></span><span>Flickering <b class="sc-val good">96.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/video_quality/lingbot.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/lingbot.png" class="cs-icon">LingBot-World</div>
+              <div class="score-list"><span>Aesthetic <b class="sc-val good">66.9</b></span><span>Imaging <b class="sc-val good">67.9</b></span><span>HPSv3 <b class="sc-val good">81.4</b></span><span>Dynamic <b class="sc-val mid">66.2</b></span><span>Smoothness <b class="sc-val good">96.9</b></span><span>Flickering <b class="sc-val good">94.1</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Setting Adherence (2 sub-metrics)</div>
+          <div class="compare-prompt"><b>Prompt:</b> A realistic basketball court, third-person view locked onto player #12 in red, tracking movement across polished hardwood floor with clean markings. Other players in red and blue uniforms move around. Hoop and backboard at far end under even indoor lighting.<br><b>Interactions:</b> W → left → S</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/setting/matrixgame3.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/skywork.jpeg" class="cs-icon">MatrixGame 3.0</div>
+              <div class="score-list"><span>Scene <b class="sc-val low">30.0</b></span><span>Subject <b class="sc-val low">20.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/setting/kling.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/kling.jpeg" class="cs-icon">Kling 3.0</div>
+              <div class="score-list"><span>Scene <b class="sc-val good">100.0</b></span><span>Subject <b class="sc-val good">100.0</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Navigation Trajectory (3 sub-metrics)</div>
+          <div class="compare-prompt"><b>Prompt:</b> A third-person realistic scene on a dirt path between grapevine rows in a Tuscan vineyard in the afternoon. A man in a white linen shirt walks forward.<br><b>Interactions:</b> W → D → S → A</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/navi/happy.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/alibaba.png" class="cs-icon">Happy Oyster</div>
+              <div class="score-list"><span>NavScore <b class="sc-val good">94.8</b></span><span>Accuracy <b class="sc-val good">98.5</b></span><span>Consistency <b class="sc-val good">91.2</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/navi/genie3.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/google.png" class="cs-icon">Genie 3</div>
+              <div class="score-list"><span>NavScore <b class="sc-val low">32.2</b></span><span>Accuracy <b class="sc-val mid">57.5</b></span><span>Consistency <b class="sc-val low">6.9</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Navigation Trajectory (3 sub-metrics)</div>
+          <div class="compare-prompt"><b>Prompt:</b> First-person view inside a neoclassical museum gallery, facing deeper into the hall. A wide marble staircase descends behind, a broad archway opens into an adjacent exhibition hall.<br><b>Interactions:</b> left → left → right → right</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/navi/longcat.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/longcat.png" class="cs-icon">LongCat-Video</div>
+              <div class="score-list"><span>NavScore <b class="sc-val mid">56.2</b></span><span>Accuracy <b class="sc-val low">19.9</b></span><span>Consistency <b class="sc-val good">92.6</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/navi/matrixgame3.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/skywork.jpeg" class="cs-icon">MatrixGame 3.0</div>
+              <div class="score-list"><span>NavScore <b class="sc-val good">81.4</b></span><span>Accuracy <b class="sc-val good">90.0</b></span><span>Consistency <b class="sc-val mid">72.7</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Subject Action Adherence</div>
+          <div class="compare-prompt"><b>Prompt:</b> An outdoor concrete basketball court, first-person view.<br><b>Action (Turn 1):</b> Dribble the basketball with the right hand, bouncing it on the ground several times in place.</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/subject_action/yume.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/shlab.png" class="cs-icon">YUME 1.5</div>
+              <div class="score-list"><span>Score <b class="sc-val low">35.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/subject_action/kling.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/kling.jpeg" class="cs-icon">Kling 3.0</div>
+              <div class="score-list"><span>Score <b class="sc-val good">95.0</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Event Edit Adherence</div>
+          <div class="compare-prompt"><b>Prompt:</b> A grand magical library interior in CG style. A young wizard in purple hooded robe, seen from behind.<br><b>Event (Turn 1):</b> The wizard picks up the crystal staff.</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/ee/longcat.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/longcat.png" class="cs-icon">LongCat-Video</div>
+              <div class="score-list"><span>Score <b class="sc-val low">8.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/ee/wan.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/wan.png" class="cs-icon">Wan 2.7</div>
+              <div class="score-list"><span>Score <b class="sc-val good">96.0</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Perspective Switch Adherence</div>
+          <div class="compare-prompt"><b>Prompt:</b> Large wooden sailing ship at sea during a storm. A pirate captain in a long dark coat with a tricorn hat.<br><b>Switch:</b> TP → FP → TP</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/ps/longcat.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/longcat.png" class="cs-icon">LongCat-Video</div>
+              <div class="score-list"><span>Score <b class="sc-val low">0.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/interaction/ps/wan.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/wan.png" class="cs-icon">Wan 2.7</div>
+              <div class="score-list"><span>Score <b class="sc-val good">100.0</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Spatial Consistency & Gated Spatial Consistency</div>
+          <div class="compare-prompt"><b>Prompt:</b> A retro 1980s arcade with rows of colorful game cabinets. Neon strip lights in pink and blue.<br><b>Interactions:</b> A → A → D → D (loop trajectory)</div>
+          <div class="compare-videos tri">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/consistency/spatial/gamecraft.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/hunyuan.png" class="cs-icon">HY-GameCraft</div>
+              <div class="score-list"><span>Spatial <b class="sc-val low">8.8</b></span><span>Gated <b class="sc-val mid">66.8</b></span><span>Dynamic <b class="sc-val good">100.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/consistency/spatial/fantasy.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/hunyuan.png" class="cs-icon">HY-World 1.5</div>
+              <div class="score-list"><span>Spatial <b class="sc-val good">87.4</b></span><span>Gated <b class="sc-val good">87.4</b></span><span>Dynamic <b class="sc-val good">100.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/consistency/spatial/hworldplay.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/amap.png" class="cs-icon">Fantasy-World</div>
+              <div class="score-list"><span>Spatial <b class="sc-val good">93.6</b></span><span>Gated <b class="sc-val low">7.0</b></span><span>Dynamic <b class="sc-val low">7.0</b></span></div>
+            </div>
+          </div>
+          <div class="compare-prompt" style="margin-top:12px;margin-bottom:0"><b>Note:</b> Spatial Consistency measures frame similarity after a full loop (returning to start). Static videos can hack this metric, so Gated Spatial Consistency weights by motion magnitude — low-dynamic videos get penalized.</div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Physical: Collision</div>
+          <div class="compare-prompt"><b>Prompt:</b> Outdoor basketball court on a sunny afternoon. A standard orange basketball resting on the concrete surface.<br><b>Interactions:</b> A → A → D → D</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/physical/kairos.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/kairos.png" class="cs-icon">Kairos 3.0</div>
+              <div class="score-list"><span>Causal Fidelity <b class="sc-val low">10.0</b></span><span>Visual Plausibility <b class="sc-val mid">60.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/physical/genie3.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/google.png" class="cs-icon">Genie 3</div>
+              <div class="score-list"><span>Causal Fidelity <b class="sc-val good">100.0</b></span><span>Visual Plausibility <b class="sc-val good">80.0</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-title">Physical: Surface Interaction</div>
+          <div class="compare-prompt"><b>Prompt:</b> Antarctic ice sheet under bright overcast sky. An emperor penguin with black back and yellow-orange ear patches waddles side to side.<br><b>Interactions:</b> A → A → D → D</div>
+          <div class="compare-videos">
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/physical/ltx.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/lightrix.jpeg" class="cs-icon">LTX 2.3</div>
+              <div class="score-list"><span>Causal Fidelity <b class="sc-val low">0.0</b></span><span>Visual Plausibility <b class="sc-val mid">60.0</b></span></div>
+            </div>
+            <div class="compare-item">
+              <video autoplay muted playsinline><source src="video/metric_compare/physical/hunyuan.mp4" type="video/mp4"></video>
+              <div class="compare-label"><img src="imgs/hunyuan.png" class="cs-icon">HY-Video 1.5</div>
+              <div class="score-list"><span>Causal Fidelity <b class="sc-val good">100.0</b></span><span>Visual Plausibility <b class="sc-val good">80.0</b></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <button class="carousel-btn" onclick="carouselNext()">›</button>
+    </div>
+    <div class="carousel-controls"><div class="carousel-dots" id="carousel-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><button class="auto-loop-btn active" id="auto-loop-btn" onclick="toggleAutoLoop()">&#x21BB; Auto-loop</button></div>
+  </section>
+<section id="dataset"><h2>Statistics</h2><p class="desc">289 cases, 4 interaction types, 6 scene categories, 5 subject types.</p>
+<div class="stats-bars">
+  <div class="bar-group"><div class="bar-label">Perspective</div><div class="bar-track"><span class="bar-seg" style="width:61.6%;background:#93c5fd" data-tip="178 cases">FPP<span class="bar-num">(178)</span></span><span class="bar-seg" style="width:38.4%;background:#fca5a5" data-tip="111 cases">TPP<span class="bar-num">(111)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">Turns/Case</div><div class="bar-track"><span class="bar-seg" style="width:23.2%;background:#93c5fd" data-tip="67 cases">2<span class="bar-num">(67)</span></span><span class="bar-seg" style="width:13.5%;background:#fca5a5" data-tip="39 cases">3<span class="bar-num">(39)</span></span><span class="bar-seg" style="width:51.2%;background:#fcd34d" data-tip="148 cases">4<span class="bar-num">(148)</span></span><span class="bar-seg" style="width:5.5%;background:#86efac" data-tip="16 cases">5<span class="bar-num">(16)</span></span><span class="bar-seg" style="width:6.6%;background:#c4b5fd" data-tip="19 cases">6+<span class="bar-num">(19)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">Interaction</div><div class="bar-track"><span class="bar-seg" style="width:56.8%;background:#93c5fd" data-tip="601 turns">Navigation<span class="bar-num">(601)</span></span><span class="bar-seg" style="width:20.1%;background:#fca5a5" data-tip="213 turns">Subject Action<span class="bar-num">(213)</span></span><span class="bar-seg" style="width:17.3%;background:#fcd34d" data-tip="183 turns">Event Edit<span class="bar-num">(183)</span></span><span class="bar-seg" style="width:5.8%;background:#86efac" data-tip="61 turns">PS<span class="bar-num">(61)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">SA Type</div><div class="bar-track"><span class="bar-seg" style="width:25%;background:#93c5fd" data-tip="19 cases">Locomotion<span class="bar-num">(19)</span></span><span class="bar-seg" style="width:25%;background:#fca5a5" data-tip="19 cases">Manipulation<span class="bar-num">(19)</span></span><span class="bar-seg" style="width:25%;background:#fcd34d" data-tip="19 cases">Tool Use<span class="bar-num">(19)</span></span><span class="bar-seg" style="width:25%;background:#86efac" data-tip="19 cases">NPC<span class="bar-num">(19)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">EE Type</div><div class="bar-track"><span class="bar-seg" style="width:24%;background:#93c5fd" data-tip="21 cases">Environment<span class="bar-num">(21)</span></span><span class="bar-seg" style="width:23%;background:#fca5a5" data-tip="20 cases">Appearance<span class="bar-num">(20)</span></span><span class="bar-seg" style="width:22%;background:#fcd34d" data-tip="19 cases">Obj.Mech<span class="bar-num">(19)</span></span><span class="bar-seg" style="width:18%;background:#86efac" data-tip="16 cases">Obj.Phys<span class="bar-num">(16)</span></span><span class="bar-seg" style="width:13%;background:#c4b5fd" data-tip="12 cases">Obj.Natural<span class="bar-num">(12)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">Subject</div><div class="bar-track"><span class="bar-seg" style="width:43.6%;background:#93c5fd" data-tip="126 cases">Human<span class="bar-num">(126)</span></span><span class="bar-seg" style="width:6.2%;background:#fca5a5" data-tip="18 cases">Animal<span class="bar-num">(18)</span></span><span class="bar-seg" style="width:5.9%;background:#fcd34d" data-tip="17 cases">Robot<span class="bar-num">(17)</span></span><span class="bar-seg" style="width:4.8%;background:#86efac" data-tip="14 cases">Vehicle<span class="bar-num">(14)</span></span><span class="bar-seg" style="width:39.4%;background:#c4b5fd" data-tip="114 cases">Other<span class="bar-num">(114)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">Scene</div><div class="bar-track"><span class="bar-seg" style="width:30.8%;background:#93c5fd" data-tip="89 cases">Nature<span class="bar-num">(89)</span></span><span class="bar-seg" style="width:21.1%;background:#fca5a5" data-tip="61 cases">Urban<span class="bar-num">(61)</span></span><span class="bar-seg" style="width:16.3%;background:#fcd34d" data-tip="47 cases">Indoor<span class="bar-num">(47)</span></span><span class="bar-seg" style="width:13.8%;background:#86efac" data-tip="40 cases">Work<span class="bar-num">(40)</span></span><span class="bar-seg" style="width:10.0%;background:#c4b5fd" data-tip="29 cases">Fantasy<span class="bar-num">(29)</span></span><span class="bar-seg" style="width:8.0%;background:#fdba74" data-tip="23 cases">Sports<span class="bar-num">(23)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">Style</div><div class="bar-track"><span class="bar-seg" style="width:51.9%;background:#93c5fd" data-tip="150 cases">Photorealistic<span class="bar-num">(150)</span></span><span class="bar-seg" style="width:48.1%;background:#fca5a5" data-tip="139 cases">Styled<span class="bar-num">(139)</span></span></div></div>
+  <div class="bar-group"><div class="bar-label">Turns</div><div class="bar-track"><span class="bar-seg" style="width:51%;background:#93c5fd" data-tip="148 cases">4 turns</span><span class="bar-seg" style="width:23%;background:#fca5a5" data-tip="66 cases">5+</span><span class="bar-seg" style="width:13%;background:#fcd34d" data-tip="38 cases">3</span><span class="bar-seg" style="width:13%;background:#86efac" data-tip="37 cases">2</span></div></div>
+</div>
+</section>
+<section id="gallery">
+  <h2>Dataset Gallery</h2>
+  <p class="desc">Browse all 289 cases. Hover images with mask badge to see subject segmentation overlay.</p>
+  <div class="gallery-filters">
+    <div class="filter-group"><span class="filter-label">Scene:</span><button class="active" data-gf="scene" data-gv="all" onclick="galFilter(this)">All</button><button data-gf="scene" data-gv="Nature" onclick="galFilter(this)">Nature</button><button data-gf="scene" data-gv="Urban" onclick="galFilter(this)">Urban</button><button data-gf="scene" data-gv="Indoor" onclick="galFilter(this)">Indoor</button><button data-gf="scene" data-gv="Workspace" onclick="galFilter(this)">Work</button><button data-gf="scene" data-gv="Fantasy" onclick="galFilter(this)">Fantasy</button><button data-gf="scene" data-gv="Sports/Game" onclick="galFilter(this)">Sports</button></div>
+    <div class="filter-group"><span class="filter-label">View:</span><button class="active" data-gf="perspective" data-gv="all" onclick="galFilter(this)">All</button><button data-gf="perspective" data-gv="first_person" onclick="galFilter(this)">FP</button><button data-gf="perspective" data-gv="third_person" onclick="galFilter(this)">TP</button></div>
+  </div>
+  <div class="gallery-filters">
+    <div class="filter-group"><span class="filter-label">Subject:</span><button class="active" data-gf="subject" data-gv="all" onclick="galFilter(this)">All</button><button data-gf="subject" data-gv="Human" onclick="galFilter(this)">Human</button><button data-gf="subject" data-gv="Animal" onclick="galFilter(this)">Animal</button><button data-gf="subject" data-gv="Vehicle" onclick="galFilter(this)">Vehicle</button><button data-gf="subject" data-gv="Robot" onclick="galFilter(this)">Robot</button><button data-gf="subject" data-gv="Other" onclick="galFilter(this)">Other</button></div>
+    <div class="filter-group"><span class="filter-label">Style:</span><button class="active" data-gf="style" data-gv="all" onclick="galFilter(this)">All</button><button data-gf="style" data-gv="photorealistic" onclick="galFilter(this)">Real</button><button data-gf="style" data-gv="styled" onclick="galFilter(this)">Styled</button></div>
+  </div>
+  <div class="gallery-count" id="gallery-count">Showing 289 / 289 cases</div>
+  <div class="gallery-grid" id="gallery-grid"></div>
+</section>
+<section id="citation"><h2>Citation</h2><p class="desc">If you find our work useful, please consider citing:</p>
+<div style="position:relative">
+<button onclick="copyCite(this)" aria-label="Copy citation" style="position:absolute;top:10px;right:10px;padding:5px 12px;font:600 12px Inter,-apple-system,sans-serif;color:#334155;background:#fff;border:1px solid #d1d9e6;border-radius:6px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.06);transition:all .15s">📋 Copy</button>
+<pre id="bibtex" style="background:#f5f7fa;border:1px solid #eee;border-radius:8px;padding:16px;font-size:12px;font-family:'JetBrains Mono',monospace;overflow-x:auto;line-height:1.6">@article{ying2026wbenchcomprehensivemultiturnbenchmark,
+  title={WBench: A Comprehensive Multi-turn Benchmark for Interactive Video World Model Evaluation},
+  author={Ying, Kaining and Hu, Hengrui and Ren, Siyu and Li, Jiamu and Chen, Fengjiao and Wang, Ziwen and Cao, Xuezhi and Cai, Xunliang and Ding, Henghui},
+  journal={arXiv preprint arXiv:2605.25874},
+  year={2026}
+}</pre>
+</div>
+<script>function copyCite(b){var t=document.getElementById('bibtex').innerText.replace(/\s+$/,'');function done(){b.textContent='✓ Copied';b.style.color='#16a34a';b.style.borderColor='#16a34a';setTimeout(function(){b.textContent='📋 Copy';b.style.color='#334155';b.style.borderColor='#d1d9e6'},1500)}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(function(){cf(t,done)})}else{cf(t,done)}}function cf(t,cb){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(a);cb()}</script>
+</section>
+</div><div class="page-sidebar"><div class="toc"><div class="toc-title">Content</div><a href="#tldr">TL;DR</a><a href="#findings">Findings</a><a href="#leaderboard" class="active">Leaderboard</a><a href="#metrics-desc">Metrics</a><a href="#metric-compare">Examples</a><a href="#dataset">Statistics</a><a href="#gallery">Gallery</a><a href="#citation">Citation</a></div></div></div></div>
+<footer><a href="https://github.com/meituan-longcat/WBench">GitHub</a><a href="https://huggingface.co/datasets/meituan-longcat/WBench">Dataset</a><a href="https://modelscope.cn/datasets/meituan-longcat/WBench">ModelScope</a><a href="https://mp.weixin.qq.com/s/br3RlOBGtReolLZc5YW2HA">中文解读</a><a href="https://huggingface.co/meituan-longcat/WBench-weights">Weights</a><p style="margin-top:12px">© 2026 Meituan LongCat Team & Fudan University</p></footer>
+<script>
+function updateTable(btn){const g=btn.parentElement;g.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');moveSlider(g,btn);const s=document.querySelector('[data-split].active'),v=document.querySelector('[data-view].active');const split=s?s.dataset.split:'navi',view=v?v.dataset.view:'dims';const m={'navi_dims':'tab-navi','navi_metrics':'tab-detail','full_dims':'tab-full','full_metrics':'tab-detail-full'};['tab-navi','tab-full','tab-detail','tab-detail-full'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=(id===m[split+'_'+view])?'':'none'});
+const eb=document.getElementById('expand-metrics-btn');if(eb){if(view==='metrics'){eb.classList.add('visible');eb.textContent='⟨ Scroll horizontally to see all 19+ metrics ⟩'}else{eb.classList.remove('visible')}}}
+function filterType(btn){const g=btn.parentElement;g.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');moveSlider(g,btn);const t=btn.dataset.type;document.querySelectorAll('.table-wrap').forEach(wrap=>{let msg=wrap.querySelector('.no-results');if(!msg){msg=document.createElement('p');msg.className='no-results';msg.style.cssText='text-align:center;padding:30px;color:#aaa;font-size:14px';wrap.appendChild(msg)}const tbody=wrap.querySelector('tbody');if(!tbody){return}const rows=tbody.querySelectorAll('tr[data-model-type]');let visible=0;rows.forEach(r=>{const show=(t==='all'||r.dataset.modelType===t);r.style.display=show?'':'none';if(show)visible++});msg.textContent=visible===0?'This split does not contain '+t+'-conditioned models.':'';msg.style.display=visible===0?'':'none';if(wrap.querySelector('table'))wrap.querySelector('table').style.display=visible===0?'none':''})}
+function sortTable(tid,col){const t=document.getElementById(tid);if(!t)return;const tb=t.querySelector('tbody'),rows=Array.from(tb.querySelectorAll('tr'));const desc=t.dataset.sortCol==col&&t.dataset.sortDir=='desc';const dir=desc?'asc':'desc';rows.sort((a,b)=>{const va=parseFloat(a.cells[col].textContent)||0,vb=parseFloat(b.cells[col].textContent)||0;return dir==='desc'?vb-va:va-vb});rows.forEach((r,i)=>{r.cells[0].innerHTML=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);r.cells[0].className=i===0?'rank-gold':i===1?'rank-silver':i===2?'rank-bronze':'';tb.appendChild(r)});t.dataset.sortCol=col;t.dataset.sortDir=dir;addColumnRanks(tid);}
+function addColumnRanks(tid){const t=document.getElementById(tid);if(!t)return;const rows=Array.from(t.querySelector('tbody').querySelectorAll('tr'));const n=rows[0]?rows[0].cells.length:0;for(let c=2;c<n;c++){const v=rows.map((r,i)=>({i,v:parseFloat(r.cells[c].textContent)||0}));v.sort((a,b)=>b.v-a.v);const rk={};v.forEach((x,r)=>{rk[x.i]=r+1});rows.forEach((r,i)=>{const cell=r.cells[c];let s=cell.querySelector('.col-rank');if(!s){s=document.createElement('span');s.className='col-rank';cell.appendChild(s)}const rank=rk[i];if(rank===1){s.textContent='🥇';s.style.fontSize='17px'}else if(rank===2){s.textContent='🥈';s.style.fontSize='17px'}else if(rank===3){s.textContent='🥉';s.style.fontSize='17px'}else{s.textContent='#'+(rank<10?rank+' ':rank);s.style.fontSize=''}});}}
+function moveSlider(g,btn){let s=g.querySelector('.slider');if(!s){s=document.createElement('div');s.className='slider';g.appendChild(s)}s.style.left=btn.offsetLeft+'px';s.style.width=btn.offsetWidth+'px'}
+window.addEventListener('load',()=>{document.querySelectorAll('.filter-group').forEach(g=>{const a=g.querySelector('button.active');if(a)moveSlider(g,a)});addColumnRanks('table-navi');addColumnRanks('table-full');addColumnRanks('table-detail');addColumnRanks('table-detail-full');
+// Add dimension separators to detail tables
+const sepMap={'table-detail':[9,11,12,19],'table-detail-full':[9,11,15,22]};
+Object.keys(sepMap).forEach(tid=>{const t=document.getElementById(tid);if(!t)return;const cols=sepMap[tid];t.querySelectorAll('tr').forEach(row=>{cols.forEach(c=>{if(row.cells[c])row.cells[c].style.borderLeft='2px solid #ddd'})})});});
+const cv=document.getElementById('particle-canvas'),cx=cv.getContext('2d');let pts=[],tgt=[],pMode='scatter';function rCv(){cv.width=window.innerWidth*2;cv.height=window.innerHeight*2}function gTP(t){const o=document.createElement('canvas');o.width=cv.width;o.height=cv.height;const c=o.getContext('2d');const cw=Math.min(900,window.innerWidth-64),s=cw/window.innerWidth,fs=Math.min(cv.width*s/(t.length*.7),cv.height*.6);c.font='800 '+fs+'px Inter';c.textAlign='center';c.textBaseline='middle';c.fillText(t,cv.width/2,cv.height/2);const id=c.getImageData(0,0,cv.width,cv.height),p=[];for(let y=0;y<cv.height;y+=10)for(let x=0;x<cv.width;x+=10)if(id.data[(y*cv.width+x)*4+3]>128)p.push({x:x/2,y:y/2});return p}function gCLP(){return new Promise(resolve=>{const o=document.createElement('canvas');o.width=cv.width;o.height=cv.height;const c=o.getContext('2d');const cw=Math.min(900,window.innerWidth-64),cs=cw/window.innerWidth,rw=cv.width*cs,ox=(cv.width-rw)/2;let ld=0;const i1=new Image(),i2=new Image();i1.src='imgs/fudan.svg';i2.src='imgs/longcat.svg';function draw(){const h=cv.height*.5,lw=rw*.3,y=(cv.height-h)/2;const s1=Math.min(lw/i1.width,h/i1.height);c.drawImage(i1,ox+rw*.2-i1.width*s1/2,y+(h-i1.height*s1)/2,i1.width*s1,i1.height*s1);const fs=h*.5;c.font=fs+'px Inter';c.textAlign='center';c.textBaseline='middle';c.fillText('×',cv.width/2,cv.height/2);const s2=Math.min(lw/i2.width,h/i2.height);c.drawImage(i2,ox+rw*.8-i2.width*s2/2,y+(h-i2.height*s2)/2,i2.width*s2,i2.height*s2);const id=c.getImageData(0,0,cv.width,cv.height),p=[];for(let py=0;py<cv.height;py+=10)for(let px=0;px<cv.width;px+=10)if(id.data[(py*cv.width+px)*4+3]>128)p.push({x:px/2,y:py/2});resolve(p)}i1.onload=()=>{ld++;if(ld===2)draw()};i2.onload=()=>{ld++;if(ld===2)draw()}})}
+
+function initP(n){pts=[];for(let i=0;i<n;i++)pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,sz:1.5,cl:'hsl('+(210+Math.random()*20)+','+(10+Math.random()*5)+'%,'+(90+Math.random()*5)+'%)'})}function sM(m){pMode=m;if(m==='scatter')tgt=[];else if(m==='collab'){gCLP().then(p=>{tgt=p;while(pts.length<tgt.length)pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,sz:1.5,cl:'hsl('+(210+Math.random()*20)+','+(10+Math.random()*5)+'%,'+(90+Math.random()*5)+'%)'})});return}else{tgt=gTP('WBench');while(pts.length<tgt.length)pts.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,sz:1.5,cl:'hsl('+(210+Math.random()*20)+','+(10+Math.random()*5)+'%,'+(90+Math.random()*5)+'%)'})}}function anim(){cx.clearRect(0,0,cv.width,cv.height);for(let i=0;i<pts.length;i++){const p=pts[i];if(pMode==='scatter'||i>=tgt.length){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>window.innerWidth)p.vx*=-1;if(p.y<0||p.y>window.innerHeight)p.vy*=-1;p.x=Math.max(0,Math.min(window.innerWidth,p.x));p.y=Math.max(0,Math.min(window.innerHeight,p.y))}else{const t=tgt[i];p.x+=(t.x-p.x)*.05+(Math.random()-.5)*.8;p.y+=(t.y-p.y)*.05+(Math.random()-.5)*.8}cx.fillStyle=p.cl;cx.fillRect(p.x*2-4,p.y*2-4,8,8)}requestAnimationFrame(anim)}rCv();initP(200);anim();window.addEventListener('resize',rCv);const modes=['scatter','collab','scatter','wbench'];let mi=0;setInterval(()=>{mi=(mi+1)%modes.length;sM(modes[mi])},10000);
+window.addEventListener('scroll',()=>{const ss=document.querySelectorAll('section[id]'),tl=document.querySelectorAll('.toc a');let cur='';ss.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id});tl.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur)})});
+
+let carIdx=0;const carTotal=10;
+function carouselGo(i){
+  carIdx=i;
+  document.getElementById('carousel-track').style.transform='translateX(-'+carIdx*100+'%)';
+  document.querySelectorAll('.carousel-dots .dot').forEach((d,j)=>d.classList.toggle('active',j===carIdx));
+  restartCardVideos();
+}
+function carouselNext(){carouselGo((carIdx+1)%carTotal)}
+function carouselPrev(){carouselGo((carIdx-1+carTotal)%carTotal)}
+let carHovered=false;
+let carAutoLoop=true;
+function toggleAutoLoop(){
+  carAutoLoop=!carAutoLoop;
+  document.getElementById('auto-loop-btn').classList.toggle('active',carAutoLoop);
+}
+function restartCardVideos(){
+  const cards=document.querySelectorAll('.compare-card');
+  const card=cards[carIdx];if(!card)return;
+  const vids=card.querySelectorAll('video');
+  let ended=0;const total=vids.length;
+  vids.forEach(v=>{
+    v.loop=false;v.currentTime=0;v.play();
+    v.onended=()=>{ended++;if(ended>=total&&!carHovered&&carAutoLoop)setTimeout(carouselNext,1500)};
+  });
+}
+setTimeout(restartCardVideos,800);
+document.querySelector('.carousel-outer').addEventListener('mouseenter',()=>{carHovered=true});
+document.querySelector('.carousel-outer').addEventListener('mouseleave',()=>{carHovered=false;
+  const cards=document.querySelectorAll('.compare-card');
+  const card=cards[carIdx];if(!card)return;
+  const vids=card.querySelectorAll('video');
+  const allEnded=[...vids].every(v=>v.ended);
+  if(allEnded&&carAutoLoop)setTimeout(carouselNext,1500);
+});
+
+// Gallery
+let galData=[];const galFilters={scene:'all',subject:'all',perspective:'all',style:'all'};
+fetch('data/gallery.json').then(r=>r.json()).then(data=>{galData=data;renderGallery();
+  document.querySelectorAll('.gallery-filters .filter-group').forEach(g=>{const a=g.querySelector('button.active');if(a)moveSlider(g,a)})});
+function galFilter(btn){
+  const g=btn.parentElement;g.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');moveSlider(g,btn);
+  galFilters[btn.dataset.gf]=btn.dataset.gv;
+  renderGallery();
+}
+function renderGallery(){
+  const grid=document.getElementById('gallery-grid');
+  const filtered=galData.filter(c=>{
+    if(galFilters.scene!=='all'&&c.scene!==galFilters.scene)return false;
+    if(galFilters.subject!=='all'&&c.subject!==galFilters.subject)return false;
+    if(galFilters.perspective!=='all'&&c.perspective!==galFilters.perspective)return false;
+    if(galFilters.style!=='all'&&c.style!==galFilters.style)return false;
+    return true;
+  });
+  document.getElementById('gallery-count').textContent='Showing '+filtered.length+' / '+galData.length+' cases';
+  const pLabel=p=>p==='first_person'?'FP':'TP';
+  if(filtered.length===0){
+    const activeFilters=Object.entries(galFilters).filter(([k,v])=>v!=='all').map(([k,v])=>v);
+    grid.innerHTML='<p style="text-align:center;padding:40px;color:#aaa;font-size:14px;grid-column:1/-1">No cases match the combination: '+activeFilters.join(' + ')+'</p>';
+    return;
+  }
+  grid.innerHTML=filtered.map(c=>{
+    const maskHtml=c.has_mask?'<img class="mask-overlay" src="data/masks/case_'+c.id+'_mask.png" loading="lazy"><span class="gallery-mask-badge">mask</span>':'';
+    return '<div class="gallery-item"><img src="data/thumbs/case_'+c.id+'.jpg" loading="lazy" alt="case_'+c.id+'">'+maskHtml+'<div class="gallery-info"><b>Case '+c.id+'</b><br>'+c.scene+' · '+pLabel(c.perspective)+' · '+c.style+' · '+c.subject+'</div></div>';
+  }).join('');
+}
+// Typewriter effect for hero title
+(function(){
+  const el=document.getElementById('hero-title');
+  const text='WBench';
+  let i=0;
+  el.innerHTML='<span class="cursor"></span>';
+  setTimeout(function type(){
+    if(i<text.length){
+      el.innerHTML=text.slice(0,i+1)+'<span class="cursor"></span>';
+      i++;
+      setTimeout(type,150);
+    }else{
+      setTimeout(()=>{el.innerHTML=text;},3500);
+    }
+  },300);
+})();
+</script>
+</body>
+</html>
