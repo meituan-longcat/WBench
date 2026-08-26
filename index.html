@@ -75,13 +75,18 @@ section .desc{color:#666;font-size:15px;margin-bottom:10px}
 .leaderboard-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:8px}
 .leaderboard-header h2{margin-bottom:8px}
 .leaderboard-header .desc{margin-bottom:0}
-.export-btn{min-width:118px;height:36px;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;margin-top:2px;padding:0 14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#334155;font:600 12px 'Inter',-apple-system,sans-serif;cursor:pointer;box-shadow:0 1px 2px rgba(15,23,42,.06);transition:background .15s,border-color .15s,color .15s,box-shadow .15s}
-.export-btn:hover{background:#eff6ff;border-color:#2563eb;color:#1d4ed8;box-shadow:0 3px 8px rgba(37,99,235,.14)}
-.export-btn:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
-.export-btn.is-success{background:#f0fdf4;border-color:#16a34a;color:#15803d}
-.export-btn.is-error{background:#fef2f2;border-color:#dc2626;color:#b91c1c}
+.leaderboard-actions{display:flex;align-items:center;gap:18px;flex-shrink:0;margin-top:2px}
+.export-btn,.submit-result-btn,.compact-toggle-btn{height:32px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:0;border:0;border-radius:0;background:transparent;color:#334155;font:600 12px 'Inter',-apple-system,sans-serif;cursor:pointer;box-shadow:none;text-decoration:none;transition:color .15s}
+.bracket-action::before,.bracket-action::after{color:#94a3b8;font-size:18px;font-weight:400;line-height:1}
+.bracket-action::before{content:'[';margin-right:6px}
+.bracket-action::after{content:']';margin-left:6px}
+.export-btn:hover,.submit-result-btn:hover,.compact-toggle-btn:hover{color:#1d4ed8}
+.compact-toggle-btn.is-active{color:#2563eb}
+.export-btn:focus-visible,.submit-result-btn:focus-visible,.compact-toggle-btn:focus-visible{outline:2px solid rgba(37,99,235,.35);outline-offset:4px}
+.export-btn.is-success{color:#15803d}
+.export-btn.is-error{color:#b91c1c}
 .export-icon{color:#2563eb;font-size:17px;line-height:1;transform:translateY(-1px)}
-@media(max-width:600px){.leaderboard-header{align-items:stretch;flex-direction:column;gap:10px}.export-btn{align-self:flex-start;margin-top:0}}
+@media(max-width:600px){.leaderboard-header{align-items:stretch;flex-direction:column;gap:10px}.leaderboard-actions{align-self:flex-start;margin-top:0;gap:14px;flex-wrap:wrap}}
 .dim-legend{display:flex;gap:16px;margin:0 0 4px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:12px;color:#666}
 .legend-bar{width:20px;height:3px;border-radius:2px}
@@ -104,6 +109,16 @@ td:nth-child(2){font-weight:600;white-space:nowrap;font-family:'Inter',sans-seri
 th:nth-child(2){text-align:left}
 tr:hover{background:#fafafa}
 tr:last-child td{border-bottom:none}
+#leaderboard.compact-mode td{padding-top:8px;padding-bottom:8px}
+#leaderboard.compact-mode td:nth-child(2) .model-tag,
+#leaderboard.compact-mode td:nth-child(2) .model-tag-line,
+#leaderboard.compact-mode td:nth-child(2) .model-note,
+#leaderboard.compact-mode td:nth-child(2) .model-updated,
+#leaderboard.compact-mode td:nth-child(2) .model-resources,
+#leaderboard.compact-mode td:nth-child(2) .full-open-check{display:none}
+#leaderboard.compact-mode td:nth-child(2) br:has(+ .model-tag),
+#leaderboard.compact-mode td:nth-child(2) br:has(+ .model-tag-line),
+#leaderboard.compact-mode td:nth-child(2) br:has(+ .model-note){display:none}
 tbody tr:nth-child(1){background:#fffbeb}
 tbody tr:nth-child(2){background:#f8fafc}
 tbody tr:nth-child(3){background:#fff7ed}
@@ -243,7 +258,7 @@ footer a{color:#666;text-decoration:none;margin:0 12px}
 .availability-filter{margin-left:0}
 .leaderboard-title-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .leaderboard-title-row h2{margin-bottom:0}
-.leaderboard-title-row .export-btn{margin-top:0}
+.leaderboard-title-row .leaderboard-actions{margin-top:0}
 .filter-group button{white-space:nowrap}
 .filter-group button small{margin-left:4px;white-space:nowrap}
 .full-open-check{display:inline-block;width:14px;height:14px;margin-left:5px;background:url('imgs/full-open-source.png') center/contain no-repeat;vertical-align:middle;cursor:help}
@@ -288,7 +303,7 @@ footer a{color:#666;text-decoration:none;margin:0 12px}
   </div>
 </div>
 </section>
-<section id="leaderboard"><div class="leaderboard-header"><div><h2>Leaderboard</h2><p class="desc">Click column headers to sort. Scores 0–100, higher is better. # = per-metric rank.</p></div><button class="export-btn" type="button" onclick="exportLeaderboards(this)" title="Export all four leaderboard sheets as one Excel workbook" aria-label="Export all four leaderboard sheets as one Excel workbook"><span class="export-icon" aria-hidden="true">&#8595;</span><span class="export-label" aria-live="polite">Export Excel</span></button></div><div class="dim-legend"><span class="legend-item"><span class="legend-bar" style="background:#2563eb"></span>Quality</span><span class="legend-item"><span class="legend-bar" style="background:#ea580c"></span>Setting</span><span class="legend-item"><span class="legend-bar" style="background:#16a34a"></span>Interaction</span><span class="legend-item"><span class="legend-bar" style="background:#7c3aed"></span>Consistency</span><span class="legend-item"><span class="legend-bar" style="background:#dc2626"></span>Physical</span><span class="legend-note">Hover abbreviations for full names</span></div><div class="filter-row"><div class="filter-group"><span class="filter-label">Split:</span><button class="active" data-split="navi" onclick="updateTable(this)">Navi (158)</button><button data-split="full" onclick="updateTable(this)">Full (289)</button></div><div class="filter-group"><span class="filter-label">Metric:</span><button class="active" data-view="dims" onclick="updateTable(this)">5 Dimensions</button><button data-view="metrics" onclick="updateTable(this)">All Metrics</button></div><div class="filter-group"><span class="filter-label">Type:</span><button class="active" data-type="all" onclick="filterType(this)">All<br><small>(33)</small></button><button data-type="text" onclick="filterType(this)">Text<br><small>(11)</small></button><button data-type="camera" onclick="filterType(this)">Camera<br><small>(13)</small></button><button data-type="action" onclick="filterType(this)">Action<br><small>(9)</small></button></div></div>
+<section id="leaderboard"><div class="leaderboard-header"><div><h2>Leaderboard</h2><p class="desc">Click column headers to sort. Scores 0–100, higher is better. # = per-metric rank.</p></div><div class="leaderboard-actions"><button class="export-btn bracket-action" type="button" onclick="exportLeaderboards(this)" title="Export all four leaderboard sheets as one Excel workbook" aria-label="Export all four leaderboard sheets as one Excel workbook"><span class="export-icon" aria-hidden="true">&#8595;</span><span class="export-label" aria-live="polite">Export Excel</span></button><button class="compact-toggle-btn bracket-action" type="button" onclick="toggleCompactMode(this)" aria-pressed="false" title="Show only model names and creators">Compact</button><a class="submit-result-btn bracket-action" href="https://github.com/meituan-longcat/WBench/blob/main/docs/SUBMISSION.md" target="_blank" rel="noopener noreferrer" title="Open the WBench submission guide">Submit My Result</a></div></div><div class="dim-legend"><span class="legend-item"><span class="legend-bar" style="background:#2563eb"></span>Quality</span><span class="legend-item"><span class="legend-bar" style="background:#ea580c"></span>Setting</span><span class="legend-item"><span class="legend-bar" style="background:#16a34a"></span>Interaction</span><span class="legend-item"><span class="legend-bar" style="background:#7c3aed"></span>Consistency</span><span class="legend-item"><span class="legend-bar" style="background:#dc2626"></span>Physical</span><span class="legend-note">Hover abbreviations for full names</span></div><div class="filter-row"><div class="filter-group"><span class="filter-label">Split:</span><button class="active" data-split="navi" onclick="updateTable(this)">Navi (158)</button><button data-split="full" onclick="updateTable(this)">Full (289)</button></div><div class="filter-group"><span class="filter-label">Metric:</span><button class="active" data-view="dims" onclick="updateTable(this)">5 Dimensions</button><button data-view="metrics" onclick="updateTable(this)">All Metrics</button></div><div class="filter-group"><span class="filter-label">Type:</span><button class="active" data-type="all" onclick="filterType(this)">All<br><small>(33)</small></button><button data-type="text" onclick="filterType(this)">Text<br><small>(11)</small></button><button data-type="camera" onclick="filterType(this)">Camera<br><small>(13)</small></button><button data-type="action" onclick="filterType(this)">Action<br><small>(9)</small></button></div></div>
 <div class="table-wrap" id="tab-navi"><table id="table-navi"><thead><tr><th>#</th><th>Model</th><th onclick="sortTable('table-navi',2)">Average ↕</th><th onclick="sortTable('table-navi',3)">Quality ↕</th><th onclick="sortTable('table-navi',4)">Setting ↕</th><th onclick="sortTable('table-navi',5)">Interaction ↕</th><th onclick="sortTable('table-navi',6)">Consistency ↕</th><th onclick="sortTable('table-navi',7)">Physical ↕</th></tr></thead><tbody>
 <tr data-model-type="action"><td class="rank-gold">🥇</td><td><img src="imgs/jd.png" class="model-icon">JoyAI-Echo-1.5 (WM)<br><span class="model-tag">bidirection</span><br><span class="creator">JD Future Academy · Open Source</span></td><td class="col-avg">81.6</td><td>81.5</td><td>79.4</td><td>86.6</td><td>89.8</td><td>70.6</td></tr>
 <tr data-model-type="action"><td class="rank-silver">🥈</td><td><img src="imgs/zing.svg" class="model-icon">Zing-0.5<br><span class="model-tag-line"><span class="model-type-tag model-type-action">action</span><span class="model-tag">4-step</span><span class="model-tag">5B</span><span class="model-tag">realtime</span></span><br><span class="creator">SeedLeap.ai · Open Source</span></td><td class="col-avg">81.0</td><td>80.6</td><td>77.8</td><td>84.2</td><td>88.5</td><td>73.8</td></tr>
@@ -658,6 +673,7 @@ function leaderboardSheetData(tableId,type){const table=document.getElementById(
 function exportCellValue(cell,col){const value=exportCellText(cell);if(col>1&&value!==''&&!Number.isNaN(Number(value)))return Number(value);return value}
 function exportCellText(cell){const copy=cell.cloneNode(true);copy.querySelectorAll('img,.creator,.col-rank,.model-type-tag,.model-updated,.model-resources,.full-open-check').forEach(el=>el.remove());return copy.textContent.replace(/\s+/g,' ').trim()}
 function setExportState(btn,label,stateClass){const text=btn.querySelector('.export-label');btn.classList.remove('is-success','is-error');btn.classList.add(stateClass);text.textContent=label;setTimeout(()=>{btn.classList.remove('is-success','is-error');text.textContent='Export Excel'},1600)}
+function toggleCompactMode(btn){var leaderboard=document.getElementById('leaderboard');if(!leaderboard)return;var compact=leaderboard.classList.toggle('compact-mode');btn.classList.toggle('is-active',compact);btn.setAttribute('aria-pressed',compact?'true':'false');btn.title=compact?'Show full model details':'Show only model names and creators'}
 function sortTable(tid,col){const t=document.getElementById(tid);if(!t)return;const tb=t.querySelector('tbody'),rows=Array.from(tb.querySelectorAll('tr'));const desc=t.dataset.sortCol==col&&t.dataset.sortDir=='desc';const dir=desc?'asc':'desc';rows.sort((a,b)=>{const va=parseFloat(a.cells[col].textContent)||0,vb=parseFloat(b.cells[col].textContent)||0;return dir==='desc'?vb-va:va-vb});rows.forEach((r,i)=>{r.cells[0].innerHTML=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);r.cells[0].className=i===0?'rank-gold':i===1?'rank-silver':i===2?'rank-bronze':'';tb.appendChild(r)});t.dataset.sortCol=col;t.dataset.sortDir=dir;addColumnRanks(tid);}
 function addColumnRanks(tid){const t=document.getElementById(tid);if(!t)return;const rows=Array.from(t.querySelector('tbody').querySelectorAll('tr'));const n=rows[0]?rows[0].cells.length:0;for(let c=2;c<n;c++){const v=rows.map((r,i)=>({i,v:parseFloat(r.cells[c].textContent)||0}));v.sort((a,b)=>b.v-a.v);const rk={};v.forEach((x,r)=>{rk[x.i]=r+1});rows.forEach((r,i)=>{const cell=r.cells[c];let s=cell.querySelector('.col-rank');if(!s){s=document.createElement('span');s.className='col-rank';cell.appendChild(s)}const rank=rk[i];if(rank===1){s.textContent='🥇';s.style.fontSize='17px'}else if(rank===2){s.textContent='🥈';s.style.fontSize='17px'}else if(rank===3){s.textContent='🥉';s.style.fontSize='17px'}else{s.textContent='#'+(rank<10?rank+' ':rank);s.style.fontSize=''}});}}
 function moveSlider(g,btn){let s=g.querySelector('.slider');if(!s){s=document.createElement('div');s.className='slider';g.appendChild(s)}s.style.left=btn.offsetLeft+'px';s.style.width=btn.offsetWidth+'px'}
@@ -851,13 +867,13 @@ function renderGallery(){
   if(leaderboardHeader){
     var titleBlock=leaderboardHeader.firstElementChild;
     var title=titleBlock&&titleBlock.querySelector('h2');
-    var exportButton=leaderboardHeader.querySelector('.export-btn');
-    if(title&&exportButton){
+    var actionGroup=leaderboardHeader.querySelector('.leaderboard-actions');
+    if(title&&actionGroup){
       var titleRow=document.createElement('div');
       titleRow.className='leaderboard-title-row';
       title.parentNode.insertBefore(titleRow,title);
       titleRow.appendChild(title);
-      titleRow.appendChild(exportButton);
+      titleRow.appendChild(actionGroup);
     }
   }
   var leaderboardDescription=document.querySelector('#leaderboard .leaderboard-header .desc');
