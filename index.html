@@ -75,12 +75,12 @@ section .desc{color:#666;font-size:15px;margin-bottom:10px}
 .leaderboard-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:8px}
 .leaderboard-header h2{margin-bottom:8px}
 .leaderboard-header .desc{margin-bottom:0}
-.export-btn{min-width:118px;height:36px;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;margin-top:2px;padding:0 14px;border:1px solid #1a1a1a;border-radius:6px;background:#1a1a1a;color:#fff;font:600 12px 'Inter',-apple-system,sans-serif;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
-.export-btn:hover{background:#333;border-color:#333;box-shadow:0 2px 6px rgba(0,0,0,.14)}
+.export-btn{min-width:118px;height:36px;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex-shrink:0;margin-top:2px;padding:0 14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#334155;font:600 12px 'Inter',-apple-system,sans-serif;cursor:pointer;box-shadow:0 1px 2px rgba(15,23,42,.06);transition:background .15s,border-color .15s,color .15s,box-shadow .15s}
+.export-btn:hover{background:#eff6ff;border-color:#2563eb;color:#1d4ed8;box-shadow:0 3px 8px rgba(37,99,235,.14)}
 .export-btn:focus-visible{outline:3px solid rgba(37,99,235,.25);outline-offset:2px}
-.export-btn.is-success{background:#15803d;border-color:#15803d}
-.export-btn.is-error{background:#b91c1c;border-color:#b91c1c}
-.export-icon{font-size:17px;line-height:1;transform:translateY(-1px)}
+.export-btn.is-success{background:#f0fdf4;border-color:#16a34a;color:#15803d}
+.export-btn.is-error{background:#fef2f2;border-color:#dc2626;color:#b91c1c}
+.export-icon{color:#2563eb;font-size:17px;line-height:1;transform:translateY(-1px)}
 @media(max-width:600px){.leaderboard-header{align-items:stretch;flex-direction:column;gap:10px}.export-btn{align-self:flex-start;margin-top:0}}
 .dim-legend{display:flex;gap:16px;margin:0 0 4px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:12px;color:#666}
@@ -237,6 +237,18 @@ td:first-child{color:#999;font-weight:500;font-size:22px}
 .gallery-count{font-size:13px;color:#888;margin-bottom:12px}
 footer{border-top:1px solid #eee;padding:32px 0;margin-top:64px;text-align:center;color:#999;font-size:12px}
 footer a{color:#666;text-decoration:none;margin:0 12px}
+</style>
+<style>
+.availability-row{margin-top:8px;margin-bottom:8px}
+.availability-filter{margin-left:0}
+.leaderboard-title-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.leaderboard-title-row h2{margin-bottom:0}
+.leaderboard-title-row .export-btn{margin-top:0}
+.filter-group button{white-space:nowrap}
+.filter-group button small{margin-left:4px;white-space:nowrap}
+.full-open-check{display:inline-block;width:14px;height:14px;margin-left:5px;background:url('imgs/full-open-source.png') center/contain no-repeat;vertical-align:middle;cursor:help}
+.full-open-legend{display:flex;align-items:center;gap:5px;width:max-content;margin:4px 0 0;color:#64748b;font-size:12px;font-style:normal;white-space:nowrap}
+.full-open-legend .full-open-check{margin-left:0;cursor:default}
 </style>
 </head>
 <body>
@@ -628,7 +640,7 @@ const modelResources={
   'Fantasy-World':{github:'https://github.com/Fantasy-AMAP/fantasy-world',arxiv:'https://arxiv.org/abs/2509.21657',homepage:'https://fantasy-amap.github.io/fantasy-world/',hf:'https://huggingface.co/acvlab/FantasyWorld-Wan2.1-I2V-14B-480P'},
   'YUME 1.5':{github:'https://github.com/stdstu12/YUME',arxiv:'https://arxiv.org/abs/2512.22096',homepage:'https://stdstu12.github.io/YUME-Project',hf:'https://huggingface.co/stdstu123/Yume-5B-720P'},
   'LongCat-Video':{github:'https://github.com/meituan-longcat/LongCat-Video',arxiv:'https://arxiv.org/abs/2510.22200',homepage:'https://meituan-longcat.github.io/LongCat-Video/',hf:'https://huggingface.co/meituan-longcat/LongCat-Video'},
-  'Infinite-World':{arxiv:'https://arxiv.org/abs/2602.02393',homepage:'https://rq-wu.github.io/projects/infinite-world/index.html',hf:'https://huggingface.co/MeiGen-AI/Infinite-World'},
+  'Infinite-World':{github:'https://github.com/MeiGen-AI/Infinite-World',arxiv:'https://arxiv.org/abs/2602.02393',homepage:'https://rq-wu.github.io/projects/infinite-world/index.html',hf:'https://huggingface.co/MeiGen-AI/Infinite-World'},
   'MatrixGame3':{github:'https://github.com/SkyworkAI/Matrix-Game',arxiv:'https://arxiv.org/abs/2604.08995',homepage:'https://matrix-game-v3.github.io/',hf:'https://huggingface.co/Skywork/Matrix-Game-3.0'},
   'Kairos 3.0':{github:'https://github.com/kairos-agi/kairos',arxiv:'https://arxiv.org/abs/2606.16533',homepage:'https://kairos.acerobotics.com',hf:'https://huggingface.co/collections/kairos-agi/kairos30'},
   'MatrixGame2':{github:'https://github.com/SkyworkAI/Matrix-Game',arxiv:'https://arxiv.org/abs/2508.13009',homepage:'https://matrix-game-v2.github.io/',hf:'https://huggingface.co/Skywork/Matrix-Game-2.0'},
@@ -644,7 +656,7 @@ function addModelMetadata(){document.querySelectorAll('#leaderboard tbody tr[dat
 function exportLeaderboards(btn){if(typeof XLSX==='undefined'){setExportState(btn,'Unavailable','is-error');return}const typeBtn=document.querySelector('[data-type].active'),type=typeBtn?typeBtn.dataset.type:'all',tables=[['table-navi','Navi Dimensions'],['table-detail','Navi Metrics'],['table-full','Full Dimensions'],['table-detail-full','Full Metrics']],workbook=XLSX.utils.book_new();tables.forEach(([tableId,sheetName])=>{const values=leaderboardSheetData(tableId,type),sheet=XLSX.utils.aoa_to_sheet(values);sheet['!autofilter']={ref:sheet['!ref']};sheet['!cols']=values[0].map((_,col)=>({wch:Math.min(36,Math.max(8,...values.map(row=>String(row[col]??'').length))+2)}));XLSX.utils.book_append_sheet(workbook,sheet,sheetName)});const date=new Date(),datePart=[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');XLSX.writeFile(workbook,'wbench_leaderboards_'+type+'_'+datePart+'.xlsx',{compression:true});setExportState(btn,'Exported 4 sheets','is-success')}
 function leaderboardSheetData(tableId,type){const table=document.getElementById(tableId),headers=Array.from(table.querySelectorAll('thead th')).map((th,i)=>i===0?'Rank':(th.dataset.tip||th.textContent).replace('↕','').trim()),rows=Array.from(table.querySelectorAll('tbody tr[data-model-type]')).filter(row=>type==='all'||row.dataset.modelType===type);return [headers,...rows.map((row,index)=>Array.from(row.cells).map((cell,col)=>col===0?index+1:exportCellValue(cell,col)))]}
 function exportCellValue(cell,col){const value=exportCellText(cell);if(col>1&&value!==''&&!Number.isNaN(Number(value)))return Number(value);return value}
-function exportCellText(cell){const copy=cell.cloneNode(true);copy.querySelectorAll('img,.creator,.col-rank,.model-type-tag,.model-updated,.model-resources').forEach(el=>el.remove());return copy.textContent.replace(/\s+/g,' ').trim()}
+function exportCellText(cell){const copy=cell.cloneNode(true);copy.querySelectorAll('img,.creator,.col-rank,.model-type-tag,.model-updated,.model-resources,.full-open-check').forEach(el=>el.remove());return copy.textContent.replace(/\s+/g,' ').trim()}
 function setExportState(btn,label,stateClass){const text=btn.querySelector('.export-label');btn.classList.remove('is-success','is-error');btn.classList.add(stateClass);text.textContent=label;setTimeout(()=>{btn.classList.remove('is-success','is-error');text.textContent='Export Excel'},1600)}
 function sortTable(tid,col){const t=document.getElementById(tid);if(!t)return;const tb=t.querySelector('tbody'),rows=Array.from(tb.querySelectorAll('tr'));const desc=t.dataset.sortCol==col&&t.dataset.sortDir=='desc';const dir=desc?'asc':'desc';rows.sort((a,b)=>{const va=parseFloat(a.cells[col].textContent)||0,vb=parseFloat(b.cells[col].textContent)||0;return dir==='desc'?vb-va:va-vb});rows.forEach((r,i)=>{r.cells[0].innerHTML=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);r.cells[0].className=i===0?'rank-gold':i===1?'rank-silver':i===2?'rank-bronze':'';tb.appendChild(r)});t.dataset.sortCol=col;t.dataset.sortDir=dir;addColumnRanks(tid);}
 function addColumnRanks(tid){const t=document.getElementById(tid);if(!t)return;const rows=Array.from(t.querySelector('tbody').querySelectorAll('tr'));const n=rows[0]?rows[0].cells.length:0;for(let c=2;c<n;c++){const v=rows.map((r,i)=>({i,v:parseFloat(r.cells[c].textContent)||0}));v.sort((a,b)=>b.v-a.v);const rk={};v.forEach((x,r)=>{rk[x.i]=r+1});rows.forEach((r,i)=>{const cell=r.cells[c];let s=cell.querySelector('.col-rank');if(!s){s=document.createElement('span');s.className='col-rank';cell.appendChild(s)}const rank=rk[i];if(rank===1){s.textContent='🥇';s.style.fontSize='17px'}else if(rank===2){s.textContent='🥈';s.style.fontSize='17px'}else if(rank===3){s.textContent='🥉';s.style.fontSize='17px'}else{s.textContent='#'+(rank<10?rank+' ':rank);s.style.fontSize=''}});}}
@@ -739,6 +751,168 @@ function renderGallery(){
       setTimeout(()=>{el.innerHTML=text;},3500);
     }
   },300);
+})();
+</script>
+<script>
+(function(){
+  function availabilityLabel(value){
+    var labels={'open-source':'Open Source','api':'API','web':'Web','unreleased':'Unreleased'};
+    return labels[value]||'Unreleased';
+  }
+
+  function addAvailabilityMetadata(){
+    document.querySelectorAll('#leaderboard tbody tr[data-model-type]').forEach(function(row){
+      var cell=row.cells[1];
+      if(!cell)return;
+      var creator=cell.querySelector('.creator');
+      var text=creator?creator.textContent:'';
+      if(/\bOpen Source\b/i.test(text))row.dataset.availability='open-source';
+      else if(/\bAPI\b/i.test(text))row.dataset.availability='api';
+      else if(/\bWeb\b/i.test(text))row.dataset.availability='web';
+      else row.dataset.availability='unreleased';
+    });
+  }
+
+  function addFullOpenChecks(){
+    document.querySelectorAll('#leaderboard tbody tr[data-model-type]').forEach(function(row){
+      if(row.dataset.availability!=='open-source')return;
+      var cell=row.cells[1],icon=cell&&cell.querySelector('.model-icon');
+      if(!cell||!icon||cell.querySelector('.full-open-check'))return;
+      var nameNode=icon.nextSibling,name=nameNode?nameNode.textContent.trim():'';
+      var resources=modelResources[name]||{};
+      if(!resources.github||!resources.hf||!(resources.paper||resources.arxiv))return;
+      var nameBreak=cell.querySelector('br');
+      if(!nameBreak)return;
+      var check=document.createElement('span');
+      check.className='full-open-check';
+      check.title='Fully open source: model code, Hugging Face checkpoint, and paper are available';
+      check.setAttribute('aria-label','Fully open source');
+      nameBreak.parentNode.insertBefore(check,nameBreak);
+    });
+  }
+
+  function updateAvailabilityCounts(){
+    var splitButton=document.querySelector('[data-split].active');
+    var table=document.getElementById(splitButton&&splitButton.dataset.split==='full'?'table-full':'table-navi');
+    var rows=table?table.querySelectorAll('tbody tr[data-model-type]'):[];
+    var counts={'all':rows.length,'open-source':0,'api':0,'web':0,'unreleased':0};
+    rows.forEach(function(row){counts[row.dataset.availability||'unreleased']++;});
+    document.querySelectorAll('[data-availability-count]').forEach(function(node){
+      node.textContent='('+counts[node.dataset.availabilityCount]+')';
+    });
+    var availabilityGroup=document.querySelector('.availability-filter');
+    var activeButton=availabilityGroup&&availabilityGroup.querySelector('button.active');
+    if(activeButton)moveSlider(availabilityGroup,activeButton);
+  }
+
+  function applyLeaderboardFilters(){
+    var typeButton=document.querySelector('[data-type].active');
+    var availabilityButton=document.querySelector('[data-availability].active');
+    var type=typeButton?typeButton.dataset.type:'all';
+    var availability=availabilityButton?availabilityButton.dataset.availability:'all';
+    document.querySelectorAll('.table-wrap').forEach(function(wrap){
+      var tbody=wrap.querySelector('tbody');
+      if(!tbody)return;
+      var rows=tbody.querySelectorAll('tr[data-model-type]');
+      var visible=0;
+      rows.forEach(function(row){
+        var showType=type==='all'||row.dataset.modelType===type;
+        var showAvailability=availability==='all'||(row.dataset.availability||'unreleased')===availability;
+        row.style.display=showType&&showAvailability?'':'none';
+        if(showType&&showAvailability)visible++;
+      });
+      var message=wrap.querySelector('.no-results');
+      if(!message){
+        message=document.createElement('p');
+        message.className='no-results';
+        message.style.cssText='text-align:center;padding:30px;color:#aaa;font-size:14px';
+        wrap.appendChild(message);
+      }
+      var filters=[];
+      if(type!=='all')filters.push(type+'-conditioned');
+      if(availability!=='all')filters.push(availabilityLabel(availability));
+      message.textContent=visible?'':'No '+filters.join(' / ')+' models in this split.';
+      message.style.display=visible?'':'block';
+      var tableElement=wrap.querySelector('table');
+      if(tableElement)tableElement.style.display=visible?'':'none';
+    });
+    updateAvailabilityCounts();
+  }
+
+  function activateFilter(button){
+    var group=button.parentElement;
+    group.querySelectorAll('button').forEach(function(item){item.classList.remove('active');});
+    button.classList.add('active');
+    moveSlider(group,button);
+  }
+
+  var filterRow=document.querySelector('#leaderboard .filter-row');
+  var leaderboardHeader=document.querySelector('#leaderboard .leaderboard-header');
+  if(leaderboardHeader){
+    var titleBlock=leaderboardHeader.firstElementChild;
+    var title=titleBlock&&titleBlock.querySelector('h2');
+    var exportButton=leaderboardHeader.querySelector('.export-btn');
+    if(title&&exportButton){
+      var titleRow=document.createElement('div');
+      titleRow.className='leaderboard-title-row';
+      title.parentNode.insertBefore(titleRow,title);
+      titleRow.appendChild(title);
+      titleRow.appendChild(exportButton);
+    }
+  }
+  var leaderboardDescription=document.querySelector('#leaderboard .leaderboard-header .desc');
+  if(leaderboardDescription&&!leaderboardDescription.querySelector('.full-open-legend')){
+    leaderboardDescription.appendChild(document.createElement('br'));
+    var legend=document.createElement('span');
+    legend.className='full-open-legend';
+    legend.innerHTML='<span class="full-open-check" aria-hidden="true"></span>Fully Open Source: model code + Hugging Face checkpoint + paper';
+    leaderboardDescription.appendChild(legend);
+  }
+  if(filterRow){
+    var availabilityRow=document.createElement('div');
+    availabilityRow.className='filter-row availability-row';
+    var group=document.createElement('div');
+    group.className='filter-group availability-filter';
+    group.innerHTML='<span class="filter-label">Availability:</span><button class="active" data-availability="all" onclick="filterAvailability(this)">All <small data-availability-count="all"></small></button><button data-availability="open-source" onclick="filterAvailability(this)">Open Source <small data-availability-count="open-source"></small></button><button data-availability="api" onclick="filterAvailability(this)">API <small data-availability-count="api"></small></button><button data-availability="web" onclick="filterAvailability(this)">Web <small data-availability-count="web"></small></button><button data-availability="unreleased" onclick="filterAvailability(this)">Unreleased <small data-availability-count="unreleased"></small></button>';
+    availabilityRow.appendChild(group);
+    filterRow.insertAdjacentElement('afterend',availabilityRow);
+  }
+
+  document.querySelectorAll('#leaderboard .filter-group button small').forEach(function(count){
+    var breakLine=count.previousElementSibling;
+    if(breakLine&&breakLine.tagName==='BR')breakLine.remove();
+  });
+
+  [['dims','(5)'],['metrics','(22)']].forEach(function(item){
+    var metricButton=document.querySelector('#leaderboard button[data-view="'+item[0]+'"]');
+    if(!metricButton||metricButton.querySelector('small'))return;
+    metricButton.appendChild(document.createTextNode(' '));
+    var count=document.createElement('small');
+    count.textContent=item[1];
+    metricButton.appendChild(count);
+  });
+
+  window.filterAvailability=function(button){
+    activateFilter(button);
+    applyLeaderboardFilters();
+  };
+
+  window.filterType=function(button){
+    activateFilter(button);
+    applyLeaderboardFilters();
+  };
+
+  var baseUpdateTable=window.updateTable;
+  window.updateTable=function(button){
+    baseUpdateTable(button);
+    applyLeaderboardFilters();
+  };
+
+  window.addEventListener('load',function(){
+    addAvailabilityMetadata();
+    addFullOpenChecks();
+    applyLeaderboardFilters();
+  });
 })();
 </script>
 </body>
