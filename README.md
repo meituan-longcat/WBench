@@ -46,7 +46,7 @@
 </div>
 
 <p align="center" style="color: grey;">
-<b>TL;DR</b> — WBench evaluates 32 video world models across 5 dimensions and 22 metrics.
+<b>TL;DR</b> — WBench evaluates 33 video world models across 5 dimensions and 22 metrics.
 </p>
 
 <div align="center">
@@ -55,6 +55,7 @@
 
 ## 📢 News
 
+- **[2026/08/26]** 🆕 Added [Zing-0.5](https://zing.loopit.me/) (SeedLeap.ai, action-conditioned): **81.0**, #2.
 - **[2026/08/24]** 🆕 Added [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/): **81.6**, #1 · thanks [@franklinz233](https://github.com/franklinz233).
 - **[2026/08/16]** 🔄 Updated [AlayaWorld](https://github.com/AlayaLab/AlayaWorld) final-v4: **76.3**, #12 · thanks [@nevermorelch](https://github.com/nevermorelch).
 - **[2026/08/16]** 🔄 Updated [HiDream-O1-World](https://hidream.ai/) 08/14: **80.9**, #1 · thanks [@Spark001](https://github.com/Spark001).
@@ -83,46 +84,47 @@
 - A **comprehensive evaluation framework** with 289 cases, 1,058 interaction turns, covering 4 interaction types (navigation, subject action, event editing, perspective switching) across diverse scenes and perspectives.
 - A **unified navigation protocol** that bridges text, 6-DoF camera pose, and discrete-action interfaces, enabling fair comparison across model families.
 - **22 automatic metrics** spanning 5 complementary dimensions, validated against human judgments, ensuring reliable automatic evaluation at scale.
-- **Systematic diagnosis of 32 models** revealing that current world models have not yet unified high-fidelity rendering with reliable controllability, consistency, and physics compliance.
+- **Systematic diagnosis of 33 models** revealing that current world models have not yet unified high-fidelity rendering with reliable controllability, consistency, and physics compliance.
 
 ## 🏆 Leaderboard
 
-**32 Models — Navigation Split (5 Dimensions, sorted by average)**
+**33 Models — Navigation Split (5 Dimensions, sorted by average)**
 
 | # | Model | **Average** | Quality | Setting | Interaction | Consistency | Physical |
 |:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|
 | 1 | <img src="assets/icon/jd.png" height="18"> JoyAI-Echo-1.5 (WM) | **81.6 🥇** | 81.5 &nbsp;&nbsp; | 79.4 &nbsp;&nbsp; | 86.6 🥈 | 89.8 🥈 | 70.6 &nbsp;&nbsp; |
-| 2 | <img src="assets/icon/hidream.png" height="18"> HiDream-O1-World | **80.9 🥈** | 81.0 &nbsp;&nbsp; | 82.2 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 88.0 &nbsp;&nbsp; | 73.3 🥇 |
-| 3 | <img src="assets/icon/alayaworld.png" height="18"> Alaya-EVOKE | **80.8 🥉** | 82.8 🥇 | 83.8 &nbsp;&nbsp; | 78.6 &nbsp;&nbsp; | 86.9 &nbsp;&nbsp; | 72.1 🥈 |
-| 4 | <img src="assets/icon/lingbot.png" height="18"> LingBot-World (fast v2) | **79.4** | 81.8 🥉 | 76.8 &nbsp;&nbsp; | 82.8 &nbsp;&nbsp; | 86.5 &nbsp;&nbsp; | 69.1 &nbsp;&nbsp; |
-| 5 | <img src="assets/icon/kling.jpeg" height="18"> Kling 3.0 | **79.0** | 81.4 &nbsp;&nbsp; | 91.0 🥉 | 69.4 &nbsp;&nbsp; | 83.7 &nbsp;&nbsp; | 69.3 &nbsp;&nbsp; |
-| 6 | <img src="assets/icon/lingbot.png" height="18"> LingBot-World (base-camera) | **78.5** | 78.9 &nbsp;&nbsp; | 72.6 &nbsp;&nbsp; | 80.1 &nbsp;&nbsp; | 89.9 🥇 | 71.2 &nbsp;&nbsp; |
-| 7 | <img src="assets/icon/wan.png" height="18"> Wan 2.7 | **78.1** | 81.5 &nbsp;&nbsp; | 91.4 🥈 | 64.4 &nbsp;&nbsp; | 81.6 &nbsp;&nbsp; | 71.8 🥉 |
-| 8 | <img src="assets/icon/hunyuan.png" height="18"> HY-World 1.5 (ar-distill) | **78.1** | 78.1 &nbsp;&nbsp; | 72.2 &nbsp;&nbsp; | 86.8 🥇 | 86.9 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; |
-| 9 | <img src="assets/icon/hunyuan.png" height="18"> HY-Video 1.5 | **77.9** | 77.6 &nbsp;&nbsp; | 85.6 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 87.4 &nbsp;&nbsp; | 67.4 &nbsp;&nbsp; |
-| 10 | <img src="assets/icon/lingbot.png" height="18"> LingBot-World (fast) | **77.4** | 79.4 &nbsp;&nbsp; | 77.9 &nbsp;&nbsp; | 79.2 &nbsp;&nbsp; | 84.9 &nbsp;&nbsp; | 65.7 &nbsp;&nbsp; |
-| 11 | <img src="assets/icon/alibaba.png" height="18"> Happy Oyster | **76.8** | 77.3 &nbsp;&nbsp; | 74.2 &nbsp;&nbsp; | 84.9 &nbsp;&nbsp; | 84.3 &nbsp;&nbsp; | 63.5 &nbsp;&nbsp; |
-| 12 | <img src="assets/icon/nvidia.svg" height="18"> Lyra 2.0 (4-step AR) | **76.4** | 77.1 &nbsp;&nbsp; | 73.2 &nbsp;&nbsp; | 85.6 🥉 | 79.3 &nbsp;&nbsp; | 66.7 &nbsp;&nbsp; |
-| 13 | <img src="assets/icon/alayaworld.png" height="18"> AlayaWorld | **76.3** | 79.3 &nbsp;&nbsp; | 69.7 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 89.5 🥉 | 63.1 &nbsp;&nbsp; |
-| 14 | <img src="assets/icon/bytedance.png" height="18"> Seedance 1.5 | **76.2** | 82.1 🥈 | 82.9 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; | 81.3 &nbsp;&nbsp; | 68.4 &nbsp;&nbsp; |
-| 15 | <img src="assets/icon/cosmos.png" height="18"> Cosmos3-Super | **76.0** | 76.4 &nbsp;&nbsp; | 91.6 🥇 | 58.0 &nbsp;&nbsp; | 85.0 &nbsp;&nbsp; | 69.2 &nbsp;&nbsp; |
-| 16 | <img src="assets/icon/nvidia.svg" height="18"> SANA-WM (4-step AR) | **76.0** | 79.3 &nbsp;&nbsp; | 76.1 &nbsp;&nbsp; | 82.2 &nbsp;&nbsp; | 80.7 &nbsp;&nbsp; | 61.9 &nbsp;&nbsp; |
-| 17 | <img src="assets/icon/amap.png" height="18"> DreamX-World (5B AR) | **75.0** | 77.5 &nbsp;&nbsp; | 80.8 &nbsp;&nbsp; | 78.6 &nbsp;&nbsp; | 74.9 &nbsp;&nbsp; | 63.3 &nbsp;&nbsp; |
-| 18 | <img src="assets/icon/amap.png" height="18"> ABot-World | **74.7** | 76.8 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 84.0 &nbsp;&nbsp; | 79.5 &nbsp;&nbsp; | 61.7 &nbsp;&nbsp; |
-| 19 | <img src="assets/icon/cosmos.png" height="18"> Cosmos 2.5 | **74.6** | 72.9 &nbsp;&nbsp; | 83.3 &nbsp;&nbsp; | 63.1 &nbsp;&nbsp; | 86.5 &nbsp;&nbsp; | 67.4 &nbsp;&nbsp; |
-| 20 | <img src="assets/icon/cosmos.png" height="18"> Cosmos3-Nano | **74.2** | 77.4 &nbsp;&nbsp; | 87.3 &nbsp;&nbsp; | 59.1 &nbsp;&nbsp; | 83.7 &nbsp;&nbsp; | 63.6 &nbsp;&nbsp; |
-| 21 | <img src="assets/icon/lightrix.jpeg" height="18"> LTX 2.3 | **74.2** | 77.1 &nbsp;&nbsp; | 85.2 &nbsp;&nbsp; | 66.4 &nbsp;&nbsp; | 77.2 &nbsp;&nbsp; | 64.9 &nbsp;&nbsp; |
-| 22 | <img src="assets/icon/google.png" height="18"> Genie 3 | **73.9** | 75.2 &nbsp;&nbsp; | 72.5 &nbsp;&nbsp; | 73.4 &nbsp;&nbsp; | 82.6 &nbsp;&nbsp; | 65.7 &nbsp;&nbsp; |
-| 23 | <img src="assets/icon/inspatio.jpeg" height="18"> InSpatio-World | **73.9** | 71.5 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 73.2 &nbsp;&nbsp; | 88.4 &nbsp;&nbsp; | 65.2 &nbsp;&nbsp; |
-| 24 | <img src="assets/icon/amap.png" height="18"> Fantasy-World | **73.8** | 72.4 &nbsp;&nbsp; | 71.3 &nbsp;&nbsp; | 71.9 &nbsp;&nbsp; | 86.4 &nbsp;&nbsp; | 66.8 &nbsp;&nbsp; |
-| 25 | <img src="assets/icon/shlab.png" height="18"> YUME 1.5 | **73.3** | 77.6 &nbsp;&nbsp; | 72.4 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 80.1 &nbsp;&nbsp; | 65.2 &nbsp;&nbsp; |
-| 26 | <img src="assets/icon/longcat.png" height="18"> LongCat-Video | **73.2** | 75.4 &nbsp;&nbsp; | 72.3 &nbsp;&nbsp; | 62.1 &nbsp;&nbsp; | 87.1 &nbsp;&nbsp; | 68.9 &nbsp;&nbsp; |
-| 27 | <img src="assets/icon/meituan.png" height="18"> Infinite-World | **72.8** | 77.0 &nbsp;&nbsp; | 69.3 &nbsp;&nbsp; | 75.4 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 62.1 &nbsp;&nbsp; |
-| 28 | <img src="assets/icon/skywork.jpeg" height="18"> MatrixGame3 | **71.3** | 75.5 &nbsp;&nbsp; | 63.6 &nbsp;&nbsp; | 83.6 &nbsp;&nbsp; | 74.5 &nbsp;&nbsp; | 59.3 &nbsp;&nbsp; |
-| 29 | <img src="assets/icon/kairos.png" height="18"> Kairos 3.0 | **70.3** | 74.0 &nbsp;&nbsp; | 70.3 &nbsp;&nbsp; | 64.1 &nbsp;&nbsp; | 82.6 &nbsp;&nbsp; | 60.4 &nbsp;&nbsp; |
-| 30 | <img src="assets/icon/skywork.jpeg" height="18"> MatrixGame2 | **68.7** | 73.8 &nbsp;&nbsp; | 67.1 &nbsp;&nbsp; | 80.3 &nbsp;&nbsp; | 65.1 &nbsp;&nbsp; | 57.2 &nbsp;&nbsp; |
-| 31 | <img src="assets/icon/hunyuan.png" height="18"> HY-GameCraft | **68.2** | 73.0 &nbsp;&nbsp; | 66.6 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; | 72.6 &nbsp;&nbsp; | 62.4 &nbsp;&nbsp; |
-| 32 | <img src="assets/icon/thu.png" height="18"> Astra | **63.7** | 67.1 &nbsp;&nbsp; | 59.6 &nbsp;&nbsp; | 66.9 &nbsp;&nbsp; | 73.3 &nbsp;&nbsp; | 51.4 &nbsp;&nbsp; |
+| 2 | <img src="assets/icon/zing.svg" height="18"> Zing-0.5 | **81.0 🥈** | 80.6 &nbsp;&nbsp; | 77.8 &nbsp;&nbsp; | 84.2 &nbsp;&nbsp; | 88.5 &nbsp;&nbsp; | 73.8 🥇 |
+| 3 | <img src="assets/icon/hidream.png" height="18"> HiDream-O1-World | **80.9 🥉** | 81.0 &nbsp;&nbsp; | 82.2 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 88.0 &nbsp;&nbsp; | 73.3 🥈 |
+| 4 | <img src="assets/icon/alayaworld.png" height="18"> Alaya-EVOKE | **80.8** | 82.8 🥇 | 83.8 &nbsp;&nbsp; | 78.6 &nbsp;&nbsp; | 86.9 &nbsp;&nbsp; | 72.1 🥉 |
+| 5 | <img src="assets/icon/lingbot.png" height="18"> LingBot-World (fast v2) | **79.4** | 81.8 🥉 | 76.8 &nbsp;&nbsp; | 82.8 &nbsp;&nbsp; | 86.5 &nbsp;&nbsp; | 69.1 &nbsp;&nbsp; |
+| 6 | <img src="assets/icon/kling.jpeg" height="18"> Kling 3.0 | **79.0** | 81.4 &nbsp;&nbsp; | 91.0 🥉 | 69.4 &nbsp;&nbsp; | 83.7 &nbsp;&nbsp; | 69.3 &nbsp;&nbsp; |
+| 7 | <img src="assets/icon/lingbot.png" height="18"> LingBot-World (base-camera) | **78.5** | 78.9 &nbsp;&nbsp; | 72.6 &nbsp;&nbsp; | 80.1 &nbsp;&nbsp; | 89.9 🥇 | 71.2 &nbsp;&nbsp; |
+| 8 | <img src="assets/icon/wan.png" height="18"> Wan 2.7 | **78.1** | 81.5 &nbsp;&nbsp; | 91.4 🥈 | 64.4 &nbsp;&nbsp; | 81.6 &nbsp;&nbsp; | 71.8 &nbsp;&nbsp; |
+| 9 | <img src="assets/icon/hunyuan.png" height="18"> HY-World 1.5 (ar-distill) | **78.1** | 78.1 &nbsp;&nbsp; | 72.2 &nbsp;&nbsp; | 86.8 🥇 | 86.9 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; |
+| 10 | <img src="assets/icon/hunyuan.png" height="18"> HY-Video 1.5 | **77.9** | 77.6 &nbsp;&nbsp; | 85.6 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 87.4 &nbsp;&nbsp; | 67.4 &nbsp;&nbsp; |
+| 11 | <img src="assets/icon/lingbot.png" height="18"> LingBot-World (fast) | **77.4** | 79.4 &nbsp;&nbsp; | 77.9 &nbsp;&nbsp; | 79.2 &nbsp;&nbsp; | 84.9 &nbsp;&nbsp; | 65.7 &nbsp;&nbsp; |
+| 12 | <img src="assets/icon/alibaba.png" height="18"> Happy Oyster | **76.8** | 77.3 &nbsp;&nbsp; | 74.2 &nbsp;&nbsp; | 84.9 &nbsp;&nbsp; | 84.3 &nbsp;&nbsp; | 63.5 &nbsp;&nbsp; |
+| 13 | <img src="assets/icon/nvidia.svg" height="18"> Lyra 2.0 (4-step AR) | **76.4** | 77.1 &nbsp;&nbsp; | 73.2 &nbsp;&nbsp; | 85.6 🥉 | 79.3 &nbsp;&nbsp; | 66.7 &nbsp;&nbsp; |
+| 14 | <img src="assets/icon/alayaworld.png" height="18"> AlayaWorld | **76.3** | 79.3 &nbsp;&nbsp; | 69.7 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 89.5 🥉 | 63.1 &nbsp;&nbsp; |
+| 15 | <img src="assets/icon/bytedance.png" height="18"> Seedance 1.5 | **76.2** | 82.1 🥈 | 82.9 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; | 81.3 &nbsp;&nbsp; | 68.4 &nbsp;&nbsp; |
+| 16 | <img src="assets/icon/cosmos.png" height="18"> Cosmos3-Super | **76.0** | 76.4 &nbsp;&nbsp; | 91.6 🥇 | 58.0 &nbsp;&nbsp; | 85.0 &nbsp;&nbsp; | 69.2 &nbsp;&nbsp; |
+| 17 | <img src="assets/icon/nvidia.svg" height="18"> SANA-WM (4-step AR) | **76.0** | 79.3 &nbsp;&nbsp; | 76.1 &nbsp;&nbsp; | 82.2 &nbsp;&nbsp; | 80.7 &nbsp;&nbsp; | 61.9 &nbsp;&nbsp; |
+| 18 | <img src="assets/icon/amap.png" height="18"> DreamX-World (5B AR) | **75.0** | 77.5 &nbsp;&nbsp; | 80.8 &nbsp;&nbsp; | 78.6 &nbsp;&nbsp; | 74.9 &nbsp;&nbsp; | 63.3 &nbsp;&nbsp; |
+| 19 | <img src="assets/icon/amap.png" height="18"> ABot-World | **74.7** | 76.8 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 84.0 &nbsp;&nbsp; | 79.5 &nbsp;&nbsp; | 61.7 &nbsp;&nbsp; |
+| 20 | <img src="assets/icon/cosmos.png" height="18"> Cosmos 2.5 | **74.6** | 72.9 &nbsp;&nbsp; | 83.3 &nbsp;&nbsp; | 63.1 &nbsp;&nbsp; | 86.5 &nbsp;&nbsp; | 67.4 &nbsp;&nbsp; |
+| 21 | <img src="assets/icon/cosmos.png" height="18"> Cosmos3-Nano | **74.2** | 77.4 &nbsp;&nbsp; | 87.3 &nbsp;&nbsp; | 59.1 &nbsp;&nbsp; | 83.7 &nbsp;&nbsp; | 63.6 &nbsp;&nbsp; |
+| 22 | <img src="assets/icon/lightrix.jpeg" height="18"> LTX 2.3 | **74.2** | 77.1 &nbsp;&nbsp; | 85.2 &nbsp;&nbsp; | 66.4 &nbsp;&nbsp; | 77.2 &nbsp;&nbsp; | 64.9 &nbsp;&nbsp; |
+| 23 | <img src="assets/icon/google.png" height="18"> Genie 3 | **73.9** | 75.2 &nbsp;&nbsp; | 72.5 &nbsp;&nbsp; | 73.4 &nbsp;&nbsp; | 82.6 &nbsp;&nbsp; | 65.7 &nbsp;&nbsp; |
+| 24 | <img src="assets/icon/inspatio.jpeg" height="18"> InSpatio-World | **73.9** | 71.5 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 73.2 &nbsp;&nbsp; | 88.4 &nbsp;&nbsp; | 65.2 &nbsp;&nbsp; |
+| 25 | <img src="assets/icon/amap.png" height="18"> Fantasy-World | **73.8** | 72.4 &nbsp;&nbsp; | 71.3 &nbsp;&nbsp; | 71.9 &nbsp;&nbsp; | 86.4 &nbsp;&nbsp; | 66.8 &nbsp;&nbsp; |
+| 26 | <img src="assets/icon/shlab.png" height="18"> YUME 1.5 | **73.3** | 77.6 &nbsp;&nbsp; | 72.4 &nbsp;&nbsp; | 71.4 &nbsp;&nbsp; | 80.1 &nbsp;&nbsp; | 65.2 &nbsp;&nbsp; |
+| 27 | <img src="assets/icon/longcat.png" height="18"> LongCat-Video | **73.2** | 75.4 &nbsp;&nbsp; | 72.3 &nbsp;&nbsp; | 62.1 &nbsp;&nbsp; | 87.1 &nbsp;&nbsp; | 68.9 &nbsp;&nbsp; |
+| 28 | <img src="assets/icon/meituan.png" height="18"> Infinite-World | **72.8** | 77.0 &nbsp;&nbsp; | 69.3 &nbsp;&nbsp; | 75.4 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 62.1 &nbsp;&nbsp; |
+| 29 | <img src="assets/icon/skywork.jpeg" height="18"> MatrixGame3 | **71.3** | 75.5 &nbsp;&nbsp; | 63.6 &nbsp;&nbsp; | 83.6 &nbsp;&nbsp; | 74.5 &nbsp;&nbsp; | 59.3 &nbsp;&nbsp; |
+| 30 | <img src="assets/icon/kairos.png" height="18"> Kairos 3.0 | **70.3** | 74.0 &nbsp;&nbsp; | 70.3 &nbsp;&nbsp; | 64.1 &nbsp;&nbsp; | 82.6 &nbsp;&nbsp; | 60.4 &nbsp;&nbsp; |
+| 31 | <img src="assets/icon/skywork.jpeg" height="18"> MatrixGame2 | **68.7** | 73.8 &nbsp;&nbsp; | 67.1 &nbsp;&nbsp; | 80.3 &nbsp;&nbsp; | 65.1 &nbsp;&nbsp; | 57.2 &nbsp;&nbsp; |
+| 32 | <img src="assets/icon/hunyuan.png" height="18"> HY-GameCraft | **68.2** | 73.0 &nbsp;&nbsp; | 66.6 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; | 72.6 &nbsp;&nbsp; | 62.4 &nbsp;&nbsp; |
+| 33 | <img src="assets/icon/thu.png" height="18"> Astra | **63.7** | 67.1 &nbsp;&nbsp; | 59.6 &nbsp;&nbsp; | 66.9 &nbsp;&nbsp; | 73.3 &nbsp;&nbsp; | 51.4 &nbsp;&nbsp; |
 
 
 **11 Text-driven Models — Full Split (5 Dimensions, sorted by average)**
@@ -142,7 +144,7 @@
 | 11 | <img src="assets/icon/kairos.png" height="18"> Kairos 3.0 | **65.7** &nbsp;&nbsp; | 73.1 &nbsp;&nbsp; | 70.3 &nbsp;&nbsp; | 41.4 &nbsp;&nbsp; | 83.2 &nbsp;&nbsp; | 60.5 &nbsp;&nbsp; |
 
 <details>
-<summary><b>32 Models — Navigation Split (19 metrics)</b></summary>
+<summary><b>33 Models — Navigation Split (19 metrics)</b></summary>
 
 | Model | Aesthetic Quality | Imaging Quality | Background Consistency | Temporal Flickering | Dynamic Degree | Motion Smoothness | HPSv3 Quality | Scene Adherence | Subject Adherence | Navigation Trajectory | Spatial Consistency | Gated Spatial Consistency | Perspective Consistency | Segment Continuity | Geometric Consistency | Photometric Consistency | Subject Consistency Cross-Model | Visual Plausibility | Causal Fidelity |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -178,6 +180,7 @@
 | <img src="assets/icon/hidream.png" height="18"> HiDream-O1-World | 65.3 &nbsp;&nbsp; | 67.5 &nbsp;&nbsp; | 93.4 &nbsp;&nbsp; | 92.2 &nbsp;&nbsp; | 88.6 &nbsp;&nbsp; | 96.9 &nbsp;&nbsp; | 75.2 &nbsp;&nbsp; | 72.2 &nbsp;&nbsp; | 92.2 &nbsp;&nbsp; | 80.0 &nbsp;&nbsp; | 84.4 &nbsp;&nbsp; | 83.1 &nbsp;&nbsp; | 83.6 &nbsp;&nbsp; | 98.7 &nbsp;&nbsp; | 88.8 &nbsp;&nbsp; | 79.8 &nbsp;&nbsp; | 92.1 &nbsp;&nbsp; | 61.8 &nbsp;&nbsp; | 84.9 &nbsp;&nbsp; |
 | <img src="assets/icon/alayaworld.png" height="18"> Alaya-EVOKE | 66.1 &nbsp;&nbsp; | 67.9 &nbsp;&nbsp; | 92.3 &nbsp;&nbsp; | 94.3 &nbsp;&nbsp; | 96.8 &nbsp;&nbsp; | 97.9 &nbsp;&nbsp; | 73.8 &nbsp;&nbsp; | 74.7 &nbsp;&nbsp; | 92.8 &nbsp;&nbsp; | 78.6 &nbsp;&nbsp; | 84.3 &nbsp;&nbsp; | 82.5 &nbsp;&nbsp; | 69.7 &nbsp;&nbsp; | 100.0 &nbsp;&nbsp; | 92.7 &nbsp;&nbsp; | 82.5 &nbsp;&nbsp; | 91.0 &nbsp;&nbsp; | 61.7 &nbsp;&nbsp; | 82.4 &nbsp;&nbsp; |
 | <img src="assets/icon/jd.png" height="18"> JoyAI-Echo-1.5 (WM) | 63.6 &nbsp;&nbsp; | 66.3 &nbsp;&nbsp; | 93.9 &nbsp;&nbsp; | 92.9 &nbsp;&nbsp; | 98.7 &nbsp;&nbsp; | 97.3 &nbsp;&nbsp; | 70.1 &nbsp;&nbsp; | 66.0 &nbsp;&nbsp; | 92.7 &nbsp;&nbsp; | 86.6 &nbsp;&nbsp; | 90.7 &nbsp;&nbsp; | 83.8 &nbsp;&nbsp; | 84.1 &nbsp;&nbsp; | 99.4 &nbsp;&nbsp; | 93.6 &nbsp;&nbsp; | 82.5 &nbsp;&nbsp; | 90.2 &nbsp;&nbsp; | 60.8 &nbsp;&nbsp; | 80.4 &nbsp;&nbsp; |
+| <img src="assets/icon/zing.svg" height="18"> Zing-0.5 | 62.6 &nbsp;&nbsp; | 66.1 &nbsp;&nbsp; | 93.5 &nbsp;&nbsp; | 94.3 &nbsp;&nbsp; | 93.0 &nbsp;&nbsp; | 97.9 &nbsp;&nbsp; | 69.6 &nbsp;&nbsp; | 62.9 &nbsp;&nbsp; | 92.8 &nbsp;&nbsp; | 84.2 &nbsp;&nbsp; | 88.0 &nbsp;&nbsp; | 82.9 &nbsp;&nbsp; | 76.4 &nbsp;&nbsp; | 99.4 &nbsp;&nbsp; | 92.9 &nbsp;&nbsp; | 83.3 &nbsp;&nbsp; | 91.3 &nbsp;&nbsp; | 60.9 &nbsp;&nbsp; | 86.7 &nbsp;&nbsp; |
 </details>
 
 <details>
