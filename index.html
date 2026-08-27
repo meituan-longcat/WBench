@@ -901,7 +901,7 @@ function renderGallery(){
       if(type!=='all')filters.push(type+'-conditioned');
       if(availability!=='all')filters.push(availabilityLabel(availability));
       message.textContent=visible?'':'No '+filters.join(' / ')+' models in this split.';
-      message.style.display=visible?'':'block';
+      message.style.display=visible?'none':'block';
       var tableElement=wrap.querySelector('table');
       if(tableElement)tableElement.style.display=visible?'':'none';
     });
