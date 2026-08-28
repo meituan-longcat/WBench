@@ -55,9 +55,9 @@
 
 ## 📢 News
 
-- **[2026/08/28]** 🆕 Added [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/) (`flash`, JD Future Academy, action-conditioned): Navi **81.0**, #2 · thanks [@franklinz233](https://github.com/franklinz233).
-- **[2026/08/27]** 🆕 Added [Helios](https://pku-yuangroup.github.io/Helios-Page) ([Distilled](https://huggingface.co/BestWishYsh/Helios-Distilled), PKU-YuanGroup, text-conditioned): Full **69.7**, #9; Navi **74.3**, #22 · thanks [@SHYuanBest](https://github.com/SHYuanBest).
-- **[2026/08/26]** 🆕 Added [Zing-0.5](https://zing.loopit.me/) (SeedLeap.ai, action-conditioned): **81.0**, #3 · thanks [@seedleap](https://github.com/seedleap).
+- **[2026/08/28]** 🆕 [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/) (`flash`, `4-step`): Navi **81.0**, #2 · thanks [@franklinz233](https://github.com/franklinz233).
+- **[2026/08/27]** 🆕 [Helios](https://pku-yuangroup.github.io/Helios-Page) ([Distilled](https://huggingface.co/BestWishYsh/Helios-Distilled)): Full **69.7**, #9; Navi **74.3**, #22 · thanks [@SHYuanBest](https://github.com/SHYuanBest).
+- **[2026/08/26]** 🆕 [Zing-0.5](https://zing.loopit.me/): Navi **81.0**, #3 · thanks [@seedleap](https://github.com/seedleap).
 - **[2026/08/24]** 🆕 Added [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/): **81.6**, #1 · thanks [@franklinz233](https://github.com/franklinz233).
 - **[2026/08/16]** 🔄 Updated [AlayaWorld](https://github.com/AlayaLab/AlayaWorld) final-v4: **76.3**, #12 · thanks [@nevermorelch](https://github.com/nevermorelch).
 - **[2026/08/16]** 🔄 Updated [HiDream-O1-World](https://hidream.ai/) 08/14: **80.9**, #1 · thanks [@Spark001](https://github.com/Spark001).

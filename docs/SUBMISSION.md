@@ -10,8 +10,9 @@ reviews each submission.
 Email **kaining.ying.cv@gmail.com** and **rensiyu07@meituan.com** with:
 
 - **Subject:** `[WBench Submission] <display_name>`
-- **Body:** model name, type (text / camera / action), org, a one-line description,
-  and whether you ran the evaluation yourself (path A) or want us to (path B).
+- **Body:** model name, type (text / camera / action), leaderboard tags, org, a
+  one-line description, and whether you ran the evaluation yourself (path A) or
+  want us to (path B).
 - **Attach** `meta.json` (and `report.json` for path A — both are small).
 - **Cloud-drive link** to the `videos/` folder (and `turns.json`). Supported:
   **Google Drive · Baidu Netdisk (百度网盘) · HuggingFace dataset · OneDrive**.
@@ -87,10 +88,31 @@ leaderboard; text models get both Full (289) and Navi.
   "model_name": "mymodel",
   "type": "text",                 // text | camera | action
   "display_name": "My Model 1.0",
+  "tags": ["4-step", "5B"],      // required; use [] when no qualifier applies
   "org": "My Lab",
   "contact": "you@example.com"
 }
 ```
+
+`tags` controls the small qualifier badges shown next to the model type on the
+leaderboard. The field is required so variants can be identified consistently;
+submit an empty array (`[]`) when the base model needs no additional qualifier.
+
+Tag guidance:
+
+- Use the same `display_name` for variants of one base model and distinguish them
+  with tags. For example, use `"display_name": "JoyAI-Echo-1.5 (WM)"` with
+  `"tags": ["flash", "4-step"]` or `"tags": ["bidirection"]`.
+- Provide at most **4 unique tags**, in display order. Each tag should be a short,
+  factual label of **1-16 characters**.
+- Useful tag categories include inference steps (`3-step`, `4-step`), model scale
+  (`5B`), generation variant (`flash`, `bidirection`, `ar-distill`), and serving
+  property (`realtime`).
+- Do not repeat `text`, `camera`, or `action`; the conditioning tag is generated
+  from `type`. Do not use organization names, availability (`Open Source`, `API`,
+  `Web`), ranks, scores, or promotional claims as tags.
+- Briefly substantiate non-obvious claims such as `realtime` in the email's
+  one-line description (hardware, resolution, and measured generation speed).
 
 ## 3. `turns.json` (optional but recommended)
 
@@ -132,7 +154,8 @@ unaffected either way.
 
 Before evaluating we run `validate_submission.py`, which checks:
 
-- `meta.json` present with a valid `type`.
+- `meta.json` present with a valid `type` and a `tags` array following the limits
+  above.
 - Video set covers exactly the required case ids for that type (missing / extra
   cases are reported).
 - Each video decodes and has a sane frame count and resolution.
