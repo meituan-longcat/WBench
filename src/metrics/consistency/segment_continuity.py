@@ -60,13 +60,25 @@ class _TransNetV2Wrapper:
 
     @torch.no_grad()
     def predict_frames(self, frames: np.ndarray):
-        # TransNetV2 expects [B, T, 27, 48, 3] uint8
-        inp = torch.from_numpy(frames).unsqueeze(0).to(self.device)
-        logits = self.model(inp)
-        if isinstance(logits, tuple):
-            logits = logits[0]
-        single_pred = torch.sigmoid(logits[0, :, 0]).cpu().numpy()
-        return single_pred, None
+        total = len(frames)
+        if total == 0:
+            return np.empty(0, dtype=np.float32), None
+
+        # Match the reference protocol: repeat boundary frames, run 100-frame
+        # windows, and keep only the central 50 predictions to avoid edge cuts.
+        padded = np.concatenate((
+            np.repeat(frames[:1], 25, axis=0),
+            frames,
+            np.repeat(frames[-1:], 75 - total % 50, axis=0),
+        ), axis=0)
+        predictions = []
+        for start in range(0, len(padded) - 99, 50):
+            inp = torch.from_numpy(padded[start:start + 100]).unsqueeze(0).to(self.device)
+            logits = self.model(inp)
+            if isinstance(logits, tuple):
+                logits = logits[0]
+            predictions.append(torch.sigmoid(logits[0, 25:75, 0]).cpu().numpy())
+        return np.concatenate(predictions)[:total], None
 
 
 def _read_frames_cv2(video_path: str, width: int = 48, height: int = 27) -> np.ndarray:
