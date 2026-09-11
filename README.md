@@ -46,7 +46,7 @@
 </div>
 
 <p align="center" style="color: grey;">
-<b>TL;DR</b> — WBench evaluates 35 video world models across 5 dimensions and 22 metrics.
+<b>TL;DR</b> — WBench evaluates 36 video world models across 5 dimensions and 22 metrics.
 </p>
 
 <div align="center">
@@ -55,6 +55,7 @@
 
 ## 📢 News
 
+- **[2026/09/11]** 🆕 [Alaya-EVOKE-Turbo](https://evoke-world.github.io/Evoke) (`camera`, `3-step`): Navi **82.0**, #1 across 158 cases · thanks [@SII-YuanyangYin](https://huggingface.co/SII-YuanyangYin).
 - **[2026/08/28]** 🆕 [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/) (`flash`, `4-step`): Navi **81.0**, #2 · thanks [@franklinz233](https://github.com/franklinz233).
 - **[2026/08/27]** 🆕 [Helios](https://pku-yuangroup.github.io/Helios-Page) ([Distilled](https://huggingface.co/BestWishYsh/Helios-Distilled)): Full **69.7**, #9; Navi **74.3**, #22 · thanks [@SHYuanBest](https://github.com/SHYuanBest).
 - **[2026/08/26]** 🆕 [Zing-0.5](https://zing.loopit.me/): Navi **81.0**, #3 · thanks [@seedleap](https://github.com/seedleap).
@@ -86,13 +87,11 @@
 - A **comprehensive evaluation framework** with 289 cases, 1,058 interaction turns, covering 4 interaction types (navigation, subject action, event editing, perspective switching) across diverse scenes and perspectives.
 - A **unified navigation protocol** that bridges text, 6-DoF camera pose, and discrete-action interfaces, enabling fair comparison across model families.
 - **22 automatic metrics** spanning 5 complementary dimensions, validated against human judgments, ensuring reliable automatic evaluation at scale.
-- **Systematic diagnosis of 35 models** revealing that current world models have not yet unified high-fidelity rendering with reliable controllability, consistency, and physics compliance.
+- **Systematic diagnosis of 36 models** revealing that current world models have not yet unified high-fidelity rendering with reliable controllability, consistency, and physics compliance.
 
 ## 🏆 Leaderboard
 
-The live leaderboard is maintained on the [WBench homepage](https://meituan-longcat.github.io/WBench/#leaderboard), with current scores, detailed metrics, model metadata, and filters.
-
-The leaderboard marks **Open Source** entries when both the inference code and the evaluated checkpoint are publicly available. API, web-only, and unreleased entries remain identified by their access type.
+[View the live leaderboard on the WBench homepage →](https://meituan-longcat.github.io/WBench/#leaderboard)
 
 ## 🚀 Quick Start
 
