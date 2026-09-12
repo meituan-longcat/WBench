@@ -55,7 +55,7 @@
 
 ## 📢 News
 
-- **[2026/09/12]** 🆕 [XGEN-Jing](https://xgenlabs.ai/) (`camera`, `bidirection`): Navi **81.9**, #2 across 158 cases · XGEN Labs.
+- **[2026/09/12]** 🆕 [XGEN-Jing](https://xgenlabs.ai/) (`camera`, `bidirection`): Full **81.0**, #1 across 289 cases; Navi **81.9**, #2 across 158 cases · XGEN Labs.
 - **[2026/09/11]** 🆕 [Alaya-EVOKE-Turbo](https://evoke-world.github.io/Evoke) (`camera`, `3-step`): Navi **82.0**, #1 across 158 cases · thanks [@SII-YuanyangYin](https://huggingface.co/SII-YuanyangYin).
 - **[2026/08/28]** 🆕 [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/) (`flash`, `4-step`): Navi **81.0**, #2 · thanks [@franklinz233](https://github.com/franklinz233).
 - **[2026/08/27]** 🆕 [Helios](https://pku-yuangroup.github.io/Helios-Page) ([Distilled](https://huggingface.co/BestWishYsh/Helios-Distilled)): Full **69.7**, #9; Navi **74.3**, #22 · thanks [@SHYuanBest](https://github.com/SHYuanBest).
