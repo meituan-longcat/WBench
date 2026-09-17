@@ -55,7 +55,7 @@
 
 ## 📢 News
 
-- **[2026/09/17]** 🆕 [Astronex-World](https://world.astronex.com.cn/) (`camera`, `5B`, Open Source): Full **70.0**, #10 across 289 cases; Navi **73.5**, #31 across 158 cases · Astronex Robotics · self-evaluation.
+- **[2026/09/17]** 🆕 [Astronex-World](https://world.astronex.com.cn/) (`camera`, `5B`, Open Source): Full **70.0**, #10 across 289 cases; Navi **73.5**, #31 across 158 cases · Astronex Robotics.
 - **[2026/09/17]** 🆕 XGEN-Jing (`camera`, `4-step AR`, Unreleased): Full **79.9**, #2 across 289 cases; Navi **81.0**, #6 across 158 cases · XGEN Labs.
 - **[2026/09/12]** 🆕 [XGEN-Jing](https://xgenlabs.ai/) (`camera`, `bidirection`, Unreleased): Full **81.0**, #1 across 289 cases; Navi **81.9**, #2 across 158 cases · XGEN Labs.
 - **[2026/09/11]** 🆕 [Alaya-EVOKE-Turbo](https://evoke-world.github.io/Evoke) (`camera`, `3-step`, Open Source): Navi **82.0**, #1 across 158 cases · [Code](https://github.com/AlayaLab/Evoke) · [Weights](https://huggingface.co/AlayaLab/Evoke-Turbo) · [Paper](https://huggingface.co/papers/2608.13546) · thanks [@SII-YuanyangYin](https://huggingface.co/SII-YuanyangYin).
