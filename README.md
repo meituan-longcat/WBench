@@ -46,7 +46,7 @@
 </div>
 
 <p align="center" style="color: grey;">
-<b>TL;DR</b> — WBench evaluates 37 video world models across 5 dimensions and 22 metrics.
+<b>TL;DR</b> — WBench evaluates 38 video world models across 5 dimensions and 22 metrics.
 </p>
 
 <div align="center">
@@ -55,6 +55,7 @@
 
 ## 📢 News
 
+- **[2026/09/17]** 🆕 XGEN-Jing (`camera`, `4-step AR`, Unreleased): Full **79.9**, #2 across 289 cases; Navi **81.0**, #6 across 158 cases · XGEN Labs.
 - **[2026/09/12]** 🆕 [XGEN-Jing](https://xgenlabs.ai/) (`camera`, `bidirection`, Unreleased): Full **81.0**, #1 across 289 cases; Navi **81.9**, #2 across 158 cases · XGEN Labs.
 - **[2026/09/11]** 🆕 [Alaya-EVOKE-Turbo](https://evoke-world.github.io/Evoke) (`camera`, `3-step`, Open Source): Navi **82.0**, #1 across 158 cases · [Code](https://github.com/AlayaLab/Evoke) · [Weights](https://huggingface.co/AlayaLab/Evoke-Turbo) · [Paper](https://huggingface.co/papers/2608.13546) · thanks [@SII-YuanyangYin](https://huggingface.co/SII-YuanyangYin).
 - **[2026/08/28]** 🆕 [JoyAI-Echo-1.5 (WM)](https://echo-team-joy-future-academy-jd.github.io/Echo-1.5-Page/wm/) (`flash`, `4-step`): Navi **81.0**, #2 · thanks [@franklinz233](https://github.com/franklinz233).
@@ -88,7 +89,7 @@
 - A **comprehensive evaluation framework** with 289 cases, 1,058 interaction turns, covering 4 interaction types (navigation, subject action, event editing, perspective switching) across diverse scenes and perspectives.
 - A **unified navigation protocol** that bridges text, 6-DoF camera pose, and discrete-action interfaces, enabling fair comparison across model families.
 - **22 automatic metrics** spanning 5 complementary dimensions, validated against human judgments, ensuring reliable automatic evaluation at scale.
-- **Systematic diagnosis of 37 models** revealing that current world models have not yet unified high-fidelity rendering with reliable controllability, consistency, and physics compliance.
+- **Systematic diagnosis of 38 models** revealing that current world models have not yet unified high-fidelity rendering with reliable controllability, consistency, and physics compliance.
 
 ## 🏆 Leaderboard
 
