@@ -55,6 +55,7 @@
 
 ## 📢 News
 
+- **[2026/09/23]** 🆕 [MuseFlow-Pro](https://musee.me/) (`text`, Unreleased): Full **81.1**, #1 across 289 cases · Musee · thanks [@Easo04](https://huggingface.co/Easo04).
 - **[2026/09/17]** 🆕 [Astronex-World](https://world.astronex.com.cn/) (`camera`, `5B`, Open Source): Full **70.0**, #10 across 289 cases; Navi **73.5**, #31 across 158 cases · Astronex Robotics · thanks [@Astronex-Robotics](https://github.com/Astronex-Robotics).
 - **[2026/09/17]** 🆕 [XGEN-Jing](https://xgenlabs.ai/research/generative-world-simulation) (`camera`, `4-step AR`, Open Source): Full **79.9**, #2 across 289 cases; Navi **81.0**, #6 across 158 cases · [Code](https://github.com/XGEN-Labs/XGEN-JING/) · [Weights](https://huggingface.co/XGENlabs/XGEN-JING) · XGEN Labs · thanks [@XGEN-Labs](https://github.com/XGEN-Labs).
 - **[2026/09/12]** 🆕 [XGEN-Jing](https://xgenlabs.ai/research/generative-world-simulation) (`camera`, `bidirection`, Open Source): Full **81.0**, #1 across 289 cases; Navi **81.9**, #2 across 158 cases · [Code](https://github.com/XGEN-Labs/XGEN-JING/) · [Weights](https://huggingface.co/XGENlabs/XGEN-JING) · XGEN Labs · thanks [@XGEN-Labs](https://github.com/XGEN-Labs).
