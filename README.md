@@ -55,6 +55,7 @@
 
 ## 📢 News
 
+- **[2026/09/24]** 🆕 [Enuma](https://huggingface.co/datasets/Kr1sJ/Enuma_WBench) (`camera`, Unreleased, self-evaluation): Navi **81.7** (#3, `bidirection`) and **79.7** (#10, `AR`, `4-step`, `flash`) across 158 cases · ByteDance · thanks [@Kr1sJ](https://huggingface.co/Kr1sJ).
 - **[2026/09/23]** 🆕 [MuseFlow-Pro](https://musee.me/) (`text`, Unreleased): Full **81.1**, #1 across 289 cases · Musee · thanks [@Easo04](https://huggingface.co/Easo04).
 - **[2026/09/17]** 🆕 [Astronex-World](https://world.astronex.com.cn/) (`camera`, `5B`, Open Source): Full **70.0**, #10 across 289 cases; Navi **73.5**, #31 across 158 cases · Astronex Robotics · thanks [@Astronex-Robotics](https://github.com/Astronex-Robotics).
 - **[2026/09/17]** 🆕 [XGEN-Jing](https://xgenlabs.ai/research/generative-world-simulation) (`camera`, `4-step AR`, Open Source): Full **79.9**, #2 across 289 cases; Navi **81.0**, #6 across 158 cases · [Code](https://github.com/XGEN-Labs/XGEN-JING/) · [Weights](https://huggingface.co/XGENlabs/XGEN-JING) · XGEN Labs · thanks [@XGEN-Labs](https://github.com/XGEN-Labs).
