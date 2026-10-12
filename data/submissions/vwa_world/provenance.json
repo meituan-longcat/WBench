@@ -1,0 +1,15 @@
+{
+  "model": "VWA-World",
+  "org": "X-Era AI",
+  "type": "action",
+  "tags": [],
+  "split": "navi",
+  "cases": 158,
+  "evaluation_source": "self-evaluation-plus-organizer-vlm",
+  "description": "16 self-evaluated + 3 organizer-evaluated metrics",
+  "evaluation_date": "2026-10-10",
+  "published_date": "2026-10-12",
+  "vlm_model": "doubao-seed-2-0-lite-260215",
+  "source_url": "https://huggingface.co/datasets/1unknown/Wbench_submission",
+  "limitation": "The 16 submitted local metrics were checked for aggregate schema and case counts; per-case local scores were not supplied. Organizer evaluated Scene Adherence, Subject Adherence, and Causal Fidelity."
+}

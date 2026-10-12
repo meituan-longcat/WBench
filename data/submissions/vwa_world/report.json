@@ -1,0 +1,191 @@
+{
+  "model": "VWA-World",
+  "n_cases": 158,
+  "n_navi": 158,
+  "full": {
+    "aesthetic_quality": {
+      "mean": 0.6369,
+      "n": 158
+    },
+    "background_consistency": {
+      "mean": 0.9165,
+      "n": 158
+    },
+    "dynamic_degree": {
+      "mean": 0.9873,
+      "n": 158
+    },
+    "gated_spatial_consistency": {
+      "mean": 0.8507,
+      "n": 60
+    },
+    "geometric_consistency": {
+      "mean": 0.9352,
+      "n": 158
+    },
+    "hpsv3_quality": {
+      "mean": 0.7252,
+      "n": 158
+    },
+    "imaging_quality": {
+      "mean": 0.6664,
+      "n": 158
+    },
+    "motion_smoothness": {
+      "mean": 0.9731,
+      "n": 158
+    },
+    "perspective_consistency": {
+      "mean": 0.7041,
+      "n": 103
+    },
+    "photometric_consistency": {
+      "mean": 0.8185,
+      "n": 158
+    },
+    "segment_continuity": {
+      "mean": 1,
+      "n": 158
+    },
+    "spatial_consistency": {
+      "mean": 0.8772,
+      "n": 60
+    },
+    "subject_consistency": {
+      "mean": 0.91,
+      "n": 103
+    },
+    "temporal_flickering": {
+      "mean": 0.9382,
+      "n": 158
+    },
+    "visual_plausibility": {
+      "mean": 0.6123,
+      "n": 158
+    },
+    "navigation_trajectory": {
+      "mean": 0.8586,
+      "n": 158,
+      "n_consistency": 147
+    },
+    "causal_fidelity": {
+      "mean": 0.7659,
+      "n": 50
+    },
+    "scene_adherence": {
+      "mean": 0.7468,
+      "n": 158
+    },
+    "subject_adherence": {
+      "mean": 0.9284,
+      "n": 74
+    }
+  },
+  "navi": {
+    "aesthetic_quality": {
+      "mean": 0.6369,
+      "n": 158
+    },
+    "background_consistency": {
+      "mean": 0.9165,
+      "n": 158
+    },
+    "dynamic_degree": {
+      "mean": 0.9873,
+      "n": 158
+    },
+    "gated_spatial_consistency": {
+      "mean": 0.8507,
+      "n": 60
+    },
+    "geometric_consistency": {
+      "mean": 0.9352,
+      "n": 158
+    },
+    "hpsv3_quality": {
+      "mean": 0.7252,
+      "n": 158
+    },
+    "imaging_quality": {
+      "mean": 0.6664,
+      "n": 158
+    },
+    "motion_smoothness": {
+      "mean": 0.9731,
+      "n": 158
+    },
+    "perspective_consistency": {
+      "mean": 0.7041,
+      "n": 103
+    },
+    "photometric_consistency": {
+      "mean": 0.8185,
+      "n": 158
+    },
+    "segment_continuity": {
+      "mean": 1,
+      "n": 158
+    },
+    "spatial_consistency": {
+      "mean": 0.8772,
+      "n": 60
+    },
+    "subject_consistency": {
+      "mean": 0.91,
+      "n": 103
+    },
+    "temporal_flickering": {
+      "mean": 0.9382,
+      "n": 158
+    },
+    "visual_plausibility": {
+      "mean": 0.6123,
+      "n": 158
+    },
+    "navigation_trajectory": {
+      "mean": 0.8586,
+      "n": 158,
+      "n_consistency": 147
+    },
+    "causal_fidelity": {
+      "mean": 0.7659,
+      "n": 50
+    },
+    "scene_adherence": {
+      "mean": 0.7468,
+      "n": 158
+    },
+    "subject_adherence": {
+      "mean": 0.9284,
+      "n": 74
+    }
+  },
+  "provenance": {
+    "submitter_evaluated_metrics": [
+      "aesthetic_quality",
+      "background_consistency",
+      "dynamic_degree",
+      "gated_spatial_consistency",
+      "geometric_consistency",
+      "hpsv3_quality",
+      "imaging_quality",
+      "motion_smoothness",
+      "navigation_trajectory",
+      "perspective_consistency",
+      "photometric_consistency",
+      "segment_continuity",
+      "spatial_consistency",
+      "subject_consistency",
+      "temporal_flickering",
+      "visual_plausibility"
+    ],
+    "organizer_evaluated_metrics": [
+      "causal_fidelity",
+      "scene_adherence",
+      "subject_adherence"
+    ],
+    "local_results_verification": "aggregate schema and counts verified; no per-case local scores provided",
+    "vlm_model": "doubao-seed-2-0-lite-260215",
+    "source_revision": "0daf03d0ef0e696fb0eadd50dfff4cef1b51c02d"
+  }
+}

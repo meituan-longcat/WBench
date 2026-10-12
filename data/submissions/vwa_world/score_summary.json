@@ -1,0 +1,15 @@
+{
+  "model": "VWA-World",
+  "n_navi": 158,
+  "overall": "81.66016666666666666666666666",
+  "display_score": "81.7",
+  "dimensions": {
+    "renderer": "82.11833333333333333333333333",
+    "setting": "83.7600",
+    "interaction": "85.8600",
+    "consistency": "87.6525",
+    "physical": "68.9100"
+  },
+  "aggregation": "equal metric weights within each dimension; equal weights across five dimensions; report Navi means used without dimension rounding",
+  "report_sha256": "7c11b1f96cba82df9cc27c52c94a42b589702b77510cb06dab476e88d64900a4"
+}

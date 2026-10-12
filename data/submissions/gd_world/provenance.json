@@ -1,0 +1,14 @@
+{
+  "model": "gd_world",
+  "org": "gd_cv",
+  "type": "camera",
+  "tags": [],
+  "split": "navi",
+  "cases": 158,
+  "evaluation_source": "organizer-evaluation",
+  "description": "Organizer evaluation",
+  "evaluation_date": "2026-10-10",
+  "published_date": "2026-10-12",
+  "vlm_model": "doubao-seed-2-0-lite-260215",
+  "limitation": "Turn boundaries follow submitted turns.json; original inference sidecars were not supplied for independent reconstruction verification."
+}

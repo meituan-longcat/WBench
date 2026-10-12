@@ -1,0 +1,15 @@
+{
+  "model": "gd_world",
+  "n_navi": 158,
+  "overall": "81.19875",
+  "display_score": "81.2",
+  "dimensions": {
+    "renderer": "82.2050",
+    "setting": "79.4600",
+    "interaction": "85.2800",
+    "consistency": "89.46875",
+    "physical": "69.5800"
+  },
+  "aggregation": "equal metric weights within each dimension; equal weights across five dimensions; report Navi means used without dimension rounding",
+  "report_sha256": "6982a908bdf1fc0fcd6ade849e54a5e8c0bc4a1405ccd4a56413eaa29e5f2adc"
+}

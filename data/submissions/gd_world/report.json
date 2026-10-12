@@ -1,0 +1,203 @@
+{
+  "model": "gd_world",
+  "n_cases": 158,
+  "n_navi": 158,
+  "full": {
+    "aesthetic_quality": {
+      "mean": 0.6417,
+      "n": 158
+    },
+    "background_consistency": {
+      "mean": 0.9343,
+      "n": 158
+    },
+    "causal_fidelity": {
+      "mean": 0.7704,
+      "n": 50
+    },
+    "dynamic_degree": {
+      "mean": 0.9557,
+      "n": 158
+    },
+    "event_edit_adherence": {
+      "mean": 0.3524,
+      "n": 7
+    },
+    "gated_spatial_consistency": {
+      "mean": 0.8463,
+      "n": 60
+    },
+    "geometric_consistency": {
+      "mean": 0.9392,
+      "n": 158
+    },
+    "hpsv3_quality": {
+      "mean": 0.7418,
+      "n": 158
+    },
+    "imaging_quality": {
+      "mean": 0.676,
+      "n": 158
+    },
+    "motion_smoothness": {
+      "mean": 0.9801,
+      "n": 158
+    },
+    "navigation_accuracy": {
+      "mean": 0.8572,
+      "n": 158
+    },
+    "navigation_consistency": {
+      "mean": 0.8484,
+      "n": 147
+    },
+    "perspective_consistency": {
+      "mean": 0.8405,
+      "n": 103
+    },
+    "perspective_switch_adherence": {
+      "mean": 0.0,
+      "n": 1
+    },
+    "photometric_consistency": {
+      "mean": 0.8263,
+      "n": 158
+    },
+    "scene_adherence": {
+      "mean": 0.6608,
+      "n": 158
+    },
+    "segment_continuity": {
+      "mean": 0.9873,
+      "n": 158
+    },
+    "spatial_consistency": {
+      "mean": 0.8799,
+      "n": 60
+    },
+    "subject_action_adherence": {
+      "mean": 0.4222,
+      "n": 3
+    },
+    "subject_adherence": {
+      "mean": 0.9284,
+      "n": 74
+    },
+    "subject_consistency": {
+      "mean": 0.9037,
+      "n": 103
+    },
+    "temporal_flickering": {
+      "mean": 0.937,
+      "n": 158
+    },
+    "visual_plausibility": {
+      "mean": 0.6212,
+      "n": 158
+    },
+    "navigation_trajectory": {
+      "mean": 0.8528,
+      "n": 158,
+      "n_consistency": 147
+    }
+  },
+  "navi": {
+    "aesthetic_quality": {
+      "mean": 0.6417,
+      "n": 158
+    },
+    "background_consistency": {
+      "mean": 0.9343,
+      "n": 158
+    },
+    "causal_fidelity": {
+      "mean": 0.7704,
+      "n": 50
+    },
+    "dynamic_degree": {
+      "mean": 0.9557,
+      "n": 158
+    },
+    "event_edit_adherence": {
+      "mean": 0.3524,
+      "n": 7
+    },
+    "gated_spatial_consistency": {
+      "mean": 0.8463,
+      "n": 60
+    },
+    "geometric_consistency": {
+      "mean": 0.9392,
+      "n": 158
+    },
+    "hpsv3_quality": {
+      "mean": 0.7418,
+      "n": 158
+    },
+    "imaging_quality": {
+      "mean": 0.676,
+      "n": 158
+    },
+    "motion_smoothness": {
+      "mean": 0.9801,
+      "n": 158
+    },
+    "navigation_accuracy": {
+      "mean": 0.8572,
+      "n": 158
+    },
+    "navigation_consistency": {
+      "mean": 0.8484,
+      "n": 147
+    },
+    "perspective_consistency": {
+      "mean": 0.8405,
+      "n": 103
+    },
+    "perspective_switch_adherence": {
+      "mean": 0.0,
+      "n": 1
+    },
+    "photometric_consistency": {
+      "mean": 0.8263,
+      "n": 158
+    },
+    "scene_adherence": {
+      "mean": 0.6608,
+      "n": 158
+    },
+    "segment_continuity": {
+      "mean": 0.9873,
+      "n": 158
+    },
+    "spatial_consistency": {
+      "mean": 0.8799,
+      "n": 60
+    },
+    "subject_action_adherence": {
+      "mean": 0.4222,
+      "n": 3
+    },
+    "subject_adherence": {
+      "mean": 0.9284,
+      "n": 74
+    },
+    "subject_consistency": {
+      "mean": 0.9037,
+      "n": 103
+    },
+    "temporal_flickering": {
+      "mean": 0.937,
+      "n": 158
+    },
+    "visual_plausibility": {
+      "mean": 0.6212,
+      "n": 158
+    },
+    "navigation_trajectory": {
+      "mean": 0.8528,
+      "n": 158,
+      "n_consistency": 147
+    }
+  }
+}
