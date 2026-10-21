@@ -21,7 +21,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 from PIL import Image
 
-from ..vlm.vlm_evaluator import VLMClient
+from ..vlm.vlm_evaluator import VLMClient, json_score_constraint
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,9 @@ def evaluate_case(
     last_error = None
     for attempt in range(3):
         try:
-            raw_response = client.ask(prompt, frames, video_url=video_url)
+            raw_response, fallback = client.ask_checked(
+                prompt, _is_valid_response, SCORE_CONSTRAINT,
+                images=frames, video_url=video_url)
             parsed = _parse_json_response(raw_response)
 
             maintenance = int(parsed["maintenance"])
@@ -105,7 +107,7 @@ def evaluate_case(
                     "maintenance_reason": parsed.get("maintenance_reason", ""),
                     "offscreen_reason": parsed.get("offscreen_reason", ""),
                 },
-                "params": {"method": "vlm", "style": style},
+                "params": {"method": "vlm", "style": style, "constrained_fallback": fallback},
                 "error": None,
             }
         except Exception as e:
@@ -113,6 +115,17 @@ def evaluate_case(
 
     logger.warning(f"Scene adherence evaluation failed after 3 retries: {last_error}")
     return {"score": None, "details": None, "params": {"method": "vlm"}, "error": str(last_error)}
+
+
+SCORE_CONSTRAINT = json_score_constraint({"maintenance": [1, 2, 3, 4, 5], "offscreen": [0, 1]})
+
+
+def _is_valid_response(raw: str) -> bool:
+    try:
+        parsed = _parse_json_response(raw)
+        return int(parsed["maintenance"]) in (1, 2, 3, 4, 5) and int(parsed["offscreen"]) in (0, 1)
+    except Exception:
+        return False
 
 
 def _parse_json_response(raw: str) -> Dict:

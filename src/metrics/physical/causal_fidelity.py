@@ -10,6 +10,7 @@ Method: Track1 (overall physics + causal consistency) + Track2 (per-dimension sc
 Requires: case_data['causal_fidelity']['dims'] for Track2 dimension selection.
 Frames: 3fps full video, original resolution (no resize).
 """
+import json
 import logging
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -168,8 +169,17 @@ TRACK2_SYSTEM_PROMPT = (
 )
 
 
+# Constrained-decoding fallback for the Qwen judge: the prompt's own output format.
+SCORE_CONSTRAINT = {"regex": r"Reason: [^\n]{1,600}\nScore: [0-3]"}
+
+
 def _parse_score(response: str, max_score: int = 3) -> Tuple[Optional[int], str]:
-    """Extract score from 'Reason: ...\nScore: N' format."""
+    """Extract score from 'Reason: ...\nScore: N' format.
+
+    Only explicit scores are accepted: a "Score: N" marker, a JSON "score" field,
+    an "Answer/Final score/Rating: N" label, or a reply whose first line is the digit.
+    Anything else returns None instead of guessing a digit from free text.
+    """
     reason = ""
     # Try to extract Reason:
     reason_match = re.search(r"Reason:\s*(.+?)(?=\n\s*Score|\Z)", response, re.DOTALL | re.IGNORECASE)
@@ -181,8 +191,25 @@ def _parse_score(response: str, max_score: int = 3) -> Tuple[Optional[int], str]
     if score_match:
         return min(int(score_match.group(1)), max_score), reason
 
-    # Fallback: any single digit 0-3
-    match = re.search(r'\b([0-3])\b', response)
+    body = re.sub(r"</?think>|</?tool_call>", "", response)
+    # JSON object with an explicit "score" field.
+    fence = re.search(r"```(?:json)?\s*(.*?)```", body, re.DOTALL)
+    candidate = fence.group(1) if fence else body
+    start, end = candidate.find("{"), candidate.rfind("}")
+    if 0 <= start < end:
+        try:
+            data = json.loads(candidate[start:end + 1])
+            value = str(data.get("score", "")).strip()
+            if re.fullmatch(r"[0-3]", value):
+                return int(value), str(data.get("reason") or reason or response)
+        except (ValueError, AttributeError):
+            pass
+    # Explicit label such as "Answer: 3".
+    match = re.search(r"\b(?:Answer|Final score|Rating)\s*[:=]\s*([0-3])\b", body, re.IGNORECASE)
+    if match:
+        return int(match.group(1)), reason or response
+    # Reply whose first line is just the digit, e.g. "3\n\nReason: ...".
+    match = re.fullmatch(r"\s*([0-3])\s*(?:\n.*)?", body, re.DOTALL)
     if match:
         return int(match.group(1)), reason or response
     return None, reason or response
@@ -248,10 +275,10 @@ def evaluate_case(
 
         # Collect T1
         try:
-            t1_score, t1_reason = t1_future.result()
+            t1_score, t1_reason, t1_fallback = t1_future.result()
         except Exception as e:
             logger.warning(f"Track1 failed: {e}")
-            t1_score, t1_reason = None, str(e)
+            t1_score, t1_reason, t1_fallback = None, str(e), False
 
         # Collect T2
         t2_details = []
@@ -259,14 +286,15 @@ def evaluate_case(
         for fut in as_completed(t2_futures):
             dim_key = t2_futures[fut]
             try:
-                s, r = fut.result()
+                s, r, fb = fut.result()
             except Exception as e:
                 logger.warning(f"Track2 {dim_key} failed: {e}")
-                s, r = None, str(e)
+                s, r, fb = None, str(e), False
             t2_details.append({
                 "dim": dim_key,
                 "dim_name": PHYSICS_DIMENSIONS[dim_key]["name"],
                 "score": s, "max": 3, "reason": r,
+                "constrained_fallback": fb,
             })
             if s is not None:
                 valid_t2_scores.append(s)
@@ -288,7 +316,8 @@ def evaluate_case(
         "raw_score": round(final, 2) if final is not None else None,
         "max": 3,
         "num_frames": len(frames),
-        "track1": {"score": t1_score, "max": 3, "reason": t1_reason},
+        "track1": {"score": t1_score, "max": 3, "reason": t1_reason,
+                   "constrained_fallback": t1_fallback},
         "track2": {
             "avg_score": round(t2_avg, 2) if t2_avg is not None else None,
             "max": 3,
@@ -299,8 +328,14 @@ def evaluate_case(
 
 
 def _ask_score(client: VLMClient, question: str, frames: List[Image.Image],
-               system_prompt: str) -> Tuple[Optional[int], str]:
-    """Ask VLM to score 0-3. System prompt as separate role, question + format in user."""
+               system_prompt: str) -> Tuple[Optional[int], str, bool]:
+    """Ask VLM to score 0-3. System prompt as separate role, question + format in user.
+
+    Returns (score, reason, used_constrained_fallback).
+    """
     full_question = f"{question}\n\n{REASON_FORMAT}{SCORE_SUFFIX}"
-    response = client.ask(full_question, frames, max_tokens=300, system_prompt=system_prompt)
-    return _parse_score(response)
+    response, fallback = client.ask_checked(
+        full_question, lambda r: _parse_score(r)[0] is not None, SCORE_CONSTRAINT,
+        images=frames, max_tokens=300, system_prompt=system_prompt)
+    score, reason = _parse_score(response)
+    return score, reason, fallback

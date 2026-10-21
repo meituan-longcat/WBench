@@ -9,7 +9,8 @@ Supports two API formats:
 Video direct mode: encodes video as base64 and sends via video_url field,
 avoiding payload-too-large issues with many image frames.
 
-Supported models: doubao-seed-2-0-lite-260215, Doubao-Seed-2.0-lite
+Supported models: doubao-seed-2-0-lite-260215, Doubao-Seed-2.0-lite,
+Qwen/Qwen3.8-27B (self-hosted via SGLang, see docs/QWEN_JUDGE.md)
 """
 import base64
 import logging
@@ -20,7 +21,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Dict, Any, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
 from io import BytesIO
 from PIL import Image
 
@@ -34,7 +35,29 @@ _request_semaphore: Optional[threading.Semaphore] = None
 
 logger = logging.getLogger(__name__)
 
-ALLOWED_MODELS = {"doubao-seed-2-0-lite-260215", "Doubao-Seed-2.0-lite"}
+QWEN_MODELS = {"Qwen/Qwen3.8-27B"}
+ALLOWED_MODELS = {"doubao-seed-2-0-lite-260215", "Doubao-Seed-2.0-lite"} | QWEN_MODELS
+
+# Qwen3.8 judge request settings (prompts and temperature are shared with the API judges).
+# Thinking is disabled through the chat template; the larger completion budget and
+# min_tokens avoid empty or truncated replies observed with the 300-token default.
+QWEN_MAX_COMPLETION_TOKENS = 2048
+QWEN_MIN_TOKENS = 8
+
+
+def json_score_constraint(fields: Dict[str, List[int]]) -> Dict[str, Any]:
+    """JSON-schema constraint for replies like {"<field>": int, "<field>_reason": str, ...}.
+
+    Keys follow the order of `fields`, matching the format the prompts ask for.
+    """
+    properties = {}
+    for name, allowed in fields.items():
+        properties[name] = {"type": "integer", "enum": allowed}
+        properties[name + "_reason"] = {"type": "string", "maxLength": 400}
+    schema = {"type": "object", "properties": properties,
+              "required": list(properties), "additionalProperties": False}
+    return {"response_format": {"type": "json_schema",
+                                "json_schema": {"name": "judge", "schema": schema}}}
 
 
 def get_request_count() -> int:
@@ -193,12 +216,18 @@ class VLMClient:
             raise RuntimeError(
                 "VLM API URL not configured. Set VLM_API_URL env var or pass api_url."
             )
-        if not self.api_key:
+        self.is_qwen = self.model_name in QWEN_MODELS
+        # A self-hosted Qwen endpoint needs no key.
+        if not self.api_key and not self.is_qwen:
             raise RuntimeError(
                 "VLM API key not configured. Set VLM_API_KEY env var or pass api_key."
             )
 
         self._use_openai_format = "chat/completions" in self.api_url
+        if self.is_qwen and not self._use_openai_format:
+            raise ValueError(
+                "Qwen judge needs an OpenAI-compatible URL ending in /v1/chat/completions."
+            )
 
     IMAGE_MAX_SIZE = 1024
     IMAGE_JPEG_QUALITY = 50
@@ -276,11 +305,11 @@ class VLMClient:
 
     def _call_openai(self, prompt: str, max_retries: int, max_tokens: int,
                      system_prompt: str = None,
-                     video_url: str = None, images: List[Image.Image] = None) -> str:
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-        }
+                     video_url: str = None, images: List[Image.Image] = None,
+                     constraint: Dict[str, Any] = None) -> str:
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
         messages = []
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
@@ -301,6 +330,13 @@ class VLMClient:
             "max_completion_tokens": max_tokens,
             "thinking": {"type": "disabled"},
         }
+        if self.is_qwen:
+            payload.pop("thinking")
+            payload.update(chat_template_kwargs={"enable_thinking": False},
+                           max_completion_tokens=max(max_tokens, QWEN_MAX_COMPLETION_TOKENS),
+                           min_tokens=QWEN_MIN_TOKENS)
+        if constraint:
+            payload.update(constraint)
 
         attempt = 0
         while attempt < max_retries:
@@ -314,7 +350,7 @@ class VLMClient:
                     continue
                 resp.raise_for_status()
                 _increment_request_count()
-                text = resp.json()["choices"][0]["message"]["content"].strip()
+                text = (resp.json()["choices"][0]["message"]["content"] or "").strip()
                 return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
             except Exception as e:
                 attempt += 1
@@ -332,7 +368,7 @@ class VLMClient:
 
     def ask(self, prompt: str, images: List[Image.Image] = None, max_retries: int = 6,
             max_tokens: int = 300, system_prompt: str = None,
-            video_url: str = None) -> str:
+            video_url: str = None, constraint: Dict[str, Any] = None) -> str:
         """Ask a question with video or images. Returns raw text response.
 
         Args:
@@ -342,9 +378,13 @@ class VLMClient:
             max_retries: Number of retries on failure.
             max_tokens: Max output tokens.
             system_prompt: Optional system prompt.
+            constraint: Extra request fields for constrained decoding
+                (e.g. {"regex": ...} or {"response_format": ...}); Qwen judge only.
         """
         if not self.api_url:
             raise RuntimeError("VLM API not configured. Set VLM_API_URL env var or pass api_url.")
+        if constraint and not self.is_qwen:
+            raise ValueError("Constrained decoding is only supported for the Qwen judge.")
 
         if _request_semaphore:
             _request_semaphore.acquire()
@@ -352,7 +392,8 @@ class VLMClient:
             if self._use_openai_format:
                 return self._call_openai(prompt, max_retries, max_tokens,
                                          system_prompt=system_prompt,
-                                         video_url=video_url, images=images)
+                                         video_url=video_url, images=images,
+                                         constraint=constraint)
             else:
                 return self._call_ark(prompt, max_retries, max_tokens,
                                       system_prompt=system_prompt,
@@ -363,6 +404,20 @@ class VLMClient:
         finally:
             if _request_semaphore:
                 _request_semaphore.release()
+
+    def ask_checked(self, prompt: str, is_valid: Callable[[str], bool],
+                    constraint: Dict[str, Any], **kwargs) -> Tuple[str, bool]:
+        """Ask normally; if the reply is not valid, re-ask once with constrained decoding.
+
+        Only the Qwen judge re-asks; API judges return the plain reply unchanged.
+        The constraint only fixes the output format, it never changes the prompt.
+        Returns (reply, used_constrained_fallback).
+        """
+        reply = self.ask(prompt, **kwargs)
+        if not self.is_qwen or is_valid(reply):
+            return reply, False
+        logger.info("Reply without a valid score; re-asking with constrained decoding")
+        return self.ask(prompt, constraint=constraint, **kwargs), True
 
     def ask_binary(self, question: str, images: List[Image.Image] = None,
                    max_retries: int = 3, video_url: str = None) -> bool:
