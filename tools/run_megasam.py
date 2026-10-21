@@ -141,7 +141,9 @@ def run_single(video_path, output_path, device="0", target_fps=15.0,
                  "--img-path", str(frames_dir), "--outdir", str(mono_dir),
                  "--localhub"])
 
-        run_cmd([sys.executable, "UniDepth/scripts/demo_mega-sam.py",
+        # Wrapper puts UniDepth in eval mode; the pinned script never calls eval().
+        run_cmd([sys.executable, str(PROJECT_ROOT / "tools" / "megasam_unidepth_eval.py"),
+                 "UniDepth/scripts/demo_mega-sam.py",
                  "--scene-name", scene_name, "--img-path", str(frames_dir),
                  "--outdir", str(metric_root)])
 
