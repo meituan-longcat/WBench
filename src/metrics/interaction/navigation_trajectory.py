@@ -95,6 +95,12 @@ def normalize_action(action: str) -> str:
     return "+".join(sorted(normalized)) if len(normalized) > 1 else normalized[0] if normalized else action
 
 
+# Lookups go through normalize_action(), which sorts combo parts ("W+A" -> "A+W"),
+# so the table is keyed by the same canonical form. Without this, diagonal actions
+# missed the table and were scored against a stationary camera (issue #16).
+ACTION_TO_MOTION = {normalize_action(k): v for k, v in ACTION_TO_MOTION.items()}
+
+
 # ── Geometry helpers ──────────────────────────────────────────────────────────
 
 def _rot_angle_deg(R: np.ndarray) -> float:
