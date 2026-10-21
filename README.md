@@ -146,7 +146,7 @@ export VLM_API_KEY="<your-ark-api-key>"
 # export VLM_MODEL_NAME="doubao-seed-2-0-lite-260215"
 ```
 
-To use a self-hosted Qwen3.8-27B judge instead (beta), see [docs/QWEN_JUDGE.md](docs/QWEN_JUDGE.md).
+If `doubao-seed-2-0-lite-260215` is no longer available in your Volcengine console, use the self-hosted Qwen3.8-27B judge instead (beta); see [docs/QWEN_JUDGE.md](docs/QWEN_JUDGE.md). Scores from different judges are not directly comparable.
 
 1. Generate multi-turn videos → place in `work_dirs/<model>/videos/case_{id}_combined.mp4`
 2. Run the 3-phase pipeline:
