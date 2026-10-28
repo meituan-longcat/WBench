@@ -15,6 +15,7 @@ Full spec: [`docs/SUBMISSION.md`](../../docs/SUBMISSION.md).
 ├── meta.json                    # required
 ├── report.json                  # required for path A (self-eval), omit for path B
 ├── turns.json                   # optional but recommended (non-uniform turns)
+├── icon.png                     # required: square leaderboard logo, PNG/SVG >= 128x128
 └── videos/
     └── case_<id>_combined.mp4
 ```
@@ -42,13 +43,21 @@ Full spec: [`docs/SUBMISSION.md`](../../docs/SUBMISSION.md).
   "model_name": "mymodel",
   "type": "text",                 // text | camera | action
   "display_name": "My Model 1.0",
-  "org": "My Lab",
+  "org": "My Lab",               // required: organization / company name for the leaderboard
   "sampled_by": "...",            // who generated the videos
   "contact": "you@example.com",
   "num_videos": 289,
-  "split": "full"                 // full | navi
+  "split": "full",                // full | navi
+  "icon": "icon.png",             // required: logo file in the bundle root
+  "links": {                      // required: at least one public link
+    "homepage": "https://...", "github": "https://github.com/...",
+    "huggingface": "https://huggingface.co/...", "paper": "https://arxiv.org/abs/..."
+  }
 }
 ```
+
+Ask the user for `org`, the icon file and at least one link if they are missing —
+rows are not published without them (see `docs/SUBMISSION.md`).
 
 ## 2. turns.json (recommended)
 
@@ -122,7 +131,7 @@ nohup bash -c 'export HF_TOKEN=<token>; \
 - mp4 files are auto-tracked as LFS by `hf upload` — no manual `git lfs track`.
 - `hf upload` is resumable: an interrupted upload re-runs and skips files already
   pushed.
-- A HuggingFace dataset link with this exact structure can be submitted **instead**
-  of raw files (videos are large).
+- Submissions are accepted only as a HuggingFace dataset link with this exact
+  structure; Google Drive / Baidu Netdisk / OneDrive links are not accepted.
 - `docs/SUBMISSION.md` mentions a `validate_submission.py` — it is not yet in the
   repo; validate `turns.json` with the snippet above for now.

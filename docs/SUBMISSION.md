@@ -3,21 +3,23 @@
 How to get your model onto the
 [leaderboard](https://meituan-longcat.github.io/WBench/#leaderboard).
 
-**Submission is by email.** Build the package described below, upload the videos to
-a cloud drive, and send us the link. There is no automated portal yet — a person
+**Submission is by email.** Build the package described below, upload it to a
+HuggingFace dataset, and send us the link. There is no automated portal yet — a person
 reviews each submission.
 
 Email **kaining.ying.cv@gmail.com** and **rensiyu07@meituan.com** with:
 
 - **Subject:** `[WBench Submission] <display_name>`
-- **Body:** model name, type (text / camera / action), leaderboard tags, org, a
-  one-line description, and whether you ran the evaluation yourself (path A) or
+- **Body:** model name, type (text / camera / action), leaderboard tags, org, links
+  (see `meta.json`), a one-line description, and whether you ran the evaluation yourself (path A) or
   want us to (path B).
 - **Attach** `meta.json` (and `report.json` for path A — both are small).
-- **Cloud-drive link** to the `videos/` folder (and `turns.json`). Supported:
-  **Google Drive · Baidu Netdisk (百度网盘) · HuggingFace dataset · OneDrive**.
-  Keep the link live until your row is published. A HuggingFace dataset holding the
-  exact structure below is preferred — we can evaluate it directly.
+- **HuggingFace dataset link** holding the exact structure below (`videos/`,
+  `turns.json`, ...). **Only HuggingFace datasets are accepted** — Google Drive,
+  Baidu Netdisk (百度网盘), OneDrive and other cloud-drive links are not. A private
+  dataset is fine: include a fine-grained read-only token in the email and we will
+  tell you when the download is done so you can revoke it. Keep the dataset
+  unchanged until your row is published.
 
 There are two ways to submit. **Self-evaluation is the default** — you run the
 public evaluation code yourself and submit the resulting scores (plus videos for
@@ -57,6 +59,7 @@ metrics on our side, and return your scores. This path is batched.
 ├── meta.json                       # model metadata (required)
 ├── report.json                     # your scores (required for path A, omit for B)
 ├── turns.json                      # per-video turn boundaries (optional, recommended)
+├── icon.png                        # leaderboard logo (required, see meta.json)
 └── videos/
     └── case_<id>_combined.mp4      # one combined clip per case
 ```
@@ -64,10 +67,9 @@ metrics on our side, and return your scores. This path is batched.
 - `<id>` is the case's JSON `id` field (string), e.g. `1`, `e_5`, `ps_3` — **not**
   the filename. Video name is always `case_<id>_combined.mp4`.
 - Videos are the full multi-turn clip (all turns concatenated in order).
-- Because videos are large, **share the `videos/` folder via a cloud drive and send
-  the link** rather than emailing the raw files. Supported: **Google Drive · Baidu
-  Netdisk (百度网盘) · HuggingFace dataset · OneDrive**. A HuggingFace dataset that
-  holds this exact structure is preferred — we can evaluate it directly.
+- Because videos are large, **upload the package to a HuggingFace dataset and send
+  the link** rather than emailing the raw files. Only HuggingFace datasets are
+  accepted (no Google Drive / Baidu Netdisk / OneDrive).
 
 ### Which cases to cover (by model type)
 
@@ -89,10 +91,27 @@ leaderboard; text models get both Full (289) and Navi.
   "type": "text",                 // text | camera | action
   "display_name": "My Model 1.0",
   "tags": ["4-step", "5B"],      // required; use [] when no qualifier applies
-  "org": "My Lab",
-  "contact": "you@example.com"
+  "org": "My Lab",              // required; organization / company name shown on the leaderboard
+  "contact": "you@example.com",
+  "icon": "icon.png",            // required; file in the package root (see below)
+  "links": {                     // required; at least one public link
+    "homepage": "https://...",   // project page or company site
+    "github": "https://github.com/...",
+    "huggingface": "https://huggingface.co/...",
+    "paper": "https://arxiv.org/abs/..."
+  }
 }
 ```
+
+Leaderboard row details — **all required**, we will not publish a row without them:
+
+- **`org`** — the organization or company name exactly as it should appear on the
+  leaderboard.
+- **`icon`** — a square logo for the row, placed in the package root and named in
+  `meta.json`. PNG (transparent background preferred) or SVG, at least 128×128.
+- **`links`** — at least one public link for the model (project page, company site,
+  GitHub, HuggingFace or paper). Omit keys you don't have; the leaderboard links the
+  model name to these.
 
 `tags` controls the small qualifier badges shown next to the model type on the
 leaderboard. The field is required so variants can be identified consistently;
