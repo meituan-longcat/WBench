@@ -48,6 +48,7 @@ Full spec: [`docs/SUBMISSION.md`](../../docs/SUBMISSION.md).
   "contact": "you@example.com",
   "num_videos": 289,
   "split": "full",                // full | navi
+  "judge": "doubao-seed-2-0-lite-260215",  // path A: required; or "Qwen/Qwen3.8-27B" — the judge behind report.json
   "icon": "icon.png",             // required: logo file in the bundle root
   "links": {                      // required: at least one public link
     "homepage": "https://...", "github": "https://github.com/...",
@@ -56,7 +57,7 @@ Full spec: [`docs/SUBMISSION.md`](../../docs/SUBMISSION.md).
 }
 ```
 
-Ask the user for `org`, the icon file and at least one link if they are missing —
+Ask the user for `org`, the icon file, at least one link and (path A) the `judge` if they are missing —
 rows are not published without them (see `docs/SUBMISSION.md`).
 
 ## 2. turns.json (recommended)

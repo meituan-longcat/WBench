@@ -11,7 +11,7 @@ Email **kaining.ying.cv@gmail.com** and **rensiyu07@meituan.com** with:
 
 - **Subject:** `[WBench Submission] <display_name>`
 - **Body:** model name, type (text / camera / action), leaderboard tags, org, links
-  (see `meta.json`), a one-line description, and whether you ran the evaluation yourself (path A) or
+  (see `meta.json`), the VLM judge used (path A), a one-line description, and whether you ran the evaluation yourself (path A) or
   want us to (path B).
 - **Attach** `meta.json` (and `report.json` for path A — both are small).
 - **HuggingFace dataset link** holding the exact structure below (`videos/`,
@@ -97,6 +97,7 @@ leaderboard; text models get both Full (289) and Navi.
   "tags": ["4-step", "5B"],      // required; use [] when no qualifier applies
   "org": "My Lab",              // required; organization / company name shown on the leaderboard
   "contact": "you@example.com",
+  "judge": "doubao-seed-2-0-lite-260215",  // path A: required; VLM judge used for report.json
   "icon": "icon.png",            // required; file in the package root (see below)
   "links": {                     // required; at least one public link
     "homepage": "https://...",   // project page or company site
@@ -106,6 +107,13 @@ leaderboard; text models get both Full (289) and Navi.
   }
 }
 ```
+
+**`judge`** (path A, required) — the exact VLM judge that produced the VLM metrics in
+your `report.json`: `doubao-seed-2-0-lite-260215` (default, see the README) or
+`Qwen/Qwen3.8-27B` (self-hosted, see [QWEN_JUDGE.md](QWEN_JUDGE.md)). Scores from
+different judges are not comparable, so each judge has its own leaderboard view; a
+path-A submission without `judge` will not be published. All VLM metrics in one
+`report.json` must come from the same judge.
 
 Leaderboard row details — **all required**, we will not publish a row without them:
 
