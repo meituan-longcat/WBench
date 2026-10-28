@@ -23,15 +23,17 @@ Email **kaining.ying.cv@gmail.com** and **rensiyu07@meituan.com** with:
 
 There are two ways to submit. **Self-evaluation is the default** — you run the
 public evaluation code yourself and submit the resulting scores (plus videos for
-spot-checking). If you don't have the compute/environment, you can instead submit
-videos only and we evaluate for you.
+spot-checking). **We encourage you to evaluate yourself** — it is the fastest way
+onto the leaderboard. If you don't have the compute/environment, you can instead
+submit videos only and we evaluate for you; this takes **1–2 working days** after
+we receive a complete package.
 
 | | A. Self-evaluation (default) | B. We evaluate (fallback) |
 |:---|:---|:---|
 | You provide | scores (`report.json`) + videos | videos only |
 | Who runs the 22 metrics | you (`python main.py ...`) | us |
 | Needs GPU + VLM API | yes, on your side | no |
-| Turnaround | fast (no queue) | batched |
+| Turnaround | fast (no queue) | 1–2 working days |
 
 > Either way we do **not** host or run your model — only videos and/or scores are
 > submitted. Generate the clips yourself; the `src/models/{text,camera,action}`
@@ -50,7 +52,9 @@ videos only and we evaluate for you.
 ## B. We evaluate for you (fallback)
 
 Submit the same package **without** `report.json`. We validate it, run the 22
-metrics on our side, and return your scores. This path is batched.
+metrics on our side, and return your scores. Expect **1–2 working days** from
+receiving a complete package; self-evaluation (path A) is encouraged whenever you
+can run it.
 
 ## 1. What you submit
 

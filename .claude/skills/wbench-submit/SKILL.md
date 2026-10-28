@@ -27,7 +27,7 @@ Full spec: [`docs/SUBMISSION.md`](../../docs/SUBMISSION.md).
 - **A — self-evaluation (default):** include `report.json` (run the `wbench-evaluate`
   skill first). We re-run a random subset to confirm reproducibility.
 - **B — we evaluate (fallback):** omit `report.json`, submit videos only; we run the
-  22 metrics. Batched.
+  22 metrics. Takes 1–2 working days; encourage path A when the user can run it.
 
 ## Required case coverage
 
