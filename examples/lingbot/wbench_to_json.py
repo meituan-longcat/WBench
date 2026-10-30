@@ -174,7 +174,7 @@ def convert_case(case: dict, images_dir: str, secs_per_turn: int) -> dict | None
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wbench_dir", required=True,
-                    help="WBench dataset dir containing cases/ and images/ (e.g. data/wbench_3.0_merged_v2)")
+                    help="WBench dataset dir containing cases/ and images/ (e.g. data/, the HF meituan-longcat/WBench download)")
     ap.add_argument("--out", default="./wbench_nav_158.jsonl")
     ap.add_argument("--secs_per_turn", type=int, default=4, help="Seconds per action turn")
     ap.add_argument("--include_prefix", action="store_true", default=True)

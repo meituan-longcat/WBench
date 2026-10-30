@@ -292,11 +292,15 @@ def load_cases_from_dir(cases_dir):
 def main(target_dir, case_ids=None, nav_only=False, short=False, skiplr=False,
          onlylr=False, output=None):
     cases_dir = os.path.join(target_dir, 'cases')
-    # data_root: initial_image 路径 (如 "data/wbench_m2.5/images/...") 相对的根目录
-    # cases_dir 的典型结构: <root>/data/wbench_m2.5/cases/
-    # initial_image 形如: data/wbench_m2.5/images/...
-    # 因此 data_root = target_dir 的上两级
-    data_root = os.path.abspath(os.path.join(target_dir, '..', '..'))
+    # data_root: initial_image 路径相对的根目录
+    # 发布版数据集 (HF meituan-longcat/WBench): <target_dir>/cases/ 与 <target_dir>/images/,
+    #   initial_image 形如 images/case_<id>.jpg, 因此 data_root = target_dir
+    # 旧内部目录: <root>/data/wbench_m2.5/cases/, initial_image 形如 data/wbench_m2.5/images/...,
+    #   因此 data_root = target_dir 的上两级
+    if os.path.isdir(os.path.join(target_dir, 'images')):
+        data_root = os.path.abspath(target_dir)
+    else:
+        data_root = os.path.abspath(os.path.join(target_dir, '..', '..'))
 
     if output:
         output_path = output
@@ -352,7 +356,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("target_dir",
-                        help="Directory containing cases/ subdirectory (e.g. data/wbench_m2.5/)")
+                        help="Directory containing cases/ subdirectory (e.g. data/, the HF meituan-longcat/WBench download)")
     parser.add_argument("case_ids", nargs="*", type=int,
                         help="Optional case IDs to convert (default: all)")
     parser.add_argument("--nav_only", action="store_true",

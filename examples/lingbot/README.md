@@ -50,7 +50,7 @@ WBench case_*.json
 ```bash
 # 1) WBench cases -> JSONL (158 navigation cases)
 python wbench_to_json.py \
-    --wbench_dir /path/to/data/wbench_3.0_merged_v2 \
+    --wbench_dir /path/to/data \
     --out wbench_trajectories/wbench_nav_158.jsonl
 
 # 2) Run inference from inside the cloned LingBot-World-v2 repo

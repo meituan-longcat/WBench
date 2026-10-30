@@ -50,7 +50,7 @@ WBench case_*.json
 
 ```bash
 # 1) WBench cases -> JSONL (navigation cases only)
-python convert_cases_to_jsonl.py /path/to/data/wbench_3.0_merged_v2 \
+python convert_cases_to_jsonl.py /path/to/data \
     --nav_only --output samples.jsonl
 
 # 2) Run inference from inside the cloned HY-WorldPlay repo
